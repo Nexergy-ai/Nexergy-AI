@@ -9,6 +9,7 @@ interface IntelligenceLayer {
   color: string;
   glowColor: string;
   description: string;
+  href?: string; // ← Agregado como opcional para que TypeScript no tire error
 }
 
 const layers: IntelligenceLayer[] = [
@@ -29,6 +30,7 @@ const layers: IntelligenceLayer[] = [
     color: '#00FF7F',
     glowColor: 'rgba(0, 255, 127, 0.5)',
     description: 'Energy efficiency and operational energy intelligence',
+    href: 'https://optinexai.vercel.app', // ← Tu enlace real de Vercel integrado
   },
   {
     id: 'agents',
@@ -104,8 +106,9 @@ export default function IntelligenceLayers() {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
         >
-          {layers.map((layer) => (
-            <motion.div key={layer.id} variants={itemVariants}>
+          {layers.map((layer) => {
+            // Estructura interna de la tarjeta para no duplicar código
+            const CardContent = (
               <div
                 className="h-full p-6 rounded-lg border-2 bg-[rgba(20,30,60,0.5)] backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer group"
                 style={{
@@ -143,8 +146,26 @@ export default function IntelligenceLayers() {
                   ))}
                 </div>
               </div>
-            </motion.div>
-          ))}
+            );
+
+            // Si la capa tiene href, envolvemos la animación con un enlace externo semántico
+            return (
+              <motion.div key={layer.id} variants={itemVariants} className="h-full">
+                {layer.href ? (
+                  <a 
+                    href={layer.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="block h-full no-underline"
+                  >
+                    {CardContent}
+                  </a>
+                ) : (
+                  CardContent
+                )}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
 
