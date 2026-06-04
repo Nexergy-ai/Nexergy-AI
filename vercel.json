@@ -1,25 +1,17 @@
 {
-  "version": 2,
-  "buildCommand": "pnpm build",
-  "outputDirectory": "dist",
-  "routes": [
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "dist/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/trpc/(.*)",
-      "dest": "dist/index.js"
+      "source": "/trpc/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "dist/$1",
-      "check": true
-    },
-    {
-      "src": "/(.*)",
-      "status": 200,
-      "dest": "dist/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
