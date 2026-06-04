@@ -1,20 +1,20 @@
 {
   "version": 2,
   "installCommand": "pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm run build",
+  "buildCommand": "pnpm run vercel-build",
   "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/trpc/(.*)",
-      "destination": "server/_core/index.ts"
+      "destination": "dist/index.js"
     },
     {
       "source": "/api/(.*)",
-      "destination": "server/_core/index.ts"
+      "destination": "dist/index.js"
     },
     {
       "source": "/(.*)",
-      "destination": "server/_core/index.ts"
+      "destination": "dist/index.js"
     }
   ]
 }
