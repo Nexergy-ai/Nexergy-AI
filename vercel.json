@@ -1,28 +1,20 @@
 {
   "version": 2,
-  "builds": [
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "src": "server/_core/index.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/trpc/(.*)",
-      "dest": "server/_core/index.ts"
+      "source": "/api/trpc/(.*)",
+      "destination": "server/_core/index.ts"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "server/_core/index.ts"
+      "source": "/api/(.*)",
+      "destination": "server/_core/index.ts"
     },
     {
-      "src": "/(.*)",
-      "dest": "server/_core/index.ts"
+      "source": "/(.*)",
+      "destination": "server/_core/index.ts"
     }
-  ],
-  "build": {
-    "env": {
-      "PNPM_FLAGS": "--no-frozen-lockfile"
-    }
-  }
+  ]
 }
