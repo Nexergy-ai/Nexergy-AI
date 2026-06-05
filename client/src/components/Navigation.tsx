@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { ContactButton } from '@/components/ContactButton';
-
-export function Hero() {
-  return (
-    <section>
-      <h1>Impulsa tu IA con Nexergy</h1>
-      <ContactButton className="mt-4" />
-    </section>
-  );
 }
 
 interface NavItem {
