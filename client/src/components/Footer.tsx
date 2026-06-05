@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { Activity, Shield, Zap } from 'lucide-react';
 
-}
-
 const footerLinks = {
   platform: [
     { label: 'Dashboard', href: '#dashboard' },
@@ -65,9 +63,16 @@ export default function Footer() {
                 <span className="text-white"> AI</span>
               </span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
               AI-Native Operational Infrastructure for enterprise intelligence and autonomous execution.
             </p>
+            {/* Correo de contacto destacado */}
+            <a 
+              href="mailto:contacto@nexergy.ar" 
+              className="text-sm text-neon-cyan hover:text-white transition-colors flex items-center gap-2"
+            >
+              ✉️ contacto@nexergy.ar
+            </a>
           </motion.div>
 
           <motion.div variants={itemVariants}>
@@ -75,12 +80,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.platform.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-neon-blue transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -91,12 +91,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-neon-blue transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -107,12 +102,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-neon-blue transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -149,19 +139,11 @@ export default function Footer() {
           viewport={{ once: true }}
           className="border-t border-[#00BFFF]/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <p className="text-gray-400 text-sm">
-            © 2026 NEXERGY AI. All rights reserved.
-          </p>
+          <p className="text-gray-400 text-sm">© 2026 NEXERGY AI. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
-            <a href="#privacy" className="text-gray-400 hover:text-neon-blue transition-colors">
-              Privacy
-            </a>
-            <a href="#terms" className="text-gray-400 hover:text-neon-blue transition-colors">
-              Terms
-            </a>
-            <a href="#security" className="text-gray-400 hover:text-neon-blue transition-colors">
-              Security
-            </a>
+            <a href="mailto:contacto@nexergy.ar" className="text-neon-blue hover:text-white transition-colors">Contact</a>
+            <a href="#privacy" className="text-gray-400 hover:text-neon-blue transition-colors">Privacy</a>
+            <a href="#terms" className="text-gray-400 hover:text-neon-blue transition-colors">Terms</a>
           </div>
         </motion.div>
       </div>
