@@ -2,6 +2,16 @@ import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ParticleBackground from './ParticleBackground';
+import { ContactButton } from '@/components/ContactButton';
+
+export function Hero() {
+  return (
+    <section>
+      <h1>Impulsa tu IA con Nexergy</h1>
+      <ContactButton className="mt-4" />
+    </section>
+  );
+}
 
 interface HeroProps {
   onExperienceOrchestrator?: () => void;
