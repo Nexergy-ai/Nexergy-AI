@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ParticleBackground from './ParticleBackground';
-import { ContactButton } from '@/components/ContactButton'; // Asegúrate de esta ruta
+import { ContactButton } from '@/components/ContactButton';
 
 interface HeroProps {
   onExperienceOrchestrator?: () => void;
@@ -19,52 +18,49 @@ export default function Hero({ onExperienceOrchestrator, onViewDashboard }: Hero
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
       <ParticleBackground />
 
       <motion.div
-        className="relative z-10 text-center max-w-4xl mx-auto px-4"
+        className="relative z-10 text-center max-w-4xl mx-auto px-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Main headline */}
-        <motion.div variants={itemVariants} className="mb-6">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-tight">
-            <span className="text-neon-blue">NEXERGY</span>
-            <span className="text-white"> AI</span>
+        <motion.div variants={itemVariants} className="mb-8">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
+            <span className="text-white">NEXERGY</span>
+            <span className="text-white/40"> AI</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 font-light">Operational Intelligence</p>
+          <p className="text-lg md:text-xl text-gray-400 font-medium tracking-wide uppercase">
+            Operational Intelligence
+          </p>
         </motion.div>
 
-        {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
         >
           <Button
             onClick={onExperienceOrchestrator}
-            className="px-8 py-6 text-lg font-semibold bg-[#00BFFF] text-[#0a0e27] hover:bg-[#00BFFF] hover:shadow-[0_0_30px_rgba(0,191,255,0.6)] transition-all duration-300 rounded-lg"
+            className="px-8 py-6 text-sm font-semibold bg-white text-black hover:bg-gray-200 transition-colors rounded-none border border-white"
           >
-            Experience Orchestrator
+            EXPERIENCE ORCHESTRATOR
           </Button>
           <Button
             onClick={onViewDashboard}
             variant="outline"
-            className="px-8 py-6 text-lg font-semibold border-[#00BFFF] text-[#00BFFF] hover:bg-[rgba(0,191,255,0.1)] transition-all duration-300 rounded-lg"
+            className="px-8 py-6 text-sm font-semibold border-white/20 text-white hover:bg-white/5 transition-colors rounded-none"
           >
-            View Dashboard
+            VIEW DASHBOARD
           </Button>
-          {/* NUEVO BOTÓN INTEGRADO */}
           <ContactButton />
         </motion.div>
-
-        {/* Scroll indicator... */}
       </motion.div>
     </section>
   );

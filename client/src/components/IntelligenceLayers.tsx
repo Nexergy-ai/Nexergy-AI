@@ -6,140 +6,80 @@ interface IntelligenceLayer {
   name: string;
   metrics: string[];
   icon: React.ReactNode;
-  color: string;
-  glowColor: string;
   description: string;
-  href?: string; // ← Agregado como opcional para que TypeScript no tire error
+  href?: string;
 }
 
 const layers: IntelligenceLayer[] = [
   {
     id: 'industrial',
-    name: 'NEXERGY INDUSTRIAL',
+    name: 'INDUSTRIAL',
     metrics: ['Uptime', 'Efficiency', 'Downtime'],
-    icon: <Cpu className="w-8 h-8" />,
-    color: '#00BFFF',
-    glowColor: 'rgba(0, 191, 255, 0.5)',
+    icon: <Cpu className="w-5 h-5" />,
     description: 'Predictive maintenance and industrial optimization',
   },
   {
     id: 'energy',
-    name: 'NEXERGY ENERGY',
-    metrics: ['Efficiency', 'Consumption', 'Optimization', 'Sustainability'],
-    icon: <Zap className="w-8 h-8" />,
-    color: '#00FF7F',
-    glowColor: 'rgba(0, 255, 127, 0.5)',
+    name: 'ENERGY',
+    metrics: ['Efficiency', 'Consumption', 'Optimization'],
+    icon: <Zap className="w-5 h-5" />,
     description: 'Energy efficiency and operational energy intelligence',
-    href: 'https://optinexai.vercel.app', // ← Tu enlace real de Vercel integrado
+    href: 'https://optinexai.vercel.app',
   },
   {
     id: 'agents',
-    name: 'NEXERGY AGENTS',
-    metrics: ['Autonomy', 'Actions', 'Decisions', 'Execution'],
-    icon: <Brain className="w-8 h-8" />,
-    color: '#C800FF',
-    glowColor: 'rgba(200, 0, 255, 0.5)',
+    name: 'AGENTS',
+    metrics: ['Autonomy', 'Actions', 'Decisions'],
+    icon: <Brain className="w-5 h-5" />,
     description: 'AI operational orchestration',
   },
   {
     id: 'digital-twin',
-    name: 'NEXERGY DIGITAL TWIN',
-    metrics: ['Prediction', 'Scenarios', 'Simulation', 'Outcomes'],
-    icon: <Microscope className="w-8 h-8" />,
-    color: '#00FFFF',
-    glowColor: 'rgba(0, 255, 255, 0.5)',
+    name: 'DIGITAL TWIN',
+    metrics: ['Prediction', 'Scenarios', 'Simulation'],
+    icon: <Microscope className="w-5 h-5" />,
     description: 'Simulation and predictive modeling',
   },
   {
     id: 'labs',
-    name: 'NEXERGY LABS',
-    metrics: ['Innovation', 'Research', 'Development', 'Emerging'],
-    icon: <Shield className="w-8 h-8" />,
-    color: '#FF00FF',
-    glowColor: 'rgba(255, 0, 255, 0.5)',
+    name: 'LABS',
+    metrics: ['Innovation', 'Research', 'Development'],
+    icon: <Shield className="w-5 h-5" />,
     description: 'Governance, AI integrity and R&D',
   },
 ];
 
 export default function IntelligenceLayers() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
+    <section className="py-24 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Intelligence</span>
-            <span className="text-neon-blue"> Layers</span>
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
+            INTELLIGENCE LAYERS
           </h2>
-          <p className="text-gray-400 text-lg">Modular AI capabilities designed for enterprise operational intelligence</p>
-        </motion.div>
+          <p className="text-gray-500 max-w-2xl">
+            Modular AI capabilities designed for enterprise operational intelligence.
+          </p>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-px bg-white/5 border border-white/5">
           {layers.map((layer) => {
-            // Estructura interna de la tarjeta para no duplicar código
             const CardContent = (
-              <div
-                className="h-full p-6 rounded-lg border-2 bg-[rgba(20,30,60,0.5)] backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer group"
-                style={{
-                  borderColor: layer.color,
-                  boxShadow: `0 0 20px ${layer.glowColor}`,
-                }}
-              >
-                <div
-                  className="mb-4 p-3 rounded-lg inline-block group-hover:scale-110 transition-transform"
-                  style={{ backgroundColor: layer.glowColor }}
-                >
-                  <div style={{ color: layer.color }}>{layer.icon}</div>
+              <div className="h-full p-8 bg-[#0a0e27] hover:bg-white/[0.02] transition-colors group">
+                <div className="mb-6 text-gray-400 group-hover:text-white transition-colors">
+                  {layer.icon}
                 </div>
-
-                <h3 className="text-sm font-bold mb-2 text-white group-hover:text-neon-blue transition-colors leading-tight">
+                <h3 className="text-xs font-bold tracking-widest text-white mb-3">
                   {layer.name}
                 </h3>
-
-                <p className="text-xs text-gray-400 mb-4 leading-relaxed">{layer.description}</p>
-
-                <div className="space-y-2">
+                <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+                  {layer.description}
+                </p>
+                <div className="space-y-3">
                   {layer.metrics.map((metric, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-xs">
-                      <span className="text-gray-400">• {metric}</span>
-                      <span
-                        className="text-xs font-semibold px-2 py-1 rounded"
-                        style={{
-                          color: layer.color,
-                          backgroundColor: layer.glowColor,
-                        }}
-                      >
+                    <div key={idx} className="flex items-center justify-between text-[10px] tracking-wider text-gray-600 uppercase">
+                      <span>{metric}</span>
+                      <span className="text-gray-400 font-mono">
                         {Math.floor(Math.random() * 40 + 60)}%
                       </span>
                     </div>
@@ -148,29 +88,20 @@ export default function IntelligenceLayers() {
               </div>
             );
 
-            // Si la capa tiene href, envolvemos la animación con un enlace externo semántico
             return (
-              <motion.div key={layer.id} variants={itemVariants} className="h-full">
+              <div key={layer.id} className="h-full">
                 {layer.href ? (
-                  <a 
-                    href={layer.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="block h-full no-underline"
-                  >
+                  <a href={layer.href} target="_blank" rel="noopener noreferrer" className="block h-full">
                     {CardContent}
                   </a>
                 ) : (
                   CardContent
                 )}
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
-
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 -translate-y-1/2" />
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-[#C800FF] rounded-full mix-blend-screen filter blur-3xl opacity-10 translate-y-1/2" />
     </section>
   );
 }

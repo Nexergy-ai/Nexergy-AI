@@ -1,151 +1,112 @@
-import { motion } from 'framer-motion';
 import { Activity, Shield, Zap } from 'lucide-react';
 
 const footerLinks = {
   platform: [
-    { label: 'Dashboard', href: '#dashboard' },
-    { label: 'Orchestrator', href: '#orchestrator' },
-    { label: 'Analytics', href: '#analytics' },
+    { label: 'DASHBOARD', href: '#dashboard' },
+    { label: 'ORCHESTRATOR', href: '#orchestrator' },
+    { label: 'ANALYTICS', href: '#analytics' },
   ],
   company: [
-    { label: 'About', href: '#about' },
-    { label: 'Blog', href: '#blog' },
-    { label: 'Careers', href: '#careers' },
+    { label: 'ABOUT', href: '#about' },
+    { label: 'BLOG', href: '#blog' },
+    { label: 'CAREERS', href: '#careers' },
   ],
   resources: [
-    { label: 'Docs', href: '#docs' },
+    { label: 'DOCS', href: '#docs' },
     { label: 'API', href: '#api' },
-    { label: 'Support', href: '#support' },
+    { label: 'SUPPORT', href: '#support' },
   ],
 };
 
 const statusIndicators = [
-  { label: 'System Status', status: 'Operational', icon: <Activity className="w-4 h-4" /> },
-  { label: 'Security', status: 'Secure', icon: <Shield className="w-4 h-4" /> },
-  { label: 'Performance', status: 'Optimal', icon: <Zap className="w-4 h-4" /> },
+  { label: 'System Status', status: 'OPERATIONAL', icon: <Activity className="w-4 h-4" /> },
+  { label: 'Security', status: 'SECURE', icon: <Shield className="w-4 h-4" /> },
+  { label: 'Performance', status: 'OPTIMAL', icon: <Zap className="w-4 h-4" /> },
 ];
 
 export default function Footer() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
-    },
-  };
-
   return (
-    <footer className="bg-[rgba(10,14,39,0.8)] border-t border-[#00BFFF]/20 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12"
-        >
-          <motion.div variants={itemVariants}>
-            <div className="mb-4">
-              <span className="text-2xl font-bold">
-                <span className="text-neon-blue">NEXERGY</span>
-                <span className="text-white"> AI</span>
-              </span>
+    <footer className="bg-[#0a0e27] border-t border-white/5 py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
+          <div className="col-span-1 md:col-span-1">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-6 h-6 bg-white flex items-center justify-center">
+                <div className="w-3 h-3 bg-[#0a0e27]" />
+              </div>
+              <span className="text-lg font-bold tracking-tighter text-white">NEXERGY</span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              AI-Native Operational Infrastructure for enterprise intelligence and autonomous execution.
+            <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              The next generation of industrial operational intelligence. Powered by advanced AI orchestration.
             </p>
-            {/* Correo de contacto destacado */}
             <a 
               href="mailto:contacto@nexergy.ar" 
-              className="text-sm text-neon-cyan hover:text-white transition-colors flex items-center gap-2"
+              className="text-[10px] font-bold tracking-widest text-white/40 hover:text-white transition-colors"
             >
-              ✉️ contacto@nexergy.ar
+              CONTACTO@NEXERGY.AR
             </a>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants}>
-            <h4 className="text-white font-semibold mb-4">Platform</h4>
-            <ul className="space-y-2">
+          <div>
+            <h4 className="text-[10px] font-bold tracking-[0.2em] text-white mb-8 uppercase">Platform</h4>
+            <ul className="space-y-4">
               {footerLinks.platform.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
+                  <a href={link.href} className="text-gray-500 hover:text-white transition-colors text-[10px] font-bold tracking-widest">{link.label}</a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants}>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-2">
+          <div>
+            <h4 className="text-[10px] font-bold tracking-[0.2em] text-white mb-8 uppercase">Company</h4>
+            <ul className="space-y-4">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
+                  <a href={link.href} className="text-gray-500 hover:text-white transition-colors text-[10px] font-bold tracking-widest">{link.label}</a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants}>
-            <h4 className="text-white font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2">
+          <div>
+            <h4 className="text-[10px] font-bold tracking-[0.2em] text-white mb-8 uppercase">Resources</h4>
+            <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-gray-400 hover:text-neon-blue transition-colors text-sm">{link.label}</a>
+                  <a href={link.href} className="text-gray-500 hover:text-white transition-colors text-[10px] font-bold tracking-widest">{link.label}</a>
                 </li>
               ))}
             </ul>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="mb-8 p-4 rounded-lg border border-neon-cyan bg-[rgba(0,255,255,0.05)]"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-24 p-10 border border-white/5 bg-white/[0.01]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {statusIndicators.map((indicator, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <div className="text-neon-cyan">{indicator.icon}</div>
+              <div key={idx} className="flex items-center gap-4">
+                <div className="text-white/20">{indicator.icon}</div>
                 <div>
-                  <p className="text-xs text-gray-400">{indicator.label}</p>
-                  <p className="text-sm font-semibold text-neon-cyan flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
-                    {indicator.status}
-                  </p>
+                  <p className="text-[10px] tracking-widest text-gray-600 uppercase mb-1">{indicator.label}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                    <span className="text-[10px] font-bold tracking-widest text-white/80">{indicator.status}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="border-t border-[#00BFFF]/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
-        >
-          <p className="text-gray-400 text-sm">© 2026 NEXERGY AI. All rights reserved.</p>
-          <div className="flex gap-6 text-sm">
-            <a href="mailto:contacto@nexergy.ar" className="text-neon-blue hover:text-white transition-colors">Contact</a>
-            <a href="#privacy" className="text-gray-400 hover:text-neon-blue transition-colors">Privacy</a>
-            <a href="#terms" className="text-gray-400 hover:text-neon-blue transition-colors">Terms</a>
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-[10px] tracking-widest text-gray-600 uppercase">
+            © 2026 NEXERGY AI. ALL RIGHTS RESERVED.
+          </p>
+          <div className="flex gap-8">
+            <a href="#" className="text-[10px] tracking-widest text-gray-600 hover:text-white uppercase transition-colors">Privacy</a>
+            <a href="#" className="text-[10px] tracking-widest text-gray-600 hover:text-white uppercase transition-colors">Terms</a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </footer>
   );

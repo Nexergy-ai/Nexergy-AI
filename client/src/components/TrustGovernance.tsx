@@ -1,31 +1,21 @@
 import { motion } from 'framer-motion';
-import { CheckCircle, Shield, Lock, Zap } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, Scale, CheckCircle, Zap } from 'lucide-react';
 
-interface GovernanceItem {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-const trustItems: GovernanceItem[] = [
+const trustItems = [
   {
     title: 'ISO 42001',
     description: 'AI Management System compliance and certification',
-    icon: <CheckCircle className="w-6 h-6" />,
-    color: '#00BFFF',
+    icon: <CheckCircle className="w-5 h-5" />,
   },
   {
     title: 'Transparent Operations',
     description: 'Full audit trails and explainability for all decisions',
-    icon: <Shield className="w-6 h-6" />,
-    color: '#00FF7F',
+    icon: <Eye className="w-5 h-5" />,
   },
   {
     title: 'Autonomous Integrity',
     description: 'Blockchain-verified actions and immutable records',
-    icon: <Lock className="w-6 h-6" />,
-    color: '#C800FF',
+    icon: <Lock className="w-5 h-5" />,
   },
 ];
 
@@ -44,139 +34,80 @@ const accountabilityItems = [
 ];
 
 export default function TrustGovernance() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Trust &</span>
-            <span className="text-neon-blue"> Governance</span>
+    <section className="py-24 px-6 border-t border-white/5 bg-[#0a0e27]">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
+            TRUST & GOVERNANCE
           </h2>
-          <p className="text-gray-400 text-lg">Enterprise-grade security, compliance, and transparency</p>
-        </motion.div>
+          <p className="text-gray-500 max-w-2xl">
+            Enterprise-grade security, compliance, and transparency framework for operational AI.
+          </p>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5 border border-white/5 mb-16">
           {trustItems.map((item, index) => (
-            <motion.div key={index} variants={itemVariants}>
-              <div
-                className="p-8 rounded-lg border-2 bg-[rgba(20,30,60,0.5)] backdrop-blur-sm transition-all duration-300 hover:shadow-lg text-center"
-                style={{
-                  borderColor: item.color,
-                  boxShadow: `0 0 20px ${item.color}33`,
-                }}
-              >
-                <div
-                  className="mb-4 flex justify-center"
-                  style={{ color: item.color }}
-                >
-                  {item.icon}
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm">{item.description}</p>
-              </div>
-            </motion.div>
+            <div key={index} className="p-10 bg-[#0a0e27] hover:bg-white/[0.01] transition-colors">
+              <div className="mb-6 text-white/40">{item.icon}</div>
+              <h3 className="text-xs font-bold tracking-widest text-white mb-3 uppercase">{item.title}</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">{item.description}</p>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          <div className="p-8 rounded-lg border-2 border-neon-green bg-[rgba(20,30,60,0.3)] backdrop-blur-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <CheckCircle className="w-6 h-6 text-neon-green" />
-              <h3 className="text-xl font-bold text-neon-green">Compliance & Certification</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
+          <div className="p-12 bg-[#0a0e27]">
+            <div className="flex items-center gap-3 mb-8">
+              <ShieldCheck className="w-5 h-5 text-white/60" />
+              <h3 className="text-xs font-bold tracking-widest text-white uppercase">Compliance & Certification</h3>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {complianceItems.map((item, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-gray-300">
-                  <span className="w-2 h-2 rounded-full bg-neon-green" />
+                <li key={idx} className="flex items-center gap-4 text-sm text-gray-500">
+                  <span className="w-1 h-1 bg-white/20" />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="p-8 rounded-lg border-2 border-neon-purple bg-[rgba(20,30,60,0.3)] backdrop-blur-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <Zap className="w-6 h-6 text-neon-purple" />
-              <h3 className="text-xl font-bold text-neon-purple">Transparency & Accountability</h3>
+          <div className="p-12 bg-[#0a0e27]">
+            <div className="flex items-center gap-3 mb-8">
+              <Zap className="w-5 h-5 text-white/60" />
+              <h3 className="text-xs font-bold tracking-widest text-white uppercase">Transparency & Accountability</h3>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {accountabilityItems.map((item, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-gray-300">
-                  <span className="w-2 h-2 rounded-full bg-neon-purple" />
+                <li key={idx} className="flex items-center gap-4 text-sm text-gray-500">
+                  <span className="w-1 h-1 bg-white/20" />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-12 p-8 rounded-lg border border-neon-cyan bg-[rgba(20,30,60,0.5)] backdrop-blur-sm"
-        >
-          <h3 className="text-xl font-bold text-neon-cyan mb-6">Real-time System Status</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mt-16 p-10 border border-white/5 bg-white/[0.01]">
+          <h3 className="text-[10px] font-bold tracking-[0.2em] text-white/40 mb-8 uppercase">Real-time System Status</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { label: 'Compliance Status', status: 'Active' },
-              { label: 'Audit Trail', status: 'Recording' },
-              { label: 'Blockchain Sync', status: 'Synced' },
-              { label: 'Security Level', status: 'Critical' },
+              { label: 'Compliance Status', status: 'ACTIVE' },
+              { label: 'Audit Trail', status: 'RECORDING' },
+              { label: 'Blockchain Sync', status: 'SYNCED' },
+              { label: 'Security Level', status: 'MAXIMUM' },
             ].map((item, idx) => (
-              <div key={idx} className="p-4 rounded-lg bg-[rgba(0,255,255,0.1)] border border-neon-cyan">
-                <p className="text-xs text-gray-400 mb-2">{item.label}</p>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
-                  <span className="text-sm font-semibold text-neon-cyan">{item.status}</span>
+              <div key={idx} className="space-y-2">
+                <p className="text-[10px] tracking-widest text-gray-600 uppercase">{item.label}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                  <span className="text-xs font-mono text-white/80">{item.status}</span>
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
-
-      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10" />
-      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10" />
     </section>
   );
 }
