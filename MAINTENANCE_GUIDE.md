@@ -4,11 +4,15 @@ Esta guía resume las implementaciones de seguridad de la Fase 2 y cómo el equi
 
 ## 1. Automatización de Seguridad (CI/CD)
 
-Se han implementado dos workflows de GitHub Actions:
+> **NOTA IMPORTANTE (CI/CD):** Debido a restricciones de permisos del token durante la implementación, los archivos de configuración de GitHub Actions se encuentran temporalmente en `docs/CI_CD_CONFIGURATION/`.
+> 
+> **Para habilitar la automatización:** El equipo debe mover los archivos de `docs/CI_CD_CONFIGURATION/` a la carpeta raíz `.github/workflows/` utilizando un token con permisos de `workflow`.
+
+Se han preparado dos flujos de trabajo:
 - **Security Audit (`security-audit.yml`)**: Ejecuta `pnpm audit` en cada PR y semanalmente para detectar dependencias vulnerables.
 - **Secret Scan (`secret-scan.yml`)**: Utiliza `gitleaks` para prevenir la subida de credenciales al repositorio.
 
-### Acción requerida:
+### Acción requerida tras la activación:
 Si un workflow falla, revise los logs de la acción en GitHub. No fusione PRs con vulnerabilidades de nivel "High" o superior.
 
 ## 2. Monitoreo y Observabilidad
