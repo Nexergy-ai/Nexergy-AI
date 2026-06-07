@@ -1,7 +1,21 @@
 import type { Express } from "express";
+import { sdk } from "./sdk";
 import { ENV } from "./env";
 
 export function registerStorageProxy(app: Express) {
+  // Middleware de autenticación para todas las rutas /manus-storage/*
+  app.use("/manus-storage/*", async (req, res, next) => {
+    try {
+      // Intentar autenticar la solicitud
+      await sdk.authenticateRequest(req);
+      next(); // Si está autenticado, continuar con el siguiente middleware/ruta
+    } catch (error) {
+      // Si la autenticación falla, devolver 401 No autorizado
+      res.status(401).send("Unauthorized");
+    }
+  });
+
+  // Ruta GET para el proxy de almacenamiento, ahora protegida por el middleware anterior
   app.get("/manus-storage/*", async (req, res) => {
     const key = (req.params as Record<string, string>)[0];
     if (!key) {
