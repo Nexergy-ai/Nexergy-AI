@@ -194,6 +194,8 @@ class SDKServer {
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setExpirationTime(expirationSeconds)
+      .setIssuer("urn:nexergy:issuer") // Ejemplo de emisor
+      .setAudience("urn:nexergy:audience") // Ejemplo de audiencia
       .sign(secretKey);
   }
 
@@ -209,6 +211,8 @@ class SDKServer {
       const secretKey = this.getSessionSecret();
       const { payload } = await jwtVerify(cookieValue, secretKey, {
         algorithms: ["HS256"],
+        issuer: "urn:nexergy:issuer", // Ejemplo de emisor
+        audience: "urn:nexergy:audience", // Ejemplo de audiencia
       });
       const { openId, appId, name } = payload as Record<string, unknown>;
 
