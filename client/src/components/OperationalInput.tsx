@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, Zap } from 'lucide-react';
+import { Loader2, Upload, Zap, FileText, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
@@ -52,11 +52,59 @@ export default function OperationalInput() {
   const [response, setResponse] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Estados para la carga de archivos en Cloudflare R2
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setUploadStatus('');
+    }
+  };
+
+  const uploadToR2 = async (fileToUpload: File) => {
+    setIsUploading(true);
+    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
+
+    try {
+      // 1. Solicitar presigned URL al servidor backend
+      const res = await fetch('/api/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: fileToUpload.name, fileType: fileToUpload.type }),
+      });
+
+      if (!res.ok) throw new Error('Error al obtener la URL de subida.');
+
+      const { uploadUrl } = await res.json();
+
+      // 2. Subida directa a Cloudflare R2
+      setUploadStatus('Subiendo archivo a Cloudflare R2...');
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': fileToUpload.type },
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
+
+      setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
+    } catch (err) {
+      console.error(err);
+      setUploadStatus('Error al subir el archivo. Intenta nuevamente.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const simulateIntelligence = async () => {
-    if (!context.trim() && !selectedSector) {
-      alert('Please enter operational context or select a sector');
+    if (!context.trim() && !selectedSector && !file) {
+      alert('Please enter context, select a sector, or attach an operational file.');
       return;
     }
 
@@ -64,10 +112,17 @@ export default function OperationalInput() {
     setResponse('');
 
     try {
-      const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
-      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context, provide a concise, technical analysis with specific recommendations.
+      // Si hay archivo seleccionado, lo subimos a Cloudflare R2 en el mismo flujo
+      if (file) {
+        await uploadToR2(file);
+      }
 
-Operational Context: ${context || `Default scenario for ${sectorName}`}
+      const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
+      const fileInfo = file ? `\nAttached File: ${file.name}` : '';
+      
+      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
+
+Operational Context: ${context || `Default scenario for ${sectorName}`}${fileInfo}
 Industry Sector: ${sectorName}
 
 Provide:
@@ -103,7 +158,7 @@ Be technical, specific, and actionable.`;
             <span className="text-white">Operational</span>
             <span className="text-neon-blue"> Intelligence</span>
           </h2>
-          <p className="text-gray-400 text-lg">Provide your operational context and receive AI-powered intelligence</p>
+          <p className="text-gray-400 text-lg">Provide your operational context or upload data files to receive AI-powered intelligence</p>
         </motion.div>
 
         <motion.div
@@ -132,6 +187,37 @@ Be technical, specific, and actionable.`;
             ))}
           </div>
 
+          {/* Universal Data Ingestion (Cloudflare R2 Loader) */}
+          <h3 className="text-xl font-bold text-neon-blue mb-4">Data Ingestion (Cloudflare D1 + R2 Ready)</h3>
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-600 hover:border-neon-blue p-6 rounded-lg text-center bg-[rgba(10,14,39,0.5)] cursor-pointer transition-all duration-300 mb-6"
+          >
+            <input 
+              ref={fileInputRef}
+              type="file" 
+              className="hidden" 
+              onChange={handleFileChange}
+              accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt"
+            />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <Upload className="w-8 h-8 text-neon-blue animate-pulse" />
+              <p className="text-white font-medium">
+                {file ? `Selected: ${file.name}` : "Click or drag files to upload for ingestion"}
+              </p>
+              <p className="text-xs text-gray-400">
+                Supports Excel (.xlsx), PDF, Word (.docx), WhatsApp chats (.txt) & Outlook Backups (.pst)
+              </p>
+            </div>
+          </div>
+
+          {uploadStatus && (
+            <div className="mb-6 p-3 rounded bg-[rgba(0,191,255,0.1)] border border-neon-blue text-xs text-neon-blue flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              {uploadStatus}
+            </div>
+          )}
+
           <h3 className="text-xl font-bold text-neon-blue mb-4">Operational Context</h3>
           <Textarea
             placeholder="Describe your operational scenario, challenges, or current status..."
@@ -143,18 +229,18 @@ Be technical, specific, and actionable.`;
 
           <Button
             onClick={simulateIntelligence}
-            disabled={isLoading || (!context.trim() && !selectedSector)}
+            disabled={isLoading || isUploading || (!context.trim() && !selectedSector && !file)}
             className="w-full px-6 py-3 bg-neon-blue text-[#0a0e27] hover:bg-[#00BFFF] font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
           >
-            {isLoading ? (
+            {isLoading || isUploading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Analyzing...
+                {isUploading ? 'Uploading to R2...' : 'Analyzing Operational Data...'}
               </>
             ) : (
               <>
                 <Zap className="w-5 h-5" />
-                Activate Intelligence
+                Start Ingestion & Activate Intelligence
               </>
             )}
           </Button>
@@ -168,7 +254,7 @@ Be technical, specific, and actionable.`;
             className="p-8 rounded-lg border-2 border-neon-green bg-[rgba(20,30,60,0.5)] backdrop-blur-sm"
           >
             <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
-              <Upload className="w-5 h-5" />
+              <FileText className="w-5 h-5" />
               Intelligence Analysis
             </h3>
             <div className="text-gray-300">
