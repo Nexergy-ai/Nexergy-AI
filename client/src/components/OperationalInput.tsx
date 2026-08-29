@@ -58,7 +58,9 @@ export default function OperationalInput() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Mutaciones de tRPC
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
+  const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -72,22 +74,17 @@ export default function OperationalInput() {
     setUploadStatus('Generando enlace seguro con Cloudflare R2...');
 
     try {
-      // 1. Solicitar presigned URL al servidor backend
-      const res = await fetch('/api/upload-url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileName: fileToUpload.name, fileType: fileToUpload.type }),
+      // 1. Solicitar presigned URL vía tRPC al servidor backend
+      const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
+        fileName: fileToUpload.name,
+        fileType: fileToUpload.type || 'application/octet-stream',
       });
-
-      if (!res.ok) throw new Error('Error al obtener la URL de subida.');
-
-      const { uploadUrl } = await res.json();
 
       // 2. Subida directa a Cloudflare R2
       setUploadStatus('Subiendo archivo a Cloudflare R2...');
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
-        headers: { 'Content-Type': fileToUpload.type },
+        headers: { 'Content-Type': fileToUpload.type || 'application/octet-stream' },
         body: fileToUpload,
       });
 
@@ -95,8 +92,9 @@ export default function OperationalInput() {
 
       setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
     } catch (err) {
-      console.error(err);
+      console.error('Upload error:', err);
       setUploadStatus('Error al subir el archivo. Intenta nuevamente.');
+      throw err;
     } finally {
       setIsUploading(false);
     }
@@ -112,7 +110,7 @@ export default function OperationalInput() {
     setResponse('');
 
     try {
-      // Si hay archivo seleccionado, lo subimos a Cloudflare R2 en el mismo flujo
+      // Subir archivo a Cloudflare R2 si está presente
       if (file) {
         await uploadToR2(file);
       }
@@ -173,6 +171,7 @@ Be technical, specific, and actionable.`;
             {sectors.map((sector) => (
               <button
                 key={sector.id}
+                type="button"
                 onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
                 className={`p-4 rounded-lg border-2 transition-all duration-300 text-center ${
                   selectedSector === sector.id
@@ -187,7 +186,7 @@ Be technical, specific, and actionable.`;
             ))}
           </div>
 
-          {/* Universal Data Ingestion (Cloudflare R2 Loader) */}
+          {/* Universal Data Ingestion (Cloudflare D1 + R2 Ready) */}
           <h3 className="text-xl font-bold text-neon-blue mb-4">Data Ingestion (Cloudflare D1 + R2 Ready)</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
@@ -228,6 +227,7 @@ Be technical, specific, and actionable.`;
           />
 
           <Button
+            type="button"
             onClick={simulateIntelligence}
             disabled={isLoading || isUploading || (!context.trim() && !selectedSector && !file)}
             className="w-full px-6 py-3 bg-neon-blue text-[#0a0e27] hover:bg-[#00BFFF] font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
