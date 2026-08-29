@@ -75,10 +75,11 @@ export default function IntelligenceLayers() {
     }
 
     setIsUploading(true);
-    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
+    setUploadStatus('Iniciando proceso de ingesta de datos...');
 
     try {
       if (file) {
+        setUploadStatus('Generando enlace seguro con Cloudflare R2...');
         // 1. Solicitar presigned URL a tRPC
         const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
           fileName: file.name,
@@ -94,9 +95,12 @@ export default function IntelligenceLayers() {
         });
 
         if (!uploadRes.ok) throw new Error('Error al subir el archivo a Cloudflare R2');
+      } else {
+        // Simulación de respuesta cuando solo se ingresa el nombre de la fuente
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
-      setUploadStatus('¡Ingesta e indexación completada exitosamente!');
+      setUploadStatus(`¡Ingesta e indexación completada exitosamente para "${sourceName || file?.name}"!`);
     } catch (error: any) {
       console.error('Error durante la ingesta:', error);
       setUploadStatus(`Error: ${error?.message || 'Fallo en la carga'}`);
@@ -106,7 +110,7 @@ export default function IntelligenceLayers() {
   };
 
   return (
-    <section className="py-24 px-6 border-t border-white/5">
+    <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
       <div className="max-w-7xl mx-auto">
         
         {/* SECCIÓN 1: Formulario Data Ingestion */}
@@ -134,7 +138,7 @@ export default function IntelligenceLayers() {
               />
             </div>
 
-            {/* Zone de subida de archivos */}
+            {/* Zona de subida de archivos */}
             <div 
               onClick={() => fileInputRef.current?.click()}
               className="border-2 border-dashed border-gray-700 hover:border-cyan-400 p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer mb-6 transition-colors"
@@ -172,7 +176,7 @@ export default function IntelligenceLayers() {
                 type="button"
                 onClick={handleStartIngestion}
                 disabled={isUploading}
-                className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-6 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50"
+                className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-6 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 cursor-pointer"
               >
                 {isUploading ? (
                   <>
