@@ -32,6 +32,50 @@ export const appRouter = router({
   }),
 
   ai: router({
+    // Procedimiento tRPC para guardar la ingesta en Cloudflare D1
+    createIngestion: publicProcedure
+      .input(
+        z.object({
+          sourceName: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        try {
+          const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+          const databaseId = process.env.CLOUDFLARE_DATABASE_ID;
+          const token = process.env.CLOUDFLARE_D1_TOKEN;
+
+          const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
+
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              sql: "INSERT INTO ingestions (source_name) VALUES (?)",
+              params: [input.sourceName],
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            console.error("D1 Error Response:", data);
+            throw new Error("Cloudflare D1 Query Failed");
+          }
+
+          return {
+            success: true,
+            result: data.result,
+          };
+        } catch (error) {
+          console.error("Cloudflare D1 Ingestion Error:", error);
+          throw new Error("Failed to store ingestion record in Cloudflare D1");
+        }
+      }),
+
     // Procedimiento tRPC para generar la URL presignada de Cloudflare R2
     getUploadUrl: publicProcedure
       .input(
