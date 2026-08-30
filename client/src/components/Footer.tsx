@@ -25,6 +25,22 @@ const statusIndicators = [
 ];
 
 export default function Footer() {
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const email = 'contacto@nexergy.ar';
+    const subject = encodeURIComponent('Consulta desde Sitio Web - Nexergy');
+    const mailtoUrl = `mailto:${email}?subject=${subject}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}`;
+
+    // Intenta abrir el cliente predeterminado; si el navegador no reacciona en 300ms, abre Gmail Web como respaldo.
+    window.location.href = mailtoUrl;
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        window.open(gmailUrl, '_blank');
+      }
+    }, 300);
+  };
+
   return (
     <footer className="bg-[#0a0e27] border-t border-white/5 py-24 px-6">
       <div className="max-w-7xl mx-auto">
@@ -40,8 +56,9 @@ export default function Footer() {
               The next generation of industrial operational intelligence. Powered by advanced AI orchestration.
             </p>
             <a 
-            href="mailto:contacto@nexergy.ar?subject=Consulta%20desde%20Sitio%20Web%20-%20Nexergy" 
-            className="text-xs font-bold tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer inline-block py-1"
+              href="mailto:contacto@nexergy.ar?subject=Consulta%20desde%20Sitio%20Web%20-%20Nexergy" 
+              onClick={handleContactClick}
+              className="text-xs font-bold tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer inline-block py-1"
             >
               CONTACTO@NEXERGY.AR
             </a>
