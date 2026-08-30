@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, Zap, FileText, CheckCircle2, Database } from 'lucide-react';
+import { Loader2, Upload, FileText, CheckCircle2, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
@@ -62,6 +62,7 @@ export default function OperationalInput() {
   // Mutaciones de tRPC
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
+  const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -111,8 +112,14 @@ export default function OperationalInput() {
     setResponse('');
 
     try {
+      // Carga de archivo a R2 si está presente
       if (file) {
         await uploadToR2(file);
+      }
+
+      // Registro del Source Name en Cloudflare D1
+      if (sourceName.trim()) {
+        await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
       }
 
       const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
@@ -137,7 +144,7 @@ Be technical, specific, and actionable.`;
       setResponse(content);
     } catch (error: any) {
       console.error('Error:', error);
-      setResponse(`Error al generar análisis de inteligencia: ${error?.message || 'Error de conexión'}`);
+      setResponse(`Error al procesar la ingesta: ${error?.message || 'Error de conexión'}`);
     } finally {
       setIsLoading(false);
     }
@@ -251,13 +258,17 @@ Be technical, specific, and actionable.`;
             <Button
               type="button"
               onClick={simulateIntelligence}
-              disabled={isLoading || isUploading}
+              disabled={isLoading || isUploading || createIngestionMutation.isPending}
               className="w-full sm:w-auto px-6 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
-              {isLoading || isUploading ? (
+              {isLoading || isUploading || createIngestionMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {isUploading ? 'Uploading to R2...' : 'Ingesting Data...'}
+                  {createIngestionMutation.isPending
+                    ? 'Saving to D1...'
+                    : isUploading
+                    ? 'Uploading to R2...'
+                    : 'Ingesting Data...'}
                 </>
               ) : (
                 <>
