@@ -40,8 +40,8 @@ export default function Footer() {
               The next generation of industrial operational intelligence. Powered by advanced AI orchestration.
             </p>
             <a 
-              href="mailto:contacto@nexergy.ar" 
-              className="text-[10px] font-bold tracking-widest text-white/40 hover:text-white transition-colors"
+            href="mailto:contacto@nexergy.ar?subject=Consulta%20desde%20Sitio%20Web%20-%20Nexergy" 
+            className="text-xs font-bold tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer inline-block py-1"
             >
               CONTACTO@NEXERGY.AR
             </a>
