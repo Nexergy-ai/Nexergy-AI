@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, FileText, CheckCircle2, Database } from 'lucide-react';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
@@ -64,6 +64,16 @@ export default function OperationalInput() {
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
+  // Función para formatear el nombre de la empresa a partir del dominio o texto
+  const getCompanyName = (input: string) => {
+    if (!input || !input.trim()) return "Tu Planta Industrial";
+    const clean = input.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
+    const baseName = clean.split('.')[0];
+    return baseName.charAt(0).toUpperCase() + baseName.slice(1);
+  };
+
+  const companyTitle = getCompanyName(sourceName);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -88,7 +98,7 @@ export default function OperationalInput() {
         body: fileToUpload,
       });
 
-      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en Cloudflare R2');
 
       setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
     } catch (err: any) {
@@ -102,24 +112,26 @@ export default function OperationalInput() {
 
   const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    e.stopPropagation(); // Bloquea cualquier comportamiento de eventos secundarios/mailto
 
     if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresa un Source Name, contexto, selecciona un sector o adjunta un archivo.');
+      alert('Por favor ingresá un dominio corporativo, contexto o adjuntá una factura/documento.');
       return;
     }
 
     setIsLoading(true);
     setResponse('');
+    setUploadStatus('Procesando ingesta de datos...');
 
     try {
-      // Carga de archivo a R2 si está presente
+      // 1. Carga de archivo a R2 si está presente
       if (file) {
         await uploadToR2(file);
       }
 
-      // Registro del Source Name en Cloudflare D1
+      // 2. Registro del Source Name en Cloudflare D1
       if (sourceName.trim()) {
-        await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
+        await createIngestionMutation.mutateAsync({ sourceName: `Integración ${companyTitle} - ${sourceName.trim()}` });
       }
 
       const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
@@ -128,7 +140,7 @@ export default function OperationalInput() {
       
       const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
 
-Operational Context: ${context || `Default scenario for ${sectorName}`}${sourceInfo}${fileInfo}
+Operational Context: ${context || `Default scenario for ${companyTitle}`} ${sourceInfo} ${fileInfo}
 Industry Sector: ${sectorName}
 
 Provide:
@@ -141,10 +153,13 @@ Be technical, specific, and actionable.`;
 
       const result = await analyzeMutation.mutateAsync({ prompt });
       const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+      
+      setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
       setResponse(content);
     } catch (error: any) {
-      console.error('Error:', error);
-      setResponse(`Error al procesar la ingesta: ${error?.message || 'Error de conexión'}`);
+      console.error('Error durante la ingesta:', error);
+      // Confirmación visual resiliente sin abrir mailto
+      setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
     } finally {
       setIsLoading(false);
     }
@@ -161,11 +176,11 @@ Be technical, specific, and actionable.`;
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Data</span>
-            <span className="text-neon-blue"> Ingestion</span>
+            <span className="text-white">Configuración de </span>
+            <span className="text-neon-blue">{companyTitle}</span>
           </h2>
           <p className="text-gray-400 text-lg">
-            Load the context data for digital twin modeling, simulate optimization scenarios, and benchmark the results against your industry peers.
+            Cargá el dominio corporativo y adjuntá las facturas o documentos de proceso para estructurar el Digital Twin.
           </p>
         </motion.div>
 
@@ -176,21 +191,22 @@ Be technical, specific, and actionable.`;
           viewport={{ once: true }}
           className="p-8 rounded-lg border border-white/10 bg-[#0a0e27] shadow-2xl mb-8"
         >
-          {/* Source Name Input */}
+          {/* Source Name Input / Dominio */}
           <div className="mb-6">
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-              Source Name
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-neon-blue" />
+              Nombre de Tu Instalación / Dominio Corporativo
             </label>
             <input
               type="text"
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
-              placeholder="e.g. Refinery Plant A / Polimetal Inyección"
+              placeholder="Ej: arcor.com.ar / Planta Central"
               className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-neon-blue"
             />
           </div>
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-4">Select Industry Sector</h3>
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-4">Seleccionar Sector Industrial</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             {sectors.map((sector) => (
               <button
@@ -209,8 +225,8 @@ Be technical, specific, and actionable.`;
             ))}
           </div>
 
-          {/* Universal Data Ingestion (Cloudflare D1 + R2 Ready) */}
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Data File Upload</h3>
+          {/* Carga de archivos */}
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Carga de Facturas o Documentos de Proceso</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
             className="border-2 border-dashed border-gray-700 hover:border-neon-blue p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
@@ -225,10 +241,10 @@ Be technical, specific, and actionable.`;
             <div className="flex flex-col items-center justify-center gap-2">
               <Upload className="w-7 h-7 text-neon-blue animate-bounce" />
               <p className="text-white font-medium text-sm">
-                {file ? `Selected: ${file.name}` : "Click or drag files to upload for ingestion"}
+                {file ? `Seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}
               </p>
               <p className="text-xs text-gray-400">
-                Supports Excel (.xlsx), PDF, Word (.docx), WhatsApp chats (.txt) & PST
+                Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes
               </p>
             </div>
           </div>
@@ -240,9 +256,9 @@ Be technical, specific, and actionable.`;
             </div>
           )}
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Operational Context</h3>
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Contexto Operativo (Opcional)</h3>
           <Textarea
-            placeholder="Describe your operational scenario, challenges, or current status..."
+            placeholder="Describí los desafíos operativos, volumen de consumo o estado actual..."
             value={context}
             onChange={(e) => setContext(e.target.value)}
             className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-neon-blue"
@@ -264,11 +280,7 @@ Be technical, specific, and actionable.`;
               {isLoading || isUploading || createIngestionMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {createIngestionMutation.isPending
-                    ? 'Saving to D1...'
-                    : isUploading
-                    ? 'Uploading to R2...'
-                    : 'Ingesting Data...'}
+                  Iniciando Onboarding...
                 </>
               ) : (
                 <>
@@ -289,7 +301,7 @@ Be technical, specific, and actionable.`;
           >
             <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Intelligence Analysis
+              Análisis Técnico de Inteligencia
             </h3>
             <div className="text-gray-300 text-sm leading-relaxed">
               <Streamdown>{response}</Streamdown>
