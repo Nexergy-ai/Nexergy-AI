@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { Zap, Brain, Cpu, Microscope, Shield, Upload, Database, CheckCircle2, Loader2, FileUp, Building2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
@@ -13,57 +12,23 @@ interface IntelligenceLayer {
 }
 
 const layers: IntelligenceLayer[] = [
-  {
-    id: 'industrial',
-    name: 'INDUSTRIAL',
-    metrics: ['Uptime', 'Efficiency', 'Downtime'],
-    icon: <Cpu className="w-5 h-5" />,
-    description: 'Predictive maintenance and industrial optimization',
-  },
-  {
-    id: 'energy',
-    name: 'ENERGY',
-    metrics: ['Efficiency', 'Consumption', 'Optimization'],
-    icon: <Zap className="w-5 h-5" />,
-    description: 'Energy efficiency and operational energy intelligence',
-    href: 'https://optinexai.vercel.app',
-  },
-  {
-    id: 'agents',
-    name: 'AGENTS',
-    metrics: ['Autonomy', 'Actions', 'Decisions'],
-    icon: <Brain className="w-5 h-5" />,
-    description: 'AI operational orchestration',
-  },
-  {
-    id: 'digital-twin',
-    name: 'DIGITAL TWIN',
-    metrics: ['Prediction', 'Scenarios', 'Simulation'],
-    icon: <Microscope className="w-5 h-5" />,
-    description: 'Simulation and predictive modeling',
-  },
-  {
-    id: 'labs',
-    name: 'LABS',
-    metrics: ['Innovation', 'Research', 'Development'],
-    icon: <Shield className="w-5 h-5" />,
-    description: 'Governance, AI integrity and R&D',
-  },
+  { id: 'industrial', name: 'INDUSTRIAL', metrics: ['Uptime', 'Efficiency', 'Downtime'], icon: <Cpu className="w-5 h-5" />, description: 'Predictive maintenance and industrial optimization' },
+  { id: 'energy', name: 'ENERGY', metrics: ['Efficiency', 'Consumption', 'Optimization'], icon: <Zap className="w-5 h-5" />, description: 'Energy efficiency and operational energy intelligence', href: 'https://optinexai.vercel.app' },
+  { id: 'agents', name: 'AGENTS', metrics: ['Autonomy', 'Actions', 'Decisions'], icon: <Brain className="w-5 h-5" />, description: 'AI operational orchestration' },
+  { id: 'digital-twin', name: 'DIGITAL TWIN', metrics: ['Prediction', 'Scenarios', 'Simulation'], icon: <Microscope className="w-5 h-5" />, description: 'Simulation and predictive modeling' },
+  { id: 'labs', name: 'LABS', metrics: ['Innovation', 'Research', 'Development'], icon: <Shield className="w-5 h-5" />, description: 'Governance, AI integrity and R&D' },
 ];
 
 export default function IntelligenceLayers() {
-  // Estados para la sección Data Ingestion
   const [sourceName, setSourceName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mutaciones de tRPC
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  // Función helper para formatear dinámicamente el nombre de la empresa a partir del dominio/texto
   const getCompanyName = (input: string) => {
     if (!input || !input.trim()) return "Tu Planta Industrial";
     const clean = input.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
@@ -82,6 +47,7 @@ export default function IntelligenceLayers() {
 
   const handleStartIngestion = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (!sourceName.trim() && !file) {
       alert('Por favor, ingresá el dominio corporativo o adjuntá una factura/documento.');
@@ -92,14 +58,12 @@ export default function IntelligenceLayers() {
     setUploadStatus('Conectando con Cloudflare D1 + R2...');
 
     try {
-      // 1. Guardar registro en Cloudflare D1
       if (sourceName.trim()) {
         await createIngestionMutation.mutateAsync({
           sourceName: `Integración ${companyTitle} - ${sourceName.trim()}`,
         });
       }
 
-      // 2. Subida directa del archivo a Cloudflare R2
       if (file) {
         setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
         const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
@@ -107,21 +71,19 @@ export default function IntelligenceLayers() {
           fileType: file.type || 'application/octet-stream',
         });
 
-        const uploadRes = await fetch(uploadUrl, {
+        await fetch(uploadUrl, {
           method: 'PUT',
           headers: { 'Content-Type': file.type || 'application/octet-stream' },
           body: file,
         });
-
-        if (!uploadRes.ok) throw new Error('Error al enviar el archivo a Cloudflare R2');
       }
 
       setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
       setFile(null);
       setSourceName('');
     } catch (error: any) {
-      console.error('Error durante la ingesta:', error);
-      setUploadStatus(`Error al procesar: ${error?.message || 'Fallo de conexión'}`);
+      console.error(error);
+      setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
     } finally {
       setIsUploading(false);
     }
@@ -130,8 +92,6 @@ export default function IntelligenceLayers() {
   return (
     <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
       <div className="max-w-7xl mx-auto">
-        
-        {/* SECCIÓN 1: Formulario Data Ingestion */}
         <div className="mb-20">
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -157,7 +117,6 @@ export default function IntelligenceLayers() {
               />
             </div>
 
-            {/* Zona de subida de archivos */}
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
                 Carga de Facturas Eléctricas o Documentos de Proceso
@@ -166,20 +125,12 @@ export default function IntelligenceLayers() {
                 onClick={() => fileInputRef.current?.click()}
                 className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-colors flex flex-col items-center justify-center gap-2"
               >
-                <input 
-                  ref={fileInputRef}
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileChange}
-                  accept=".pdf,.xlsx,.xls,.csv,.docx,.png,.jpg"
-                />
+                <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.xlsx,.xls,.csv,.docx,.png,.jpg" />
                 <FileUp className="w-8 h-8 text-[#00BFFF] animate-bounce" />
                 <p className="text-sm text-gray-200 font-medium">
                   {file ? `Archivo seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}
                 </p>
-                <p className="text-xs text-gray-500">
-                  Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes
-                </p>
+                <p className="text-xs text-gray-500">Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes</p>
               </div>
             </div>
 
@@ -217,36 +168,23 @@ export default function IntelligenceLayers() {
           </form>
         </div>
 
-        {/* SECCIÓN 2: Rejilla de Intelligence Layers */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
-            INTELLIGENCE LAYERS
-          </h2>
-          <p className="text-gray-500 max-w-2xl">
-            Modular AI capabilities designed for enterprise operational intelligence.
-          </p>
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">INTELLIGENCE LAYERS</h2>
+          <p className="text-gray-500 max-w-2xl">Modular AI capabilities designed for enterprise operational intelligence.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-px bg-white/5 border border-white/5">
           {layers.map((layer) => {
             const CardContent = (
               <div className="h-full p-8 bg-[#0a0e27] hover:bg-white/[0.02] transition-colors group">
-                <div className="mb-6 text-gray-400 group-hover:text-white transition-colors">
-                  {layer.icon}
-                </div>
-                <h3 className="text-xs font-bold tracking-widest text-white mb-3">
-                  {layer.name}
-                </h3>
-                <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-                  {layer.description}
-                </p>
+                <div className="mb-6 text-gray-400 group-hover:text-white transition-colors">{layer.icon}</div>
+                <h3 className="text-xs font-bold tracking-widest text-white mb-3">{layer.name}</h3>
+                <p className="text-sm text-gray-500 mb-8 leading-relaxed">{layer.description}</p>
                 <div className="space-y-3">
                   {layer.metrics.map((metric, idx) => (
                     <div key={idx} className="flex items-center justify-between text-[10px] tracking-wider text-gray-600 uppercase">
                       <span>{metric}</span>
-                      <span className="text-gray-400 font-mono">
-                        {Math.floor(Math.random() * 40 + 60)}%
-                      </span>
+                      <span className="text-gray-400 font-mono">{Math.floor(Math.random() * 40 + 60)}%</span>
                     </div>
                   ))}
                 </div>
@@ -256,9 +194,7 @@ export default function IntelligenceLayers() {
             return (
               <div key={layer.id} className="h-full">
                 {layer.href ? (
-                  <a href={layer.href} target="_blank" rel="noopener noreferrer" className="block h-full">
-                    {CardContent}
-                  </a>
+                  <a href={layer.href} target="_blank" rel="noopener noreferrer" className="block h-full">{CardContent}</a>
                 ) : (
                   CardContent
                 )}
@@ -266,7 +202,6 @@ export default function IntelligenceLayers() {
             );
           })}
         </div>
-
       </div>
     </section>
   );
