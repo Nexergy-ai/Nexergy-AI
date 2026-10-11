@@ -52,17 +52,18 @@ const layers: IntelligenceLayer[] = [
 ];
 
 export default function IntelligenceLayers() {
+  // Estados para la sección Data Ingestion
   const [sourceName, setSourceName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mutaciones tRPC
+  // Mutaciones de tRPC
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  // Nombre dinámico derivado del dominio o texto ingresado
+  // Función helper para formatear dinámicamente el nombre de la empresa a partir del dominio/texto
   const getCompanyName = (input: string) => {
     if (!input || !input.trim()) return "Tu Planta Industrial";
     const clean = input.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
@@ -83,7 +84,7 @@ export default function IntelligenceLayers() {
     e.preventDefault();
 
     if (!sourceName.trim() && !file) {
-      alert('Por favor ingresá el nombre de Tu Planta Industrial o adjuntá una factura/documento.');
+      alert('Por favor, ingresá el dominio corporativo o adjuntá una factura/documento.');
       return;
     }
 
@@ -130,7 +131,7 @@ export default function IntelligenceLayers() {
     <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
       <div className="max-w-7xl mx-auto">
         
-        {/* DATA INGESTION */}
+        {/* SECCIÓN 1: Formulario Data Ingestion */}
         <div className="mb-20">
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -156,7 +157,7 @@ export default function IntelligenceLayers() {
               />
             </div>
 
-            {/* SECTOR CARGA DE ARCHIVOS */}
+            {/* Zona de subida de archivos */}
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
                 Carga de Facturas Eléctricas o Documentos de Proceso
@@ -174,7 +175,7 @@ export default function IntelligenceLayers() {
                 />
                 <FileUp className="w-8 h-8 text-[#00BFFF] animate-bounce" />
                 <p className="text-sm text-gray-200 font-medium">
-                  {file ? `Seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}
+                  {file ? `Archivo seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}
                 </p>
                 <p className="text-xs text-gray-500">
                   Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes
@@ -216,7 +217,7 @@ export default function IntelligenceLayers() {
           </form>
         </div>
 
-        {/* INTELLIGENCE LAYERS GRID */}
+        {/* SECCIÓN 2: Rejilla de Intelligence Layers */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
             INTELLIGENCE LAYERS
