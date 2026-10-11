@@ -90,7 +90,7 @@ export default function IntelligenceLayers() {
   };
 
   return (
-    <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
+    <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]" id="intelligence">
       <div className="max-w-7xl mx-auto">
         <div className="mb-20">
           <div className="text-center max-w-3xl mx-auto mb-10">
