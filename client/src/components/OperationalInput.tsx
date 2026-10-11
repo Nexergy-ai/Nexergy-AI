@@ -121,12 +121,12 @@ export default function OperationalInput() {
   };
 
   return (
-    <section className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
+    <section className="py-20 px-4 relative overflow-hidden bg-[#070c1e]" id="data-ingestion">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-white">Configuración de </span>
-            <span className="text-neon-blue">{companyTitle}</span>
+            <span className="text-[#00BFFF]">{companyTitle}</span>
           </h2>
           <p className="text-gray-400 text-lg">
             Cargá el dominio corporativo y adjuntá las facturas o documentos de proceso para estructurar el Digital Twin.
@@ -136,7 +136,7 @@ export default function OperationalInput() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-lg border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
           <div className="mb-6">
             <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-neon-blue" />
+              <Building2 className="w-4 h-4 text-[#00BFFF]" />
               Nombre de Tu Instalación / Dominio Corporativo
             </label>
             <input
@@ -144,7 +144,7 @@ export default function OperationalInput() {
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
               placeholder="Ej: arcor.com.ar / Planta Central"
-              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-neon-blue"
+              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
             />
           </div>
 
@@ -156,7 +156,7 @@ export default function OperationalInput() {
                 type="button"
                 onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
                 className={`p-4 rounded-lg border transition-all duration-300 text-center ${
-                  selectedSector === sector.id ? 'border-neon-blue bg-[rgba(0,191,255,0.15)]' : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
+                  selectedSector === sector.id ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.15)]' : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
                 }`}
               >
                 <div className="text-2xl mb-2">{sector.emoji}</div>
@@ -168,18 +168,18 @@ export default function OperationalInput() {
           <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Carga de Facturas o Documentos de Proceso</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-700 hover:border-neon-blue p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
+            className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
           >
             <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt" />
             <div className="flex flex-col items-center justify-center gap-2">
-              <Upload className="w-7 h-7 text-neon-blue animate-bounce" />
+              <Upload className="w-7 h-7 text-[#00BFFF] animate-bounce" />
               <p className="text-white font-medium text-sm">{file ? `Seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}</p>
               <p className="text-xs text-gray-400">Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes</p>
             </div>
           </div>
 
           {uploadStatus && (
-            <div className="mb-6 p-3 rounded bg-[rgba(0,191,255,0.1)] border border-neon-blue text-xs text-neon-blue flex items-center gap-2">
+            <div className="mb-6 p-3 rounded bg-cyan-950/40 border border-cyan-500/30 text-xs text-[#00BFFF] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
               <span>{uploadStatus}</span>
             </div>
@@ -190,12 +190,12 @@ export default function OperationalInput() {
             placeholder="Describí los desafíos operativos, volumen de consumo o estado actual..."
             value={context}
             onChange={(e) => setContext(e.target.value)}
-            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-neon-blue"
+            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-[#00BFFF]"
             rows={3}
           />
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-            <div className="flex items-center gap-2 text-neon-blue text-xs font-mono">
+            <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
               <Database className="w-4 h-4" />
               <span>Cloudflare D1 + R2 Ready</span>
             </div>
@@ -222,8 +222,8 @@ export default function OperationalInput() {
         </motion.div>
 
         {response && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-neon-green/40 bg-[#0a0e27]">
-            <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-green-500/40 bg-[#0a0e27]">
+            <h3 className="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5" />
               Análisis Técnico de Inteligencia
             </h3>
