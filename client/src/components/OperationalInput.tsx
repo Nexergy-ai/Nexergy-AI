@@ -28,23 +28,16 @@ export default function OperationalInput() {
   const [response, setResponse] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Estados para la carga de archivos en Cloudflare R2
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Mutaciones de tRPC
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
-
-  const getCompanyName = (input: string) => {
-    if (!input || !input.trim()) return "Tu Planta Industrial";
-    const clean = input.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
-    const baseName = clean.split('.')[0];
-    return baseName.charAt(0).toUpperCase() + baseName.slice(1);
-  };
-
-  const companyTitle = getCompanyName(sourceName);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -70,11 +63,13 @@ export default function OperationalInput() {
         body: fileToUpload,
       });
 
-      if (!uploadRes.ok) throw new Error('Error al almacenar archivo en R2');
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
+
       setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
     } catch (err: any) {
-      console.error(err);
-      setUploadStatus(`Archivo recibido e indexado en sistema.`);
+      console.error('Upload error:', err);
+      setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
+      throw err;
     } finally {
       setIsUploading(false);
     }
@@ -82,73 +77,84 @@ export default function OperationalInput() {
 
   const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
 
     if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresá un dominio corporativo, contexto o adjuntá un archivo.');
+      alert('Por favor ingresa un nombre de instalación, contexto, selecciona un sector o adjunta un archivo.');
       return;
     }
 
     setIsLoading(true);
     setResponse('');
-    setUploadStatus('Procesando ingesta transparente...');
 
     try {
+      // Carga de archivo a R2 si está presente
       if (file) {
         await uploadToR2(file);
       }
 
+      // Registro del Source Name en Cloudflare D1
       if (sourceName.trim()) {
-        await createIngestionMutation.mutateAsync({ 
-          sourceName: `Integración ${companyTitle} - ${sourceName.trim()}` 
-        });
+        await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
       }
 
       const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
-      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Provide concise technical recommendations for ${companyTitle} in ${sectorName}.`;
+      const fileInfo = file ? `\nAttached File: ${file.name}` : '';
+      const sourceInfo = sourceName ? `\nSource Name: ${sourceName}` : '';
+
+      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
+
+Operational Context: ${context || `Default scenario for ${sectorName}`} ${sourceInfo} ${fileInfo}
+Industry Sector: ${sectorName}
+
+Provide:
+1. Operational Status Assessment (2-3 sentences)
+2. Key Intelligence Findings (3-4 bullet points)
+3. Recommended Actions (2-3 specific recommendations)
+4. Risk Indicators (2-3 identified risks)
+Be technical, specific, and actionable.`;
 
       const result = await analyzeMutation.mutateAsync({ prompt });
       const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-      
-      setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
       setResponse(content);
     } catch (error: any) {
-      console.error(error);
-      setUploadStatus(`¡Instalación "${companyTitle}" e información técnica indexadas con éxito!`);
+      console.error('Error:', error);
+      setResponse(`Error al procesar la ingesta: ${error?.message || 'Error de conexión'}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="py-20 px-4 relative overflow-hidden bg-[#070c1e]" id="data-ingestion">
+    <section className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Configuración de </span>
-            <span className="text-[#00BFFF]">{companyTitle}</span>
+            <span className="text-white">Data</span>
+            <span className="text-neon-blue"> Ingestion</span>
           </h2>
           <p className="text-gray-400 text-lg">
-            Cargá el dominio corporativo y adjuntá las facturas o documentos de proceso para estructurar el Digital Twin.
+            Load the context data for digital twin modeling, simulate optimization scenarios, and benchmark the results against your industry peers.
           </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-lg border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
+          
+          {/* Nombre de la Instalación / Dominio Corporativo Input */}
           <div className="mb-6">
             <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-[#00BFFF]" />
-              Nombre de Tu Instalación / Dominio Corporativo
+              Nombre de tu instalación, Dominio Corporativo...
             </label>
             <input
               type="text"
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
-              placeholder="Ej: arcor.com.ar / Planta Central"
-              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+              placeholder="e.g. arcor.com.ar / Planta Central"
+              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-neon-blue"
             />
           </div>
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-4">Seleccionar Sector Industrial</h3>
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-4">Select Industry Sector</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             {sectors.map((sector) => (
               <button
@@ -156,7 +162,9 @@ export default function OperationalInput() {
                 type="button"
                 onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
                 className={`p-4 rounded-lg border transition-all duration-300 text-center ${
-                  selectedSector === sector.id ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.15)]' : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
+                  selectedSector === sector.id
+                    ? 'border-neon-blue bg-[rgba(0,191,255,0.15)]'
+                    : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
                 }`}
               >
                 <div className="text-2xl mb-2">{sector.emoji}</div>
@@ -165,37 +173,48 @@ export default function OperationalInput() {
             ))}
           </div>
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Carga de Facturas o Documentos de Proceso</h3>
+          {/* Universal Data Ingestion (Cloudflare D1 + R2 Ready) */}
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Data File Upload</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
+            className="border-2 border-dashed border-gray-700 hover:border-neon-blue p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
           >
-            <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt" />
+            <input 
+              ref={fileInputRef}
+              type="file" 
+              className="hidden" 
+              onChange={handleFileChange}
+              accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt"
+            />
             <div className="flex flex-col items-center justify-center gap-2">
-              <Upload className="w-7 h-7 text-[#00BFFF] animate-bounce" />
-              <p className="text-white font-medium text-sm">{file ? `Seleccionado: ${file.name}` : "Hacé clic para adjuntar facturas o arrastralas aquí"}</p>
-              <p className="text-xs text-gray-400">Soporta facturas en PDF, Excel (.xlsx), CSV e imágenes</p>
+              <Upload className="w-7 h-7 text-neon-blue animate-bounce" />
+              <p className="text-white font-medium text-sm">
+                {file ? `Selected: ${file.name}` : "Click or drag files to upload for ingestion"}
+              </p>
+              <p className="text-xs text-gray-400">
+                Supports Excel (.xlsx), PDF, Word (.docx), WhatsApp chats (.txt) & PST
+              </p>
             </div>
           </div>
 
           {uploadStatus && (
-            <div className="mb-6 p-3 rounded bg-cyan-950/40 border border-cyan-500/30 text-xs text-[#00BFFF] flex items-center gap-2">
+            <div className="mb-6 p-3 rounded bg-[rgba(0,191,255,0.1)] border border-neon-blue text-xs text-neon-blue flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
               <span>{uploadStatus}</span>
             </div>
           )}
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Contexto Operativo (Opcional)</h3>
+          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Operational Context</h3>
           <Textarea
-            placeholder="Describí los desafíos operativos, volumen de consumo o estado actual..."
+            placeholder="Describe your operational scenario, challenges, or current status..."
             value={context}
             onChange={(e) => setContext(e.target.value)}
-            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-[#00BFFF]"
+            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-neon-blue"
             rows={3}
           />
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-            <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
+            <div className="flex items-center gap-2 text-neon-blue text-xs font-mono">
               <Database className="w-4 h-4" />
               <span>Cloudflare D1 + R2 Ready</span>
             </div>
@@ -203,13 +222,17 @@ export default function OperationalInput() {
             <Button
               type="button"
               onClick={simulateIntelligence}
-              disabled={isLoading || isUploading}
+              disabled={isLoading || isUploading || createIngestionMutation.isPending}
               className="w-full sm:w-auto px-6 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
-              {isLoading || isUploading ? (
+              {isLoading || isUploading || createIngestionMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Iniciando Onboarding...
+                  {createIngestionMutation.isPending
+                    ? 'Saving to D1...'
+                    : isUploading
+                    ? 'Uploading to R2...'
+                    : 'Ingesting Data...'}
                 </>
               ) : (
                 <>
@@ -222,10 +245,10 @@ export default function OperationalInput() {
         </motion.div>
 
         {response && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-green-500/40 bg-[#0a0e27]">
-            <h3 className="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-neon-green/40 bg-[#0a0e27]">
+            <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Análisis Técnico de Inteligencia
+              Intelligence Analysis
             </h3>
             <div className="text-gray-300 text-sm leading-relaxed">
               <Streamdown>{response}</Streamdown>
@@ -233,6 +256,9 @@ export default function OperationalInput() {
           </motion.div>
         )}
       </div>
+
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
     </section>
   );
 }
