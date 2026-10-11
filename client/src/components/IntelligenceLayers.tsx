@@ -62,7 +62,7 @@ export default function IntelligenceLayers() {
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  // Nombre dinámico de la instalación derivado del dominio o texto ingresado
+  // Nombre dinámico derivado del dominio o texto ingresado
   const getCompanyName = (input: string) => {
     if (!input || !input.trim()) return "Tu Planta Industrial";
     const clean = input.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
@@ -75,7 +75,7 @@ export default function IntelligenceLayers() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
-      setUploadStatus(`Archivo listo: ${e.target.files[0].name}`);
+      setUploadStatus(`Archivo seleccionado: ${e.target.files[0].name}`);
     }
   };
 
@@ -91,14 +91,14 @@ export default function IntelligenceLayers() {
     setUploadStatus('Conectando con Cloudflare D1 + R2...');
 
     try {
-      // 1. Inserción de la instalación/dominio en Cloudflare D1
+      // 1. Guardar registro en Cloudflare D1
       if (sourceName.trim()) {
         await createIngestionMutation.mutateAsync({
           sourceName: `Integración ${companyTitle} - ${sourceName.trim()}`,
         });
       }
 
-      // 2. Subida física de facturas/archivos directamente a Cloudflare R2
+      // 2. Subida directa del archivo a Cloudflare R2
       if (file) {
         setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
         const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
@@ -130,7 +130,7 @@ export default function IntelligenceLayers() {
     <section className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
       <div className="max-w-7xl mx-auto">
         
-        {/* SECCIÓN DATA INGESTION */}
+        {/* DATA INGESTION */}
         <div className="mb-20">
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -156,7 +156,7 @@ export default function IntelligenceLayers() {
               />
             </div>
 
-            {/* SECTOR DE CARGA DE FACTURAS / DOCUMENTOS */}
+            {/* SECTOR CARGA DE ARCHIVOS */}
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
                 Carga de Facturas Eléctricas o Documentos de Proceso
@@ -216,7 +216,7 @@ export default function IntelligenceLayers() {
           </form>
         </div>
 
-        {/* REJILLA INTELLIGENCE LAYERS */}
+        {/* INTELLIGENCE LAYERS GRID */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
             INTELLIGENCE LAYERS
