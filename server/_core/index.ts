@@ -37,8 +37,8 @@ async function startServer() {
     serveStatic(app);
   }
 
-  // Render asigna el puerto mediante la variable de entorno PORT
-  const port = parseInt(process.env.PORT || "10000", 10);
+  // Asignar el puerto y la interfaz '0.0.0.0' para escuchar peticiones externas dentro de Docker
+  const port = parseInt(process.env.PORT || "3000", 10);
   const host = "0.0.0.0";
 
   server.listen(port, host, () => {
