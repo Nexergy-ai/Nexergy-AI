@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, FileText, CheckCircle2, Database, Building2 } from 'lucide-react';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
@@ -79,7 +79,7 @@ export default function OperationalInput() {
     e.preventDefault();
 
     if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresa un nombre de instalación, contexto, selecciona un sector o adjunta un archivo.');
+      alert('Por favor ingresa tu Dominio Corporativo, contexto, selecciona un sector o adjunta un archivo.');
       return;
     }
 
@@ -87,19 +87,19 @@ export default function OperationalInput() {
     setResponse('');
 
     try {
-      // Carga de archivo a R2 si está presente
+      // 1. Carga de archivo a R2 si está presente
       if (file) {
         await uploadToR2(file);
       }
 
-      // Registro del Source Name en Cloudflare D1
+      // 2. Registro del Dominio Corporativo en Cloudflare D1
       if (sourceName.trim()) {
         await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
       }
 
       const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
       const fileInfo = file ? `\nAttached File: ${file.name}` : '';
-      const sourceInfo = sourceName ? `\nSource Name: ${sourceName}` : '';
+      const sourceInfo = sourceName ? `\nDominio Corporativo: ${sourceName}` : '';
 
       const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
 
@@ -128,33 +128,40 @@ Be technical, specific, and actionable.`;
     <section className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-white">Data</span>
-            <span className="text-neon-blue"> Ingestion</span>
-          </h2>
-          <p className="text-gray-400 text-lg">
-            Load the context data for digital twin modeling, simulate optimization scenarios, and benchmark the results against your industry peers.
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Building2 className="w-8 h-8 text-[#00BFFF]" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              Onboarding Corporativo <span className="text-[#00BFFF]">- Start for Free</span>
+            </h2>
+          </div>
+          <p className="text-gray-400 text-base max-w-2xl mx-auto">
+            Define el dominio corporativo y habilita los 4 roles clave de tu empresa para la ingesta de datos y gemelo digital.
           </p>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-lg border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
           
-          {/* Nombre de la Instalación / Dominio Corporativo Input */}
+          {/* Dominio Principal de la Empresa (Identico al Camino 2) */}
           <div className="mb-6">
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-[#00BFFF]" />
-              Nombre de tu instalación, Dominio Corporativo...
+            <label className="block text-sm font-bold text-white mb-2">
+              Dominio Principal de la Empresa
             </label>
-            <input
-              type="text"
-              value={sourceName}
-              onChange={(e) => setSourceName(e.target.value)}
-              placeholder="e.g. arcor.com.ar / Planta Central"
-              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-neon-blue"
-            />
+            <div className="relative flex items-center">
+              <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
+              <input
+                type="text"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
+                placeholder="nexergy.ar / empresa.com"
+                className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              Solo usuarios con correo de este dominio podrán acceder a tu organización.
+            </p>
           </div>
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-4">Select Industry Sector</h3>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">Select Industry Sector</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             {sectors.map((sector) => (
               <button
@@ -174,7 +181,7 @@ Be technical, specific, and actionable.`;
           </div>
 
           {/* Universal Data Ingestion (Cloudflare D1 + R2 Ready) */}
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Data File Upload</h3>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Data File Upload (Opcional)</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
             className="border-2 border-dashed border-gray-700 hover:border-neon-blue p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
@@ -204,9 +211,9 @@ Be technical, specific, and actionable.`;
             </div>
           )}
 
-          <h3 className="text-sm font-bold text-gray-300 uppercase mb-3">Operational Context</h3>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Operational Context</h3>
           <Textarea
-            placeholder="Describe your operational scenario, challenges, or current status..."
+            placeholder="Describe tu escenario operativo, desafíos o estado actual..."
             value={context}
             onChange={(e) => setContext(e.target.value)}
             className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-neon-blue"
@@ -223,21 +230,21 @@ Be technical, specific, and actionable.`;
               type="button"
               onClick={simulateIntelligence}
               disabled={isLoading || isUploading || createIngestionMutation.isPending}
-              className="w-full sm:w-auto px-6 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isLoading || isUploading || createIngestionMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   {createIngestionMutation.isPending
-                    ? 'Saving to D1...'
+                    ? 'Guardando Dominio en D1...'
                     : isUploading
-                    ? 'Uploading to R2...'
-                    : 'Ingesting Data...'}
+                    ? 'Subiendo a R2...'
+                    : 'Ingestando Datos...'}
                 </>
               ) : (
                 <>
-                  Start Ingestion
-                  <Upload className="w-4 h-4" />
+                  Continuar
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </Button>
