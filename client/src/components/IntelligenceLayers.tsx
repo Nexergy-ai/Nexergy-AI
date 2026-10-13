@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Zap, Brain, Cpu, Microscope, Shield } from 'lucide-react';
 
 interface IntelligenceLayer {
