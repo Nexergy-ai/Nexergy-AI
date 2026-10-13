@@ -14,11 +14,11 @@ interface Sector {
 }
 
 const sectors: Sector[] = [
-  { id: 'manufacturing', name: 'Manufacturing', emoji: '🏭', description: 'Predictive maintenance & optimization' },
-  { id: 'energy', name: 'Energy', emoji: '⚡', description: 'Energy efficiency & grid optimization' },
-  { id: 'logistics', name: 'Logistics', emoji: '📦', description: 'Supply chain optimization' },
-  { id: 'healthcare', name: 'Healthcare', emoji: '🏥', description: 'Operational efficiency' },
-  { id: 'mining', name: 'Mining', emoji: '⛏️', description: 'Resource optimization' },
+  { id: 'manufacturing', name: 'Manufactura', emoji: '🏭', description: 'Mantenimiento predictivo y optimización' },
+  { id: 'energy', name: 'Energía', emoji: '⚡', description: 'Eficiencia energética y gestión de red' },
+  { id: 'logistics', name: 'Logística', emoji: '📦', description: 'Optimización de cadena de suministro' },
+  { id: 'healthcare', name: 'Salud', emoji: '🏥', description: 'Eficiencia operativa e insumos' },
+  { id: 'mining', name: 'Minería', emoji: '⛏️', description: 'Optimización de recursos y procesos' },
 ];
 
 export default function OperationalInput() {
@@ -34,7 +34,7 @@ export default function OperationalInput() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mutaciones de tRPC
+  // Mutaciones tRPC
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
@@ -70,7 +70,7 @@ export default function OperationalInput() {
       console.error('Upload error:', err);
       setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
       throw err;
-    } finally {
+    } font-medium {
       setIsUploading(false);
     }
   };
@@ -79,7 +79,7 @@ export default function OperationalInput() {
     e.preventDefault();
 
     if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresa tu Dominio Corporativo, contexto, selecciona un sector o adjunta un archivo.');
+      alert('Por favor ingresa tu Dominio Corporativo, contexto operativo o adjunta un archivo.');
       return;
     }
 
@@ -98,7 +98,7 @@ export default function OperationalInput() {
       }
 
       const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
-      const fileInfo = file ? `\nAttached File: ${file.name}` : '';
+      const fileInfo = file ? `\nArchivo Adjunto: ${file.name}` : '';
       const sourceInfo = sourceName ? `\nDominio Corporativo: ${sourceName}` : '';
 
       const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
@@ -131,20 +131,20 @@ Be technical, specific, and actionable.`;
           <div className="flex items-center justify-center gap-3 mb-2">
             <Building2 className="w-8 h-8 text-[#00BFFF]" />
             <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Onboarding Corporativo <span className="text-[#00BFFF]">- Start for Free</span>
+              Onboarding Corporativo
             </h2>
           </div>
           <p className="text-gray-400 text-base max-w-2xl mx-auto">
-            Define el dominio corporativo y habilita los 4 roles clave de tu empresa para la ingesta de datos y gemelo digital.
+            Define el dominio corporativo principal para estructurar el modelo Digital Twin y validar el acceso de tu organización.
           </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
           
-          {/* Dominio Principal de la Empresa (Identico al Camino 2) */}
+          {/* Dominio Principal de la Empresa */}
           <div className="mb-6">
             <label className="block text-sm font-bold text-white mb-2">
-              Dominio Principal de la Empresa
+              Dominio Corporativo Principal
             </label>
             <div className="relative flex items-center">
               <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
@@ -152,16 +152,16 @@ Be technical, specific, and actionable.`;
                 type="text"
                 value={sourceName}
                 onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
-                placeholder="nexergy.ar / empresa.com"
+                placeholder="empresa.com / nexergy.ar"
                 className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
               />
             </div>
             <p className="text-xs text-gray-400 mt-2">
-              Solo usuarios con correo de este dominio podrán acceder a tu organización.
+              El acceso a la organización estará restringido a usuarios con correos pertenecientes a este dominio.
             </p>
           </div>
 
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">Select Industry Sector</h3>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">Sector Industrial</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             {sectors.map((sector) => (
               <button
@@ -180,8 +180,8 @@ Be technical, specific, and actionable.`;
             ))}
           </div>
 
-          {/* Universal Data Ingestion (Cloudflare D1 + R2 Ready) */}
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Data File Upload (Opcional)</h3>
+          {/* Carga de Archivos */}
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Carga de Documentación (Opcional)</h3>
           <div 
             onClick={() => fileInputRef.current?.click()}
             className="border-2 border-dashed border-gray-700 hover:border-neon-blue p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
@@ -196,10 +196,10 @@ Be technical, specific, and actionable.`;
             <div className="flex flex-col items-center justify-center gap-2">
               <Upload className="w-7 h-7 text-neon-blue animate-bounce" />
               <p className="text-white font-medium text-sm">
-                {file ? `Selected: ${file.name}` : "Click or drag files to upload for ingestion"}
+                {file ? `Seleccionado: ${file.name}` : "Haz clic o arrastra archivos para iniciar la ingesta"}
               </p>
               <p className="text-xs text-gray-400">
-                Supports Excel (.xlsx), PDF, Word (.docx), WhatsApp chats (.txt) & PST
+                Soporta archivos Excel (.xlsx), PDF, Word (.docx), WhatsApp (.txt) y backups de Outlook (.pst)
               </p>
             </div>
           </div>
@@ -211,9 +211,9 @@ Be technical, specific, and actionable.`;
             </div>
           )}
 
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Operational Context</h3>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Contexto Operativo</h3>
           <Textarea
-            placeholder="Describe tu escenario operativo, desafíos o estado actual..."
+            placeholder="Describe el escenario operativo, desafíos o estado actual..."
             value={context}
             onChange={(e) => setContext(e.target.value)}
             className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-neon-blue"
@@ -255,7 +255,7 @@ Be technical, specific, and actionable.`;
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-neon-green/40 bg-[#0a0e27]">
             <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Intelligence Analysis
+              Análisis de Inteligencia
             </h3>
             <div className="text-gray-300 text-sm leading-relaxed">
               <Streamdown>{response}</Streamdown>
