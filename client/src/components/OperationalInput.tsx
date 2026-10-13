@@ -252,4 +252,20 @@ Be technical, specific, and actionable.`;
         </motion.div>
 
         {response && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-neon-green
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-neon-green/40 bg-[#0a0e27]">
+            <h3 className="text-xl font-bold text-neon-green mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Análisis de Inteligencia
+            </h3>
+            <div className="text-gray-300 text-sm leading-relaxed">
+              <Streamdown>{response}</Streamdown>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+    </section>
+  );
+}
