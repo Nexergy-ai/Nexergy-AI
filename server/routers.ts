@@ -32,7 +32,7 @@ export const appRouter = router({
   }),
 
   ai: router({
-    // Procedimiento tRPC para guardar la ingesta en Cloudflare D1
+    // 1. Procedimiento tRPC para guardar la ingesta en Cloudflare D1
     createIngestion: publicProcedure
       .input(
         z.object({
@@ -76,7 +76,7 @@ export const appRouter = router({
         }
       }),
 
-    // Procedimiento tRPC para generar la URL presignada de Cloudflare R2
+    // 2. Procedimiento tRPC para generar la URL presignada de Cloudflare R2
     getUploadUrl: publicProcedure
       .input(
         z.object({
@@ -86,7 +86,7 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         try {
-          const fileKey = `imports/${Date.now()}-${input.fileName}`;
+          const fileKey = `facturas/${Date.now()}-${input.fileName}`;
           const command = new PutObjectCommand({
             Bucket: "nexergy-plant-data",
             Key: fileKey,
@@ -105,6 +105,7 @@ export const appRouter = router({
         }
       }),
 
+    // 3. Análisis con LLM
     analyzeLLM: publicProcedure
       .input(z.object({ prompt: z.string() }))
       .mutation(async ({ input }) => {
