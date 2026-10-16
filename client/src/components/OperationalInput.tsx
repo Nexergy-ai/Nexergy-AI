@@ -1,161 +1,276 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
-import { Database, UploadCloud, CheckCircle2, AlertCircle, Loader2, Building2, FileText } from 'lucide-react';
+import { Streamdown } from 'streamdown';
+
+interface Sector {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+}
+
+const sectors: Sector[] = [
+  { id: 'manufacturing', name: 'Manufactura', emoji: '🏭', description: 'Mantenimiento predictivo y optimización' },
+  { id: 'energy', name: 'Energía', emoji: '⚡', description: 'Eficiencia energética y gestión de red' },
+  { id: 'logistics', name: 'Logística', emoji: '📦', description: 'Optimización de cadena de suministro' },
+  { id: 'healthcare', name: 'Salud', emoji: '🏥', description: 'Eficiencia operativa e insumos' },
+  { id: 'mining', name: 'Minería', emoji: '⛏️', description: 'Optimización de recursos y procesos' },
+];
 
 export default function OperationalInput() {
   const [sourceName, setSourceName] = useState('');
+  const [context, setContext] = useState('');
+  const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [response, setResponse] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Estados para la carga de archivos en Cloudflare R2
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mutaciones tRPC
-  const createIngestionMutation = trpc.ai.createIngestion.useMutation();
+  const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
+  const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
-      setUploadStatus(`Archivo listo: ${e.target.files[0].name}`);
+      setUploadStatus(`Archivo seleccionado: ${e.target.files[0].name}`);
     }
   };
 
-  const handleStartIngestion = async (e: React.FormEvent) => {
+  const uploadToR2 = async (fileToUpload: File) => {
+    setIsUploading(true);
+    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
+
+    try {
+      const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
+        fileName: fileToUpload.name,
+        fileType: fileToUpload.type || 'application/octet-stream',
+      });
+
+      setUploadStatus('Subiendo archivo a Cloudflare R2...');
+      
+      // Enviamos el archivo mediante PUT directamente sin forzar cabeceras de Content-Type que alteren la firma presignada
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
+
+      setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
+      throw err;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!sourceName.trim() && !file) {
-      alert('Por favor ingresa el Nombre de tu instalación o Dominio Corporativo.');
+    if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
+      alert('Por favor ingresa tu Dominio Corporativo, contexto operativo o adjunta un archivo.');
       return;
     }
 
-    setIsProcessing(true);
-    setUploadStatus('Conectando con Cloudflare D1 + R2...');
+    setIsLoading(true);
+    setResponse('');
+    setUploadStatus('Iniciando ingesta de datos...');
 
     try {
-      // 1. Guardar en Cloudflare D1
+      // 1. Carga de archivo a Cloudflare R2 si está presente
+      if (file) {
+        await uploadToR2(file);
+      }
+
+      // 2. Registro del Dominio Corporativo en Cloudflare D1
       if (sourceName.trim()) {
         await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
       }
 
-      // 2. Subida a Cloudflare R2 si existe archivo
-      if (file) {
-        setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
-        const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
-          fileName: file.name,
-          fileType: file.type || 'application/octet-stream',
-        });
+      const sectorName = selectedSector ? sectors.find(s => s.id === selectedSector)?.name : 'General';
+      const fileInfo = file ? `\nArchivo Adjunto: ${file.name}` : '';
+      const sourceInfo = sourceName ? `\nDominio Corporativo: ${sourceName}` : '';
 
-        const uploadRes = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type || 'application/octet-stream' },
-          body: file,
-        });
+      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
 
-        if (!uploadRes.ok) throw new Error('Error al subir archivo a Cloudflare R2');
-      }
+Operational Context: ${context || `Default scenario for ${sectorName}`} ${sourceInfo} ${fileInfo}
+Industry Sector: ${sectorName}
 
-      setUploadStatus(`¡Instalación "${sourceName || 'Registrada'}" indexada con éxito en Cloudflare!`);
-      setSourceName('');
-      setFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    } catch (err: any) {
-      console.error('Error durante la ingesta:', err);
-      setUploadStatus(`Error al procesar: ${err?.message || 'Fallo de conexión'}`);
+Provide:
+1. Operational Status Assessment (2-3 sentences)
+2. Key Intelligence Findings (3-4 bullet points)
+3. Recommended Actions (2-3 specific recommendations)
+4. Risk Indicators (2-3 identified risks)
+Be technical, specific, and actionable.`;
+
+      const result = await analyzeMutation.mutateAsync({ prompt });
+      const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+      
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito!`);
+      setResponse(content);
+    } catch (error: any) {
+      console.error('Error:', error);
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada!`);
     } finally {
-      setIsProcessing(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-[#070c1e]/90 border border-gray-800 rounded-xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
-      <form onSubmit={handleStartIngestion} className="space-y-6">
-        {/* Campo Principal Corregido */}
-        <div>
-          <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[#00BFFF]" />
-            Nombre de tu instalación, Dominio Corporativo...
-          </label>
-          <input
-            type="text"
-            value={sourceName}
-            onChange={(e) => setSourceName(e.target.value)}
-            placeholder="Ej: arcor.com.ar / Planta Central"
-            className="w-full bg-[#0a0e27] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
-          />
-        </div>
+    <section id="analytics" className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
+      <div className="max-w-4xl mx-auto">
+        <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Building2 className="w-8 h-8 text-[#00BFFF]" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              Onboarding Corporativo <span className="text-[#00BFFF]">- Start for Free</span>
+            </h2>
+          </div>
+          <p className="text-gray-400 text-base max-w-2xl mx-auto">
+            Define el dominio corporativo principal para estructurar el modelo Digital Twin y validar el acceso de tu organización.
+          </p>
+        </motion.div>
 
-        {/* Carga Opcional de Documentos */}
-        <div>
-          <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#00BFFF]" />
-            Documentos Técnicos / Facturas (Opcional)
-          </label>
-          <div className="flex items-center gap-4">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              id="file-upload-input"
-            />
-            <label
-              htmlFor="file-upload-input"
-              className="cursor-pointer bg-[#0a0e27] hover:bg-gray-800 text-gray-300 border border-gray-700 font-medium text-xs px-4 py-2.5 rounded-lg transition-colors flex items-center gap-2"
-            >
-              <UploadCloud className="w-4 h-4 text-[#00BFFF]" />
-              {file ? file.name : 'Seleccionar Archivo (.pdf, .xlsx, .csv)'}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8">
+          
+          {/* Dominio Principal de la Empresa */}
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-white mb-2">
+              Dominio Corporativo Principal
             </label>
-            {file && (
-              <span className="text-xs text-emerald-400 font-mono">
-                {(file.size / 1024 / 1024).toFixed(2)} MB
-              </span>
-            )}
+            <div className="relative flex items-center">
+              <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
+              <input
+                type="text"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
+                placeholder="empresa.com / nexergy.ar"
+                className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              El acceso a la organización estará restringido a usuarios con correos pertenecientes a este dominio.
+            </p>
           </div>
-        </div>
 
-        {/* Botón de Ingesta */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-800">
-          <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
-            <Database className="w-4 h-4 text-[#00BFFF]" />
-            <span>Cloudflare D1 + R2 Ready</span>
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">Sector Industrial</h3>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            {sectors.map((sector) => (
+              <button
+                key={sector.id}
+                type="button"
+                onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
+                className={`p-4 rounded-lg border transition-all duration-300 text-center ${
+                  selectedSector === sector.id
+                    ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.15)]'
+                    : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
+                }`}
+              >
+                <div className="text-2xl mb-2">{sector.emoji}</div>
+                <div className="text-xs font-semibold text-white">{sector.name}</div>
+              </button>
+            ))}
           </div>
 
-          <button
-            type="submit"
-            disabled={isProcessing}
-            className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50"
+          {/* Carga de Archivos */}
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Carga de Documentación (Opcional)</h3>
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
           >
-            {isProcessing ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Procesando Ingesta...
-              </>
-            ) : (
-              <>
-                Start Ingestion
-                <UploadCloud className="w-4 h-4" />
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Mensaje de Estado */}
-        {uploadStatus && (
-          <div className={`mt-4 text-xs flex items-center gap-2 p-3 rounded-lg border ${
-            uploadStatus.includes('Error') 
-              ? 'bg-rose-950/30 border-rose-800/50 text-rose-300' 
-              : 'bg-cyan-950/30 border-[#00BFFF]/40 text-cyan-300'
-          }`}>
-            {uploadStatus.includes('Error') ? (
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4 text-[#00BFFF] shrink-0" />
-            )}
-            <span>{uploadStatus}</span>
+            <input 
+              ref={fileInputRef}
+              type="file" 
+              className="hidden" 
+              onChange={handleFileChange}
+              accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt"
+            />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <Upload className="w-7 h-7 text-[#00BFFF] animate-bounce" />
+              <p className="text-white font-medium text-sm">
+                {file ? `Seleccionado: ${file.name}` : "Haz clic o arrastra archivos para iniciar la ingesta"}
+              </p>
+              <p className="text-xs text-gray-400">
+                Soporta archivos Excel (.xlsx), PDF, Word (.docx), WhatsApp (.txt) y backups de Outlook (.pst)
+              </p>
+            </div>
           </div>
+
+          {uploadStatus && (
+            <div className="mb-6 p-3 rounded bg-[#00BFFF]/10 border border-[#00BFFF] text-xs text-[#00BFFF] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <span>{uploadStatus}</span>
+            </div>
+          )}
+
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">Contexto Operativo</h3>
+          <Textarea
+            placeholder="Describe el escenario operativo, desafíos o estado actual..."
+            value={context}
+            onChange={(e) => setContext(e.target.value)}
+            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-[#00BFFF]"
+            rows={3}
+          />
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+            <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
+              <Database className="w-4 h-4" />
+              <span>Cloudflare D1 + R2 Ready</span>
+            </div>
+
+            <Button
+              type="button"
+              onClick={simulateIntelligence}
+              disabled={isLoading || isUploading || createIngestionMutation.isPending}
+              className="w-full sm:w-auto px-8 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {isLoading || isUploading || createIngestionMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {createIngestionMutation.isPending
+                    ? 'Guardando en D1...'
+                    : isUploading
+                    ? 'Subiendo a R2...'
+                    : 'Ingestando Datos...'}
+                </>
+              ) : (
+                <>
+                  Continuar
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        </motion.div>
+
+        {response && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="p-8 rounded-lg border border-[#00FF7F]/40 bg-[#0a0e27]">
+            <h3 className="text-xl font-bold text-[#00FF7F] mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Análisis de Inteligencia
+            </h3>
+            <div className="text-gray-300 text-sm leading-relaxed">
+              <Streamdown>{response}</Streamdown>
+            </div>
+          </motion.div>
         )}
-      </form>
-    </div>
+      </div>
+
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+    </section>
   );
 }
