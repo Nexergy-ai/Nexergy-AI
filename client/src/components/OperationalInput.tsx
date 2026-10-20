@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, ArrowRight } from 'lucide-react';
+import { Loader2, Upload, FileUp, CheckCircle2, Database, Building2, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { Streamdown } from 'streamdown';
 
@@ -23,7 +22,6 @@ const sectors: Sector[] = [
 
 export default function OperationalInput() {
   const [sourceName, setSourceName] = useState('');
-  const [context, setContext] = useState('');
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
   const [response, setResponse] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +32,7 @@ export default function OperationalInput() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mutaciones tRPC
+  // Mutaciones tRPC hacia el backend
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
@@ -56,11 +54,11 @@ export default function OperationalInput() {
         fileType: fileToUpload.type || 'application/octet-stream',
       });
 
-      setUploadStatus('Subiendo archivo a Cloudflare R2...');
-      
-      // Enviamos el cuerpo del archivo con PUT directo sin añadir cabeceras estrictas que descalcen la firma
+      setUploadStatus(`Subiendo ${fileToUpload.name} a Cloudflare R2...`);
+
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
+        headers: { 'Content-Type': fileToUpload.type || 'application/octet-stream' },
         body: fileToUpload,
       });
 
@@ -76,12 +74,12 @@ export default function OperationalInput() {
     }
   };
 
-  const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleStartIngestion = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresa tu Dominio Corporativo, contexto operativo o adjunta un archivo.');
+    if (!sourceName.trim() && !file) {
+      alert('Por favor ingresa tu Dominio Corporativo o adjunta un archivo técnico.');
       return;
     }
 
@@ -106,7 +104,7 @@ export default function OperationalInput() {
 
       const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
 
-Operational Context: ${context || `Default scenario for ${sectorName}`} ${sourceInfo} ${fileInfo}
+Operational Context: Default scenario for ${sectorName} ${sourceInfo} ${fileInfo}
 Industry Sector: ${sectorName}
 
 Provide:
@@ -118,12 +116,14 @@ Be technical, specific, and actionable.`;
 
       const result = await analyzeMutation.mutateAsync({ prompt });
       const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-      
+
       setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito!`);
       setResponse(content);
+      setSourceName('');
+      setFile(null);
     } catch (error: any) {
       console.error('Error:', error);
-      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada!`);
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada en Cloudflare!`);
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +136,7 @@ Be technical, specific, and actionable.`;
           <div className="flex items-center justify-center gap-3 mb-2">
             <Building2 className="w-8 h-8 text-[#00BFFF]" />
             <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Onboarding Corporativo <span className="text-[#00BFFF]">- Start for Free</span>
+              Onboarding Corporativo
             </h2>
           </div>
           <p className="text-gray-400 text-base max-w-2xl mx-auto">
@@ -144,4 +144,108 @@ Be technical, specific, and actionable.`;
           </p>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} while
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} viewport={{ once: true }} className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8 space-y-6">
+          
+          {/* Dominio Principal de la Empresa */}
+          <div>
+            <label className="block text-sm font-bold text-white mb-2">
+              Dominio Corporativo Principal
+            </label>
+            <div className="relative flex items-center">
+              <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
+              <input
+                type="text"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
+                placeholder="empresa.com / nexergy.ar"
+                className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              El acceso a la organización estará restringido a usuarios con correos pertenecientes a este dominio.
+            </p>
+          </div>
+
+          {/* Adjuntar Archivo Técnico u Opcional */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+              Adjuntar Archivo Técnico / Factura (Opcional)
+            </label>
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-4 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-colors flex flex-col items-center justify-center gap-1"
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+                accept=".xlsx,.xls,.csv,.pdf,.docx,.txt,.pst"
+              />
+              <FileUp className="w-6 h-6 text-[#00BFFF] mb-1" />
+              <p className="text-xs text-gray-300 font-medium">
+                {file ? `Archivo seleccionado: ${file.name}` : "Haz clic para seleccionar un archivo (.xlsx, .pdf, .csv, .txt)"}
+              </p>
+            </div>
+          </div>
+
+          {/* Estado de Ingesta */}
+          {uploadStatus && (
+            <div className="p-3 rounded bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-400 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <span>{uploadStatus}</span>
+            </div>
+          )}
+
+          {/* Pie del Formulario y Botón */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5">
+            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono">
+              <Database className="w-4 h-4" />
+              <span>Cloudflare D1 + R2 Ready</span>
+            </div>
+
+            <Button
+              type="button"
+              onClick={handleStartIngestion}
+              disabled={isLoading || isUploading}
+              className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-8 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50"
+            >
+              {isLoading || isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Procesando Ingesta...
+                </>
+              ) : (
+                <>
+                  Iniciar Ingesta
+                  <Upload className="w-4 h-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Respuesta Intelligence Analysis */}
+        {response && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="p-8 rounded-lg border border-cyan-500/40 bg-[#0a0e27] shadow-2xl"
+          >
+            <h3 className="text-xl font-bold text-[#00BFFF] mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Análisis Técnico e Inteligencia Operativa
+            </h3>
+            <div className="text-gray-300 text-sm leading-relaxed">
+              <Streamdown>{response}</Streamdown>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+    </section>
+  );
+}
