@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { 
-  Zap, Cpu, Battery, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, ShieldCheck, FileUp, Loader2, BarChart3, Globe 
+  Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
+  ArrowRight, Loader2, Globe 
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
@@ -10,10 +10,8 @@ export default function Home() {
   const [companyName, setCompanyName] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
-  const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
@@ -28,7 +26,7 @@ export default function Home() {
     setStatus('Procesando solicitud de consulta...');
 
     try {
-      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Empresa:${companyName} | Email: ${contactEmail} \vert{} Mensaje:${message || 'Sin mensaje'}`;
+      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Empresa: ${companyName} | Email: ${contactEmail} | Mensaje: ${message || 'Sin mensaje'}`;
       
       await createIngestionMutation.mutateAsync({
         sourceName: summaryText,
@@ -38,7 +36,6 @@ export default function Home() {
       setCompanyName('');
       setContactEmail('');
       setMessage('');
-      setFile(null);
     } catch (error: any) {
       console.error('Error al enviar consulta:', error);
       setStatus(`Consulta registrada exitosamente para ${companyName}.`);
@@ -64,7 +61,6 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
             <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
-            <a href="#soluciones" className="hover:text-[#00BFFF] transition-colors">TECNOLOGÍA</a>
             <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
           </nav>
 
@@ -290,4 +286,98 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setSelectedUnit('flex')}
-                  className={`py-3 px-4 rounded-xl text-xs font-bold
+                  className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
+                    selectedUnit === 'flex' 
+                      ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
+                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                  }`}
+                >
+                  Nexergy Flex
+                </button>
+              </div>
+            </div>
+
+            {/* CAMPOS DE ENTRADA */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                  Empresa / Dominio Corporativo
+                </label>
+                <div className="relative">
+                  <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                  <input
+                    type="text"
+                    required
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="Ej: arcor.com.ar / Barrio Los Olivos"
+                    className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                  Correo Electrónico
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  placeholder="contacto@empresa.com"
+                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                Detalle o Mensaje (Opcional)
+              </label>
+              <textarea
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Cuéntanos brevemente sobre la escala de tu proyecto o requerimiento..."
+                className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+              />
+            </div>
+
+            {status && (
+              <div className="p-4 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                <span>{status}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Enviando Consulta...
+                </>
+              ) : (
+                <>
+                  Enviar Consulta Directa
+                  <Send className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500">
+        <p className="mb-2">© 2026 NEXERGY. Todos los derechos reservados.</p>
+        <p className="font-mono text-[10px]">Tecnología argentina para un futuro sostenible · nexergy.ar</p>
+      </footer>
+
+    </div>
+  );
+}
