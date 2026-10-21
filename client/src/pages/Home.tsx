@@ -39,7 +39,7 @@ export default function Home() {
     } catch (error: any) {
       console.error('Error al enviar consulta:', error);
       setStatus(`Consulta registrada exitosamente para ${companyName}.`);
-    } finally {
+    } font-medium {
       setIsSubmitting(false);
     }
   };
@@ -61,6 +61,7 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
             <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
+            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO</a>
             <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
           </nav>
 
@@ -241,7 +242,83 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. FORMULARIO DE CONTACTO SIMPLIFICADO */}
+      {/* 4. MÉTODO NEXERGY DE SOLUCIÓN DE PROBLEMAS */}
+      <section id="metodo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Metodología Operativa
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              El Método de Optimización Nexergy
+            </h2>
+            <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+              Nuestro protocolo sistemático de 5 pasos para solucionar problemas complejos, eliminar ineficiencias y liberar potencial energético en cada cliente.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            
+            {/* Paso 1 */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
+              <div>
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">01</span>
+                <h3 className="text-sm font-bold text-white mb-2">Hacer Requisitos Menos Tontos</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que encarecen o frenan el desarrollo.
+                </p>
+              </div>
+            </div>
+
+            {/* Paso 2 */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
+              <div>
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">02</span>
+                <h3 className="text-sm font-bold text-white mb-2">Eliminar Partes del Proceso</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Removemos componentes, intermediarios y etapas prescindibles para acortar la cadena de ejecución.
+                </p>
+              </div>
+            </div>
+
+            {/* Paso 3 */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
+              <div>
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">03</span>
+                <h3 className="text-sm font-bold text-white mb-2">Simplificar u Optimizar</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Optimizamos únicamente lo indispensable, evitando perfeccionar pasos que nunca debieron existir.
+                </p>
+              </div>
+            </div>
+
+            {/* Paso 4 */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
+              <div>
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">04</span>
+                <h3 className="text-sm font-bold text-white mb-2">Acelerar Tiempo de Ciclo</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.
+                </p>
+              </div>
+            </div>
+
+            {/* Paso 5 */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
+              <div>
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">05</span>
+                <h3 className="text-sm font-bold text-white mb-2">Automatizar</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Desplegamos capas de control e inteligencia sobre el flujo simplificado para garantizar operación continua.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FORMULARIO DE CONTACTO SIMPLIFICADO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
