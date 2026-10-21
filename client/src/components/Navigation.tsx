@@ -47,7 +47,7 @@ export function Navigation() {
             <button
               type="button"
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="flex items-center gap-2 bg-[#0a0e27] hover:bg-white/10 text-gray-200 border border-white/15 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer"
+              className="flex items-center gap-2 bg-[#0a0e27] hover:bg-white/10 text-gray-200 border border-white/15 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
             >
               <Globe className="w-3.5 h-3.5 text-[#00BFFF]" />
               <span>{selectedLangOption.flag}</span>
@@ -62,7 +62,7 @@ export function Navigation() {
                     key={lang.code}
                     type="button"
                     onClick={() => handleSelectLanguage(lang.code)}
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-[#00BFFF]/20 transition-colors cursor-pointer ${
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-[#00BFFF]/20 transition-colors ${
                       language === lang.code ? 'text-[#00BFFF] font-bold bg-white/5' : 'text-gray-300'
                     }`}
                   >
