@@ -4,18 +4,6 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-// Configuración del cliente para Cloudflare R2 utilizando compatibilidad S3
-const r2Client = new S3Client({
-  region: "auto",
-  endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID || "43ea0b6d2de942d445b42960a4d3f545"}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-  },
-});
 
 export const appRouter = router({
   system: systemRouter,
@@ -32,80 +20,6 @@ export const appRouter = router({
   }),
 
   ai: router({
-    // 1. Procedimiento tRPC para guardar la ingesta en Cloudflare D1
-    createIngestion: publicProcedure
-      .input(
-        z.object({
-          sourceName: z.string(),
-        })
-      )
-      .mutation(async ({ input }) => {
-        try {
-          const accountId = process.env.CLOUDFLARE_ACCOUNT_ID || "43ea0b6d2de942d445b42960a4d3f545";
-          const databaseId = process.env.CLOUDFLARE_DATABASE_ID || "79a372b5-a955-475e-89cf-b33f1c428c89";
-          const token = process.env.CLOUDFLARE_D1_TOKEN || "cfut_UEFKJYgcdtcmW1VmX16ZAfKzRYP3c4CcYf45dlJHc56a8ca4";
-
-          const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
-
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sql: "INSERT INTO ingestions (source_name) VALUES (?)",
-              params: [input.sourceName],
-            }),
-          });
-
-          const data = await response.json();
-
-          if (!data.success) {
-            console.error("D1 Error Response:", data);
-            return { success: true, fallback: true, errors: data.errors };
-          }
-
-          return {
-            success: true,
-            result: data.result,
-          };
-        } catch (error) {
-          console.error("Cloudflare D1 Ingestion Error:", error);
-          return { success: true, fallback: true };
-        }
-      }),
-
-    // 2. Procedimiento tRPC para generar la URL presignada de Cloudflare R2 sin restricción de Content-Type
-    getUploadUrl: publicProcedure
-      .input(
-        z.object({
-          fileName: z.string(),
-          fileType: z.string(),
-        })
-      )
-      .mutation(async ({ input }) => {
-        try {
-          const fileKey = `facturas/${Date.now()}-${input.fileName}`;
-          const command = new PutObjectCommand({
-            Bucket: "nexergy-plant-data",
-            Key: fileKey,
-            // Al omitir ContentType, R2 permite subir el archivo directo desde fetch() sin rechazo por firma
-          });
-
-          const uploadUrl = await getSignedUrl(r2Client, command, { expiresIn: 3600 });
-
-          return {
-            uploadUrl,
-            fileKey,
-          };
-        } catch (error) {
-          console.error("R2 Presigned URL Error:", error);
-          throw new Error("Failed to generate upload URL for Cloudflare R2");
-        }
-      }),
-
-    // 3. Análisis con LLM
     analyzeLLM: publicProcedure
       .input(z.object({ prompt: z.string() }))
       .mutation(async ({ input }) => {
