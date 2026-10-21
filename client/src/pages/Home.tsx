@@ -1,13 +1,14 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { 
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, Loader2, Globe 
+  ArrowRight, Loader2, Globe, MapPin, ShieldCheck, Activity
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
 export default function Home() {
   const [selectedUnit, setSelectedUnit] = useState<string>('agro');
-  const [companyName, setCompanyName] = useState<string>('');
+  const [companyDomain, setCompanyDomain] = useState<string>('');
+  const [plantLocation, setPlantLocation] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [status, setStatus] = useState<string>('');
@@ -17,29 +18,30 @@ export default function Home() {
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!companyName.trim() || !contactEmail.trim()) {
-      alert('Por favor ingresa la empresa/dominio y un correo de contacto.');
+    if (!companyDomain.trim() || !contactEmail.trim()) {
+      alert('Por favor ingresa el dominio corporativo y tu correo de contacto.');
       return;
     }
 
     setIsSubmitting(true);
-    setStatus('Procesando solicitud de consulta...');
+    setStatus('Procesando alta de instalación...');
 
     try {
-      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Empresa: ${companyName} | Email: ${contactEmail} | Mensaje: ${message || 'Sin mensaje'}`;
+      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación: ${plantLocation || 'No especificada'} | Contacto: ${contactEmail} | Nota: ${message || 'Sin mensaje'}`;
       
       await createIngestionMutation.mutateAsync({
         sourceName: summaryText,
       });
 
-      setStatus(`¡Consulta enviada con éxito! Nos pondremos en contacto con ${companyName} a la brevedad.`);
-      setCompanyName('');
+      setStatus(`¡Instalación "${companyDomain}" registrada con éxito! Un especialista estructurará el modelo inicial.`);
+      setCompanyDomain('');
+      setPlantLocation('');
       setContactEmail('');
       setMessage('');
     } catch (error: any) {
       console.error('Error al enviar consulta:', error);
-      setStatus(`Consulta registrada exitosamente para ${companyName}.`);
-    } font-medium {
+      setStatus(`Instalación registrada exitosamente para ${companyDomain}.`);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -75,7 +77,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. HERO PRINCIPAL (PRIMER IMPACTO) */}
+      {/* 2. HERO PRINCIPAL */}
       <section className="relative py-28 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -89,7 +91,7 @@ export default function Home() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Desarrollamos ingeniería, tecnología e inteligencia operacional para transformar biomasa en energía, integrar movilidad eléctrica y optimizar redes inteligentes.
+            Ingeniería, tecnología y estructuración legal-financiera para transformar biomasa en energía, integrar movilidad eléctrica y estructurar gemelos digitales industriales.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -110,7 +112,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. TRES UNIDADES DE NEGOCIO (BROCHURE) */}
+      {/* 3. LAS 4 UNIDADES DE NEGOCIO (BROCHURES) */}
       <section id="unidades" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -122,32 +124,32 @@ export default function Home() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             {/* UNIDAD 1: AGRO & BIOENERGÍA */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
                   <Leaf className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400">Nexergy Agro</span>
-                <h4 className="text-2xl font-bold text-white mt-1 mb-4">Bioenergía & Biomasa</h4>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                  Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar de alto valor agronómico.
+                <h4 className="text-xl font-bold text-white mt-1 mb-3">Bioenergía & Biomasa</h4>
+                <p className="text-gray-400 text-xs leading-relaxed mb-6">
+                  Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar.
                 </p>
 
-                <ul className="space-y-3 mb-8 text-xs text-gray-300 border-t border-white/5 pt-6">
+                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Biomass Intelligence: Relevamiento y caracterización</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Biomass Intelligence & Relevamiento</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Biomass Engineering: Gasificación y co-generación</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Gasificación y co-generación</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Economía circular y reducción de huella CO₂</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Economía circular y reducción CO₂</span>
                   </li>
                 </ul>
               </div>
@@ -155,37 +157,37 @@ export default function Home() {
               <a 
                 href="#contacto" 
                 onClick={() => setSelectedUnit('agro')}
-                className="w-full py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
               >
-                Consultar Soluciones Agro
-                <ArrowRight className="w-3.5 h-3.5" />
+                Consultar Agro
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
 
             {/* UNIDAD 2: EV CHARGE */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#00BFFF] mb-6 group-hover:scale-110 transition-transform">
                   <Zap className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#00BFFF]">Nexergy EV Charge</span>
-                <h4 className="text-2xl font-bold text-white mt-1 mb-4">Movilidad Eléctrica</h4>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                  Estaciones de carga para vehículos eléctricos alimentadas con energía solar/eólica y sistemas de almacenamiento para barrios privados e industrias.
+                <h4 className="text-xl font-bold text-white mt-1 mb-3">Movilidad Eléctrica</h4>
+                <p className="text-gray-400 text-xs leading-relaxed mb-6">
+                  Estaciones de carga para vehículos eléctricos alimentadas con energía solar/eólica y almacenamiento para barrios privados e industrias.
                 </p>
 
-                <ul className="space-y-3 mb-8 text-xs text-gray-300 border-t border-white/5 pt-6">
+                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#00BFFF] flex-shrink-0" />
-                    <span>Cargadores inteligentes AC/DC con control de acceso</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Cargadores AC/DC con control inteligente</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#00BFFF] flex-shrink-0" />
-                    <span>Integración con generación solar y baterías</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Integración solar y baterías</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#00BFFF] flex-shrink-0" />
-                    <span>Plusvalía y sustentabilidad para desarrollos urbanos</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Plusvalía para barrios y comunidades</span>
                   </li>
                 </ul>
               </div>
@@ -193,37 +195,37 @@ export default function Home() {
               <a 
                 href="#contacto" 
                 onClick={() => setSelectedUnit('ev')}
-                className="w-full py-3 bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-2.5 bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
               >
                 Consultar EV Charge
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
 
             {/* UNIDAD 3: NEXERGY FLEX */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
                   <Cpu className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400">Nexergy Flex</span>
-                <h4 className="text-2xl font-bold text-white mt-1 mb-4">Energía Bidireccional</h4>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                  Convertidor de potencia inteligente basado en electrónica avanzada para intercambiar energía de forma flexible entre renovables, red, almacenamiento y cargas.
+                <h4 className="text-xl font-bold text-white mt-1 mb-3">Energía Bidireccional</h4>
+                <p className="text-gray-400 text-xs leading-relaxed mb-6">
+                  Convertidor de potencia modular de última generación para intercambiar energía de forma bidireccional entre renovables, red y almacenamiento.
                 </p>
 
-                <ul className="space-y-3 mb-8 text-xs text-gray-300 border-t border-white/5 pt-6">
+                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                    <span>Control bidireccional inteligente de flujo de potencia</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Control bidireccional de potencia</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                    <span>Eliminación de intermitencia y filtrado de armónicos</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Filtrado activo y corrección de red</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                    <span>Diseño modular para microredes y plantas industriales</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Ideal para microredes e industrias</span>
                   </li>
                 </ul>
               </div>
@@ -231,10 +233,48 @@ export default function Home() {
               <a 
                 href="#contacto" 
                 onClick={() => setSelectedUnit('flex')}
-                className="w-full py-3 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-2.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
               >
                 Consultar Nexergy Flex
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3 h-3" />
+              </a>
+            </div>
+
+            {/* UNIDAD 4: NEXERGY SYSTEMS & COMPLIANCE */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
+                  <Activity className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400">Nexergy Systems</span>
+                <h4 className="text-xl font-bold text-white mt-1 mb-3">Sistemas Industrial & Compliance</h4>
+                <p className="text-gray-400 text-xs leading-relaxed mb-6">
+                  Digital Twin, auditoría energética y estructura legal-financiera autofinanciada mediante el ahorro generado (En alianza con Arcondo & Asociados).
+                </p>
+
+                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Modelado Digital Twin e Industria 4.0</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Calidad de energía y Res. CRPEE 13/2012</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Plan 100% autofinanciado por ahorros</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a 
+                href="#contacto" 
+                onClick={() => setSelectedUnit('systems')}
+                className="w-full py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Consultar Systems
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
 
@@ -242,7 +282,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. MÉTODO NEXERGY DE SOLUCIÓN DE PROBLEMAS */}
+      {/* 4. MÉTODO NEXERGY DE OPTIMIZACIÓN OPERACIONAL */}
       <section id="metodo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -253,24 +293,22 @@ export default function Home() {
               El Método de Optimización Nexergy
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Nuestro protocolo sistemático de 5 pasos para solucionar problemas complejos, eliminar ineficiencias y liberar potencial energético en cada cliente.
+              Nuestro protocolo sistemático de 5 pasos para solucionar problemas complejos, eliminar ineficiencias y acelerar el retorno de inversión.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             
-            {/* Paso 1 */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">01</span>
                 <h3 className="text-sm font-bold text-white mb-2">Hacer Requisitos Menos Tontos</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que encarecen o frenan el desarrollo.
+                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frena el proyecto.
                 </p>
               </div>
             </div>
 
-            {/* Paso 2 */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">02</span>
@@ -281,29 +319,26 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Paso 3 */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">03</span>
                 <h3 className="text-sm font-bold text-white mb-2">Simplificar u Optimizar</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Optimizamos únicamente lo indispensable, evitando perfeccionar pasos que nunca debieron existir.
+                  Optimizamos únicamente lo indispensable, evitando perfeccionar pasos innecesarios.
                 </p>
               </div>
             </div>
 
-            {/* Paso 4 */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">04</span>
                 <h3 className="text-sm font-bold text-white mb-2">Acelerar Tiempo de Ciclo</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.
+                  Comprimimos la velocidad de respuesta e iteración para lograr resultados en tiempo récord.
                 </p>
               </div>
             </div>
 
-            {/* Paso 5 */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">05</span>
@@ -318,15 +353,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FORMULARIO DE CONTACTO SIMPLIFICADO */}
+      {/* 5. FORMULARIO DE ALTA Y CONTACTO DIRECTO (SIN DOCUMENTACIÓN) */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-              Hablemos de tu Próximo Proyecto
+              Alta de Instalación / Primer Contacto
             </h2>
             <p className="text-gray-400 text-sm">
-              Selecciona la unidad de interés, déjanos tus datos y nos pondremos en contacto directamente.
+              Carga tu dominio corporativo y la ubicación de tu planta para estructurar el modelo inicial sin trámites innecesarios.
             </p>
           </div>
 
@@ -335,13 +370,13 @@ export default function Home() {
             {/* SELECCIÓN DE UNIDAD DE NEGOCIO */}
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
-                Unidad de Negocio de Interés
+                Unidad de Negocio Principal
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <button
                   type="button"
                   onClick={() => setSelectedUnit('agro')}
-                  className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
+                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
                     selectedUnit === 'agro' 
                       ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
                       : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
@@ -352,7 +387,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setSelectedUnit('ev')}
-                  className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
+                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
                     selectedUnit === 'ev' 
                       ? 'bg-[#00BFFF]/20 border-[#00BFFF] text-[#00BFFF]' 
                       : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
@@ -363,7 +398,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setSelectedUnit('flex')}
-                  className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
+                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
                     selectedUnit === 'flex' 
                       ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
                       : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
@@ -371,23 +406,34 @@ export default function Home() {
                 >
                   Nexergy Flex
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUnit('systems')}
+                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
+                    selectedUnit === 'systems' 
+                      ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
+                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                  }`}
+                >
+                  Systems & Twin
+                </button>
               </div>
             </div>
 
-            {/* CAMPOS DE ENTRADA */}
+            {/* CAMPOS CLAVE: DOMINIO Y MAPA */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                  Empresa / Dominio Corporativo
+                  Dominio Corporativo Principal
                 </label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
                   <input
                     type="text"
                     required
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="Ej: arcor.com.ar / Barrio Los Olivos"
+                    value={companyDomain}
+                    onChange={(e) => setCompanyDomain(e.target.value)}
+                    placeholder="arcor.com.ar / empresa.com"
                     className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
                   />
                 </div>
@@ -395,28 +441,44 @@ export default function Home() {
 
               <div>
                 <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                  Correo Electrónico
+                  Ubicación de Planta / Google Maps
                 </label>
-                <input
-                  type="email"
-                  required
-                  value={contactEmail}
-                  onChange={(e) => setContactEmail(e.target.value)}
-                  placeholder="contacto@empresa.com"
-                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-                />
+                <div className="relative">
+                  <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                  <input
+                    type="text"
+                    value={plantLocation}
+                    onChange={(e) => setPlantLocation(e.target.value)}
+                    placeholder="San Luis, Argentina / Link Google Maps"
+                    className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                  />
+                </div>
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                Detalle o Mensaje (Opcional)
+                Correo Electrónico de Contacto
+              </label>
+              <input
+                type="email"
+                required
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                placeholder="contacto@empresa.com"
+                className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                Notas sobre la Instalación (Opcional)
               </label>
               <textarea
-                rows={3}
+                rows={2}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Cuéntanos brevemente sobre la escala de tu proyecto o requerimiento..."
+                placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
                 className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
               />
             </div>
@@ -436,11 +498,11 @@ export default function Home() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Enviando Consulta...
+                  Registrando Instalación...
                 </>
               ) : (
                 <>
-                  Enviar Consulta Directa
+                  Iniciar Alta de Instalación
                   <Send className="w-4 h-4" />
                 </>
               )}
