@@ -20,7 +20,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       if (current && current[key] !== undefined) {
         current = current[key];
       } else {
-        return path; // Retorna la clave si no encuentra traducción
+        return path;
       }
     }
 
