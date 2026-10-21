@@ -290,7 +290,7 @@ export default function Home() {
               Metodología Operativa
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              El Método Nexergy de Solución de Problemas
+              El Método de Optimización y Solución de Problemas
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
               Nuestro protocolo sistemático de 5 pasos para eliminar ineficiencias, simplificar procesos y acelerar la transformación energética.
@@ -431,7 +431,7 @@ export default function Home() {
                     required
                     value={companyDomain}
                     onChange={(e) => setCompanyDomain(e.target.value)}
-                    placeholder="arcor.com.ar / empresa.com"
+                    placeholder="agd.com.ar / empresa.com"
                     className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
                   />
                 </div>
