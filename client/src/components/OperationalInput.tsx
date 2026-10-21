@@ -1,12 +1,27 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, FileUp, CheckCircle2, Database, Building2, FileText } from 'lucide-react';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, Zap, Factory, Sprout, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc';
 import { Streamdown } from 'streamdown';
 
+interface BusinessUnit {
+  id: string;
+  name: string;
+  icon: any;
+  description: string;
+}
+
+const businessUnits: BusinessUnit[] = [
+  { id: 'industrial', name: 'Industrial', icon: Factory, description: 'Auditoría, Gemelo Digital y Eficiencia' },
+  { id: 'agro', name: 'Agro & Biomasa', icon: Sprout, description: 'Valorización de residuos y Bioenergía' },
+  { id: 'ev-charge', name: 'EV Charge', icon: Car, description: 'Estaciones de Carga y Microredes' },
+  { id: 'flex', name: 'Nexergy Flex', icon: Zap, description: 'Convertidores SST/VSC Bidireccionales' },
+];
+
 export default function OperationalInput() {
   const [sourceName, setSourceName] = useState('');
+  const [selectedUnit, setSelectedUnit] = useState<string>('industrial');
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +29,7 @@ export default function OperationalInput() {
   const [response, setResponse] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mutaciones tRPC hacia Cloudflare D1, R2 y LLM
+  // Mutaciones tRPC
   const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
   const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
@@ -23,6 +38,35 @@ export default function OperationalInput() {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setUploadStatus(`Archivo seleccionado: ${e.target.files[0].name}`);
+    }
+  };
+
+  const uploadToR2 = async (fileToUpload: File) => {
+    setIsUploading(true);
+    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
+
+    try {
+      const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
+        fileName: fileToUpload.name,
+        fileType: fileToUpload.type || 'application/octet-stream',
+      });
+
+      setUploadStatus('Subiendo archivo a Cloudflare R2...');
+      
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
+
+      setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
+      throw err;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -36,69 +80,94 @@ export default function OperationalInput() {
 
     setIsLoading(true);
     setResponse('');
-    setUploadStatus('Conectando con Cloudflare D1 + R2...');
+    setUploadStatus('Iniciando ingesta de datos...');
 
     try {
-      // 1. Guardar registro de dominio en Cloudflare D1
-      if (sourceName.trim()) {
-        await createIngestionMutation.mutateAsync({
-          sourceName: sourceName.trim(),
-        });
-      }
-
-      // 2. Subida directa del archivo técnico/factura a Cloudflare R2 vía presigned URL
+      // 1. Carga de archivo a R2 si está presente
       if (file) {
-        setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
-        setIsUploading(true);
-
-        const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
-          fileName: file.name,
-          fileType: file.type || 'application/octet-stream',
-        });
-
-        const uploadRes = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type || 'application/octet-stream' },
-          body: file,
-        });
-
-        if (!uploadRes.ok) throw new Error('Error al enviar el archivo a Cloudflare R2');
-        setIsUploading(false);
+        await uploadToR2(file);
       }
 
-      setUploadStatus(`¡Instalación "${sourceName || file?.name}" e información técnica indexadas con éxito!`);
+      // 2. Registro de Ingesta en Cloudflare D1 vinculando la Unidad de Negocio
+      if (sourceName.trim()) {
+        const fullSourceName = `[${selectedUnit.toUpperCase()}] ${sourceName.trim()}`;
+        await createIngestionMutation.mutateAsync({ sourceName: fullSourceName });
+      }
 
-      // 3. Generar evaluación preliminar técnica
-      const prompt = `You are NEXERGY AI. Provide a brief operational status assessment for domain/plant: ${sourceName || file?.name}. Include technical recommendations.`;
-      const result = await analyzeMutation.mutateAsync({ prompt });
-      const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+      // 3. Generación de Análisis Técnico Operativo con LLM
+      const unitLabel = businessUnits.find(u => u.id === selectedUnit)?.name || 'Industrial';
+      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Provide a concise operational analysis for installation: ${sourceName || file?.name} under business unit: ${unitLabel}. Include specific technical recommendations.`;
+
+      const res = await analyzeMutation.mutateAsync({ prompt });
+      const content = typeof res.content === 'string' ? res.content : JSON.stringify(res.content);
+
       setResponse(content);
-
-      setSourceName('');
-      setFile(null);
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito para la unidad ${unitLabel}!`);
     } catch (error: any) {
-      console.error('Error durante la ingesta:', error);
-      setUploadStatus(`Error al procesar: ${error?.message || 'Fallo de conexión'}`);
+      console.error('Ingestion error:', error);
+      setUploadStatus(`Error durante la ingesta: ${error?.message || 'Fallo de conexión'}`);
     } finally {
       setIsLoading(false);
-      setIsUploading(false);
     }
   };
 
   return (
-    <section id="analytics" className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
+    <section id="analytics" className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-10"
+        >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Onboarding Corporativo
           </h2>
-          <p className="text-gray-400 text-base leading-relaxed">
-            Ingresá los datos de contexto de tu planta o instalación industrial para estructurar el modelo de gemelo digital y simular escenarios de optimización.
+          <p className="text-gray-400 text-base max-w-2xl mx-auto leading-relaxed">
+            Ingresá los datos de contexto de tu instalación y seleccioná la unidad de negocio correspondiente para estructurar el Digital Twin.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 md:p-8 shadow-2xl space-y-5 mb-8">
-          {/* Campo Dominio / Instalación */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+          className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8 space-y-6"
+        >
+          {/* Selector de Unidad de Negocio */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
+              Unidad de Negocio
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {businessUnits.map((unit) => {
+                const Icon = unit.icon;
+                const isSelected = selectedUnit === unit.id;
+                return (
+                  <button
+                    key={unit.id}
+                    type="button"
+                    onClick={() => setSelectedUnit(unit.id)}
+                    className={`p-3 rounded-lg border transition-all text-left flex flex-col justify-between ${
+                      isSelected
+                        ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.12)] text-white'
+                        : 'border-gray-800 bg-[#070c1e] text-gray-400 hover:border-gray-600'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-[#00BFFF]' : 'text-gray-500'}`} />
+                    <div>
+                      <div className="text-xs font-bold">{unit.name}</div>
+                      <div className="text-[10px] text-gray-500 line-clamp-1">{unit.description}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Campo Nombre de Instalación / Dominio */}
           <div>
             <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-[#00BFFF]" />
@@ -115,7 +184,8 @@ export default function OperationalInput() {
 
           {/* Carga de Archivos */}
           <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#00BFFF]" />
               Adjuntar Archivo Técnico / Factura (Opcional)
             </label>
             <div
@@ -127,16 +197,16 @@ export default function OperationalInput() {
                 type="file"
                 className="hidden"
                 onChange={handleFileChange}
-                accept=".xlsx,.xls,.csv,.pdf,.docx,.txt,.pst"
+                accept=".xlsx,.xls,.csv,.pdf,.docx,.txt"
               />
-              <FileUp className="w-8 h-8 text-[#00BFFF]" />
-              <p className="text-sm font-medium text-gray-200">
-                {file ? `Seleccionado: ${file.name}` : "Hacé clic para seleccionar un archivo (.xlsx, .pdf, .csv, .txt)"}
+              <Upload className="w-7 h-7 text-[#00BFFF] animate-pulse" />
+              <p className="text-sm text-gray-200 font-medium">
+                {file ? `Seleccionado: ${file.name}` : 'Hacé clic para seleccionar un archivo (.xlsx, .pdf, .csv, .txt)'}
               </p>
             </div>
           </div>
 
-          {/* Mensaje de Estado */}
+          {/* Estado de Transmisión */}
           {uploadStatus && (
             <div className="p-3 rounded bg-cyan-950/40 border border-cyan-500/30 text-xs text-[#00BFFF] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
@@ -144,7 +214,7 @@ export default function OperationalInput() {
             </div>
           )}
 
-          {/* Botón de Ingesta */}
+          {/* Acciones */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
             <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
               <Database className="w-4 h-4" />
@@ -170,9 +240,9 @@ export default function OperationalInput() {
               )}
             </Button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Respuesta Analysis */}
+        {/* Muestreo de Respuesta del LLM */}
         {response && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
