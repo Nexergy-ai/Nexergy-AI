@@ -1,32 +1,39 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, Zap, Factory, Sprout, Car } from 'lucide-react';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { Streamdown } from 'streamdown';
+import { useLanguage } from '@/context/LanguageContext';
 
-interface BusinessUnit {
+interface Sector {
   id: string;
-  name: string;
-  icon: any;
-  description: string;
+  nameKey: string;
+  emoji: string;
+  defaultName: string;
 }
 
-const businessUnits: BusinessUnit[] = [
-  { id: 'industrial', name: 'Industrial', icon: Factory, description: 'Auditoría, Gemelo Digital y Eficiencia' },
-  { id: 'agro', name: 'Agro & Biomasa', icon: Sprout, description: 'Valorización de residuos y Bioenergía' },
-  { id: 'ev-charge', name: 'EV Charge', icon: Car, description: 'Estaciones de Carga y Microredes' },
-  { id: 'flex', name: 'Nexergy Flex', icon: Zap, description: 'Convertidores SST/VSC Bidireccionales' },
+const sectors: Sector[] = [
+  { id: 'manufacturing', nameKey: 'Manufactura', emoji: '🏭', defaultName: 'Manufactura' },
+  { id: 'energy', nameKey: 'Energía', emoji: '⚡', defaultName: 'Energía' },
+  { id: 'logistics', nameKey: 'Logística', emoji: '📦', defaultName: 'Logística' },
+  { id: 'healthcare', nameKey: 'Salud', emoji: '🏥', defaultName: 'Salud' },
+  { id: 'mining', name: 'Minería', emoji: '⛏️', defaultName: 'Minería' },
 ];
 
 export default function OperationalInput() {
+  const { t } = useLanguage();
   const [sourceName, setSourceName] = useState('');
-  const [selectedUnit, setSelectedUnit] = useState<string>('industrial');
+  const [context, setContext] = useState('');
+  const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [response, setResponse] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Estados para la carga de archivos en Cloudflare R2
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [response, setResponse] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mutaciones tRPC
@@ -52,7 +59,7 @@ export default function OperationalInput() {
       });
 
       setUploadStatus('Subiendo archivo a Cloudflare R2...');
-      
+
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
         body: fileToUpload,
@@ -72,9 +79,10 @@ export default function OperationalInput() {
 
   const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    if (!sourceName.trim() && !file) {
-      alert('Por favor ingresá el Nombre de tu instalación / Dominio Corporativo o adjuntá un archivo.');
+    if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
+      alert('Por favor ingresa tu Dominio Corporativo, contexto operativo o adjunta un archivo.');
       return;
     }
 
@@ -83,29 +91,41 @@ export default function OperationalInput() {
     setUploadStatus('Iniciando ingesta de datos...');
 
     try {
-      // 1. Carga de archivo a R2 si está presente
+      // 1. Carga de archivo a Cloudflare R2 si está presente
       if (file) {
         await uploadToR2(file);
       }
 
-      // 2. Registro de Ingesta en Cloudflare D1 vinculando la Unidad de Negocio
+      // 2. Registro del Dominio Corporativo en Cloudflare D1
       if (sourceName.trim()) {
-        const fullSourceName = `[${selectedUnit.toUpperCase()}] ${sourceName.trim()}`;
-        await createIngestionMutation.mutateAsync({ sourceName: fullSourceName });
+        await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
       }
 
-      // 3. Generación de Análisis Técnico Operativo con LLM
-      const unitLabel = businessUnits.find(u => u.id === selectedUnit)?.name || 'Industrial';
-      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Provide a concise operational analysis for installation: ${sourceName || file?.name} under business unit: ${unitLabel}. Include specific technical recommendations.`;
+      const sectorObj = selectedSector ? sectors.find(s => s.id === selectedSector) : null;
+      const sectorName = sectorObj ? sectorObj.defaultName : 'General';
+      const fileInfo = file ? `\nArchivo Adjunto: ${file.name}` : '';
+      const sourceInfo = sourceName ? `\nDominio Corporativo: ${sourceName}` : '';
 
-      const res = await analyzeMutation.mutateAsync({ prompt });
-      const content = typeof res.content === 'string' ? res.content : JSON.stringify(res.content);
+      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
 
+Operational Context: ${context || `Default scenario for ${sectorName}`} ${sourceInfo} ${fileInfo}
+Industry Sector: ${sectorName}
+
+Provide:
+1. Operational Status Assessment (2-3 sentences)
+2. Key Intelligence Findings (3-4 bullet points)
+3. Recommended Actions (2-3 specific recommendations)
+4. Risk Indicators (2-3 identified risks)
+Be technical, specific, and actionable.`;
+
+      const result = await analyzeMutation.mutateAsync({ prompt });
+      const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito!`);
       setResponse(content);
-      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito para la unidad ${unitLabel}!`);
     } catch (error: any) {
-      console.error('Ingestion error:', error);
-      setUploadStatus(`Error durante la ingesta: ${error?.message || 'Fallo de conexión'}`);
+      console.error('Error:', error);
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada!`);
     } finally {
       setIsLoading(false);
     }
@@ -119,13 +139,16 @@ export default function OperationalInput() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Onboarding Corporativo
-          </h2>
-          <p className="text-gray-400 text-base max-w-2xl mx-auto leading-relaxed">
-            Ingresá los datos de contexto de tu instalación y seleccioná la unidad de negocio correspondiente para estructurar el Digital Twin.
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Building2 className="w-8 h-8 text-[#00BFFF]" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              {t('hero.title')} <span className="text-[#00BFFF]">- {t('hero.subtitle')}</span>
+            </h2>
+          </div>
+          <p className="text-gray-400 text-base max-w-2xl mx-auto">
+            {t('hero.description')}
           </p>
         </motion.div>
 
@@ -134,87 +157,93 @@ export default function OperationalInput() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
-          className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8 space-y-6"
+          className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8"
         >
-          {/* Selector de Unidad de Negocio */}
-          <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
-              Unidad de Negocio
+          {/* Dominio Principal de la Empresa */}
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-white mb-2">
+              {t('hero.domainLabel')}
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {businessUnits.map((unit) => {
-                const Icon = unit.icon;
-                const isSelected = selectedUnit === unit.id;
-                return (
-                  <button
-                    key={unit.id}
-                    type="button"
-                    onClick={() => setSelectedUnit(unit.id)}
-                    className={`p-3 rounded-lg border transition-all text-left flex flex-col justify-between ${
-                      isSelected
-                        ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.12)] text-white'
-                        : 'border-gray-800 bg-[#070c1e] text-gray-400 hover:border-gray-600'
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-[#00BFFF]' : 'text-gray-500'}`} />
-                    <div>
-                      <div className="text-xs font-bold">{unit.name}</div>
-                      <div className="text-[10px] text-gray-500 line-clamp-1">{unit.description}</div>
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="relative flex items-center">
+              <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
+              <input
+                type="text"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
+                placeholder={t('hero.domainPlaceholder')}
+                className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
+              />
             </div>
+            <p className="text-xs text-gray-400 mt-2">
+              {t('hero.domainHelp')}
+            </p>
           </div>
 
-          {/* Campo Nombre de Instalación / Dominio */}
-          <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-[#00BFFF]" />
-              Nombre de tu instalación, Dominio Corporativo...
-            </label>
-            <input
-              type="text"
-              value={sourceName}
-              onChange={(e) => setSourceName(e.target.value)}
-              placeholder="Ej: agd.com.ar / Planta Industrial Central"
-              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-            />
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">
+            {t('hero.sectorTitle')}
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            {sectors.map((sector) => (
+              <button
+                key={sector.id}
+                type="button"
+                onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
+                className={`p-4 rounded-lg border transition-all duration-300 text-center cursor-pointer ${
+                  selectedSector === sector.id
+                    ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.15)]'
+                    : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
+                }`}
+              >
+                <div className="text-2xl mb-2">{sector.emoji}</div>
+                <div className="text-xs font-semibold text-white">{sector.defaultName}</div>
+              </button>
+            ))}
           </div>
 
           {/* Carga de Archivos */}
-          <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#00BFFF]" />
-              Adjuntar Archivo Técnico / Factura (Opcional)
-            </label>
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-colors flex flex-col items-center justify-center gap-2"
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-                accept=".xlsx,.xls,.csv,.pdf,.docx,.txt"
-              />
-              <Upload className="w-7 h-7 text-[#00BFFF] animate-pulse" />
-              <p className="text-sm text-gray-200 font-medium">
-                {file ? `Seleccionado: ${file.name}` : 'Hacé clic para seleccionar un archivo (.xlsx, .pdf, .csv, .txt)'}
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+            {t('hero.fileUploadTitle')}
+          </h3>
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              onChange={handleFileChange}
+              accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt"
+            />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <Upload className="w-7 h-7 text-[#00BFFF] animate-bounce" />
+              <p className="text-white font-medium text-sm">
+                {file ? `Seleccionado: ${file.name}` : t('hero.fileUploadPlaceholder')}
+              </p>
+              <p className="text-xs text-gray-400">
+                {t('hero.fileUploadHelp')}
               </p>
             </div>
           </div>
 
-          {/* Estado de Transmisión */}
           {uploadStatus && (
-            <div className="p-3 rounded bg-cyan-950/40 border border-cyan-500/30 text-xs text-[#00BFFF] flex items-center gap-2">
+            <div className="mb-6 p-3 rounded bg-[#00BFFF]/10 border border-[#00BFFF] text-xs text-[#00BFFF] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
               <span>{uploadStatus}</span>
             </div>
           )}
 
-          {/* Acciones */}
+          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+            {t('hero.contextTitle')}
+          </h3>
+          <Textarea
+            placeholder={t('hero.contextPlaceholder')}
+            value={context}
+            onChange={(e) => setContext(e.target.value)}
+            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-[#00BFFF]"
+            rows={3}
+          />
+
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
             <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
               <Database className="w-4 h-4" />
@@ -225,34 +254,37 @@ export default function OperationalInput() {
               type="button"
               onClick={simulateIntelligence}
               disabled={isLoading || isUploading || createIngestionMutation.isPending}
-              className="w-full sm:w-auto px-6 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isLoading || isUploading || createIngestionMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Procesando Ingesta...
+                  {createIngestionMutation.isPending
+                    ? 'Guardando en D1...'
+                    : isUploading
+                    ? 'Subiendo a R2...'
+                    : 'Ingestando Datos...'}
                 </>
               ) : (
                 <>
-                  Iniciar Ingesta
-                  <Upload className="w-4 h-4" />
+                  {t('hero.submitButton')}
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </Button>
           </div>
         </motion.div>
 
-        {/* Muestreo de Respuesta del LLM */}
         {response && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="p-8 rounded-lg border border-cyan-500/40 bg-[#0a0e27] shadow-2xl"
+            className="p-8 rounded-lg border border-[#00FF7F]/40 bg-[#0a0e27]"
           >
-            <h3 className="text-xl font-bold text-[#00BFFF] mb-6 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-[#00FF7F] mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Análisis Técnico de Inteligencia Operativa
+              Análisis de Inteligencia
             </h3>
             <div className="text-gray-300 text-sm leading-relaxed">
               <Streamdown>{response}</Streamdown>
@@ -260,6 +292,9 @@ export default function OperationalInput() {
           </motion.div>
         )}
       </div>
+
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
+      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
     </section>
   );
 }
