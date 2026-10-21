@@ -46,7 +46,7 @@ export default function OperationalInput() {
         });
       }
 
-      // 2. Subida directa del archivo a Cloudflare R2
+      // 2. Subida directa del archivo técnico/factura a Cloudflare R2 vía presigned URL
       if (file) {
         setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
         setIsUploading(true);
@@ -108,7 +108,7 @@ export default function OperationalInput() {
               type="text"
               value={sourceName}
               onChange={(e) => setSourceName(e.target.value)}
-              placeholder="Ej: agd.com.ar / Planta Industrial Central"
+              placeholder="Ej: arcor.com.ar / Planta Industrial Central"
               className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
             />
           </div>
