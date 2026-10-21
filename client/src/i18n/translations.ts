@@ -9,16 +9,11 @@ export const translations = {
       join: "UNIRSE / ONBOARDING",
     },
     hero: {
-      title: "NEXERGY AI",
-      subtitle: "INTELIGENCIA OPERACIONAL",
-      orchestrator: "ORQUESTADOR DE EXPERIENCIA",
-      viewDashboard: "VER DASHBOARD",
-      sendQuery: "Enviar consulta",
-    },
-    onboarding: {
-      domainLabel: "Nombre de tu instalación, Dominio Corporativo...",
+      title: "Onboarding Corporativo",
+      subtitle: "Start for Free",
+      domainLabel: "Dominio Corporativo Principal",
       domainPlaceholder: "Ej: arcor.com.ar / Planta Industrial",
-      submit: "Continuar",
+      submitButton: "Iniciar Ingesta",
     }
   },
   EN: {
@@ -29,16 +24,11 @@ export const translations = {
       join: "JOIN / ONBOARDING",
     },
     hero: {
-      title: "NEXERGY AI",
-      subtitle: "OPERATIONAL INTELLIGENCE",
-      orchestrator: "EXPERIENCE ORCHESTRATOR",
-      viewDashboard: "VIEW DASHBOARD",
-      sendQuery: "Send inquiry",
-    },
-    onboarding: {
-      domainLabel: "Facility Name, Corporate Domain...",
+      title: "Corporate Onboarding",
+      subtitle: "Start for Free",
+      domainLabel: "Primary Corporate Domain",
       domainPlaceholder: "e.g. arcor.com.ar / Main Plant",
-      submit: "Continue",
+      submitButton: "Start Ingestion",
     }
   },
   PT: {
@@ -49,16 +39,11 @@ export const translations = {
       join: "ENTRAR / ONBOARDING",
     },
     hero: {
-      title: "NEXERGY AI",
-      subtitle: "INTELIGÊNCIA OPERACIONAL",
-      orchestrator: "ORQUESTRADOR DE EXPERIÊNCIA",
-      viewDashboard: "VER PAINEL",
-      sendQuery: "Enviar consulta",
-    },
-    onboarding: {
-      domainLabel: "Nome da sua instalação, Domínio Corporativo...",
+      title: "Onboarding Corporativo",
+      subtitle: "Start for Free",
+      domainLabel: "Domínio Corporativo Principal",
       domainPlaceholder: "Ex: arcor.com.ar / Planta Industrial",
-      submit: "Continuar",
+      submitButton: "Iniciar Ingestão",
     }
   }
 };
