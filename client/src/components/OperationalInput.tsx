@@ -46,7 +46,7 @@ export default function OperationalInput() {
         });
       }
 
-      // 2. Subida directa del archivo técnico/factura a Cloudflare R2 vía presigned URL
+      // 2. Subida directa del archivo a Cloudflare R2
       if (file) {
         setUploadStatus(`Subiendo ${file.name} a Cloudflare R2...`);
         setIsUploading(true);
