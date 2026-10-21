@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import Hero from '@/components/Hero';
-import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import OperationalOrchestrator from '@/components/OperationalOrchestrator';
 import OperationalInput from '@/components/OperationalInput';
 import OperationalDashboard from '@/components/OperationalDashboard';
