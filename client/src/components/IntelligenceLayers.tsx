@@ -1,11 +1,12 @@
 import { Zap, Brain, Cpu, Microscope, Shield } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface IntelligenceLayer {
   id: string;
   name: string;
   metrics: string[];
   icon: React.ReactNode;
-  description: string;
+  descKey: 'industrial' | 'energy' | 'agents' | 'digitalTwin' | 'labs';
   href?: string;
 }
 
@@ -15,14 +16,14 @@ const layers: IntelligenceLayer[] = [
     name: 'INDUSTRIAL',
     metrics: ['Uptime', 'Efficiency', 'Downtime'],
     icon: <Cpu className="w-5 h-5" />,
-    description: 'Predictive maintenance and industrial optimization',
+    descKey: 'industrial',
   },
   {
     id: 'energy',
     name: 'ENERGY',
     metrics: ['Efficiency', 'Consumption', 'Optimization'],
     icon: <Zap className="w-5 h-5" />,
-    description: 'Energy efficiency and operational energy intelligence',
+    descKey: 'energy',
     href: 'https://optinexai.vercel.app',
   },
   {
@@ -30,34 +31,36 @@ const layers: IntelligenceLayer[] = [
     name: 'AGENTS',
     metrics: ['Autonomy', 'Actions', 'Decisions'],
     icon: <Brain className="w-5 h-5" />,
-    description: 'AI operational orchestration',
+    descKey: 'agents',
   },
   {
     id: 'digital-twin',
     name: 'DIGITAL TWIN',
     metrics: ['Prediction', 'Scenarios', 'Simulation'],
     icon: <Microscope className="w-5 h-5" />,
-    description: 'Simulation and predictive modeling',
+    descKey: 'digitalTwin',
   },
   {
     id: 'labs',
     name: 'LABS',
     metrics: ['Innovation', 'Research', 'Development'],
     icon: <Shield className="w-5 h-5" />,
-    description: 'Governance, AI integrity and R&D',
+    descKey: 'labs',
   },
 ];
 
 export default function IntelligenceLayers() {
+  const { t } = useLanguage();
+
   return (
-    <section className="py-24 px-6 border-t border-white/5">
+    <section id="intelligence" className="py-24 px-6 border-t border-white/5 bg-[#070c1e]">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
-            INTELLIGENCE LAYERS
+            {t('layers.title')}
           </h2>
           <p className="text-gray-500 max-w-2xl">
-            Modular AI capabilities designed for enterprise operational intelligence.
+            {t('layers.subtitle')}
           </p>
         </div>
 
@@ -72,7 +75,7 @@ export default function IntelligenceLayers() {
                   {layer.name}
                 </h3>
                 <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-                  {layer.description}
+                  {t(`layers.${layer.descKey}` as any)}
                 </p>
                 <div className="space-y-3">
                   {layer.metrics.map((metric, idx) => (
