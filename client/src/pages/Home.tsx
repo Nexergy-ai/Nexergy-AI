@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, Loader2, Globe, MapPin, ShieldCheck, Activity
+  ArrowRight, Loader2, Globe, MapPin, Activity 
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
@@ -63,7 +63,7 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
             <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
-            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO</a>
+            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">EL MÉTODO</a>
             <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
           </nav>
 
@@ -91,7 +91,7 @@ export default function Home() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Ingeniería, tecnología y estructuración legal-financiera para transformar biomasa en energía, integrar movilidad eléctrica y estructurar gemelos digitales industriales.
+            Ingeniería, tecnología e inteligencia operacional para transformar biomasa en energía, integrar movilidad eléctrica y estructurar gemelos digitales industriales.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. LAS 4 UNIDADES DE NEGOCIO (BROCHURES) */}
+      {/* 3. LAS 4 UNIDADES DE NEGOCIO */}
       <section id="unidades" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -282,7 +282,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. MÉTODO NEXERGY DE OPTIMIZACIÓN OPERACIONAL */}
+      {/* 4. SECCIÓN VISUAL DEL MÉTODO NEXERGY */}
       <section id="metodo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -290,10 +290,10 @@ export default function Home() {
               Metodología Operativa
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              El Método de Optimización Nexergy
+              El Método Nexergy de Solución de Problemas
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Nuestro protocolo sistemático de 5 pasos para solucionar problemas complejos, eliminar ineficiencias y acelerar el retorno de inversión.
+              Nuestro protocolo sistemático de 5 pasos para eliminar ineficiencias, simplificar procesos y acelerar la transformación energética.
             </p>
           </div>
 
@@ -302,9 +302,9 @@ export default function Home() {
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
               <div>
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">01</span>
-                <h3 className="text-sm font-bold text-white mb-2">Hacer Requisitos Menos Tontos</h3>
+                <h3 className="text-sm font-bold text-white mb-2">Hacer Requisitos SMART</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frena el proyecto.
+                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frenan la factibilidad.
                 </p>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default function Home() {
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">02</span>
                 <h3 className="text-sm font-bold text-white mb-2">Eliminar Partes del Proceso</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Removemos componentes, intermediarios y etapas prescindibles para acortar la cadena de ejecución.
+                  Removemos componentes, intermediarios y trámites prescindibles para acortar la cadena de ejecución.
                 </p>
               </div>
             </div>
@@ -324,7 +324,7 @@ export default function Home() {
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">03</span>
                 <h3 className="text-sm font-bold text-white mb-2">Simplificar u Optimizar</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Optimizamos únicamente lo indispensable, evitando perfeccionar pasos innecesarios.
+                  Optimizamos únicamente lo indispensable, evitando perfeccionar etapas que nunca debieron existir.
                 </p>
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function Home() {
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">04</span>
                 <h3 className="text-sm font-bold text-white mb-2">Acelerar Tiempo de Ciclo</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Comprimimos la velocidad de respuesta e iteración para lograr resultados en tiempo récord.
+                  Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.
                 </p>
               </div>
             </div>
@@ -344,7 +344,7 @@ export default function Home() {
                 <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">05</span>
                 <h3 className="text-sm font-bold text-white mb-2">Automatizar</h3>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Desplegamos capas de control e inteligencia sobre el flujo simplificado para garantizar operación continua.
+                  Desplegamos capas de control e inteligencia operacional sobre el flujo simplificado.
                 </p>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FORMULARIO DE ALTA Y CONTACTO DIRECTO (SIN DOCUMENTACIÓN) */}
+      {/* 5. FORMULARIO DE ALTA Y CONTACTO DIRECTO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
@@ -367,7 +367,6 @@ export default function Home() {
 
           <form onSubmit={handleContactSubmit} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
             
-            {/* SELECCIÓN DE UNIDAD DE NEGOCIO */}
             <div>
               <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
                 Unidad de Negocio Principal
@@ -420,7 +419,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* CAMPOS CLAVE: DOMINIO Y MAPA */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
