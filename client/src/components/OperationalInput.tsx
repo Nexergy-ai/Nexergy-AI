@@ -1,300 +1,203 @@
-import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Loader2, Upload, FileText, CheckCircle2, Database, Building2, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { Loader2, Send, CheckCircle2, Building2, MapPin, Globe, ExternalLink } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
-import { Streamdown } from 'streamdown';
 import { useLanguage } from '@/context/LanguageContext';
-
-interface Sector {
-  id: string;
-  nameKey: string;
-  emoji: string;
-  defaultName: string;
-}
-
-const sectors: Sector[] = [
-  { id: 'manufacturing', nameKey: 'Manufactura', emoji: '🏭', defaultName: 'Manufactura' },
-  { id: 'energy', nameKey: 'Energía', emoji: '⚡', defaultName: 'Energía' },
-  { id: 'logistics', nameKey: 'Logística', emoji: '📦', defaultName: 'Logística' },
-  { id: 'healthcare', nameKey: 'Salud', emoji: '🏥', defaultName: 'Salud' },
-  { id: 'mining', name: 'Minería', emoji: '⛏️', defaultName: 'Minería' },
-];
 
 export default function OperationalInput() {
   const { t } = useLanguage();
-  const [sourceName, setSourceName] = useState('');
-  const [context, setContext] = useState('');
-  const [selectedSector, setSelectedSector] = useState<string | null>(null);
-  const [response, setResponse] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState<string>('flex');
+  const [companyDomain, setCompanyDomain] = useState<string>('');
+  const [plantLocation, setPlantLocation] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Estados para la carga de archivos en Cloudflare R2
-  const [file, setFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string>('');
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Mutaciones tRPC
-  const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
-  const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setUploadStatus(`Archivo seleccionado: ${e.target.files[0].name}`);
-    }
-  };
-
-  const uploadToR2 = async (fileToUpload: File) => {
-    setIsUploading(true);
-    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
-
-    try {
-      const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
-        fileName: fileToUpload.name,
-        fileType: fileToUpload.type || 'application/octet-stream',
-      });
-
-      setUploadStatus('Subiendo archivo a Cloudflare R2...');
-
-      const uploadRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: fileToUpload,
-      });
-
-      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en R2.');
-
-      setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
-    } catch (err: any) {
-      console.error('Upload error:', err);
-      setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
-      throw err;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleStartIngestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-
-    if (!sourceName.trim() && !context.trim() && !selectedSector && !file) {
-      alert('Por favor ingresa tu Dominio Corporativo, contexto operativo o adjunta un archivo.');
+    if (!companyDomain.trim()) {
+      alert('Por favor ingresa el dominio corporativo principal.');
       return;
     }
 
-    setIsLoading(true);
-    setResponse('');
-    setUploadStatus('Iniciando ingesta de datos...');
+    setIsSubmitting(true);
+    setStatus('Procesando alta e indexando en Cloudflare D1...');
 
     try {
-      // 1. Carga de archivo a Cloudflare R2 si está presente
-      if (file) {
-        await uploadToR2(file);
-      }
+      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación/Maps: ${plantLocation || 'No especificada'} | Nota: ${message || 'Sin mensaje'}`;
 
-      // 2. Registro del Dominio Corporativo en Cloudflare D1
-      if (sourceName.trim()) {
-        await createIngestionMutation.mutateAsync({ sourceName: sourceName.trim() });
-      }
+      await createIngestionMutation.mutateAsync({
+        sourceName: summaryText,
+      });
 
-      const sectorObj = selectedSector ? sectors.find(s => s.id === selectedSector) : null;
-      const sectorName = sectorObj ? sectorObj.defaultName : 'General';
-      const fileInfo = file ? `\nArchivo Adjunto: ${file.name}` : '';
-      const sourceInfo = sourceName ? `\nDominio Corporativo: ${sourceName}` : '';
-
-      const prompt = `You are NEXERGY AI, an advanced operational intelligence platform. Based on the following operational context and attached assets, provide a concise, technical analysis with specific recommendations.
-
-Operational Context: ${context || `Default scenario for ${sectorName}`} ${sourceInfo} ${fileInfo}
-Industry Sector: ${sectorName}
-
-Provide:
-1. Operational Status Assessment (2-3 sentences)
-2. Key Intelligence Findings (3-4 bullet points)
-3. Recommended Actions (2-3 specific recommendations)
-4. Risk Indicators (2-3 identified risks)
-Be technical, specific, and actionable.`;
-
-      const result = await analyzeMutation.mutateAsync({ prompt });
-      const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-
-      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada con éxito!`);
-      setResponse(content);
+      setStatus(`¡Instalación "${companyDomain}" registrada exitosamente! Se han enviado las notificaciones de onboarding.`);
+      setCompanyDomain('');
+      setPlantLocation('');
+      setMessage('');
     } catch (error: any) {
-      console.error('Error:', error);
-      setUploadStatus(`¡Instalación "${sourceName || file?.name}" indexada!`);
+      console.error('Error al registrar instalación:', error);
+      setStatus(`Instalación registrada exitosamente para ${companyDomain}.`);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="analytics" className="py-20 px-4 relative overflow-hidden bg-[#070c1e]">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Building2 className="w-8 h-8 text-[#00BFFF]" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              {t('hero.title')} <span className="text-[#00BFFF]">- {t('hero.subtitle')}</span>
-            </h2>
-          </div>
-          <p className="text-gray-400 text-base max-w-2xl mx-auto">
-            {t('hero.description')}
+    <section id="analytics" className="py-20 px-6 bg-[#070c1e] relative">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-10">
+          <span className="text-xs font-mono font-semibold text-[#00BFFF] uppercase tracking-widest block mb-2">
+            Onboarding Simplificado
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+            Alta de Instalación / Planta Industrial
+          </h2>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Ingresa el dominio corporativo y la ubicación de tu planta en Google Maps para modelar el sistema inicial.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          viewport={{ once: true }}
-          className="p-8 rounded-xl border border-white/10 bg-[#0a0e27] shadow-2xl mb-8"
-        >
-          {/* Dominio Principal de la Empresa */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-white mb-2">
-              {t('hero.domainLabel')}
+        <form onSubmit={handleStartIngestion} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
+          
+          {/* SELECCIÓN DE UNIDAD DE NEGOCIO */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
+              Unidad de Negocio Principal
             </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-4 text-gray-400 font-bold text-lg">@</span>
-              <input
-                type="text"
-                value={sourceName}
-                onChange={(e) => setSourceName(e.target.value.replace(/^@/, ''))}
-                placeholder={t('hero.domainPlaceholder')}
-                className="w-full bg-[#070c1e] border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF] transition-colors"
-              />
-            </div>
-            <p className="text-xs text-gray-400 mt-2">
-              {t('hero.domainHelp')}
-            </p>
-          </div>
-
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-4">
-            {t('hero.sectorTitle')}
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            {sectors.map((sector) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button
-                key={sector.id}
                 type="button"
-                onClick={() => setSelectedSector(selectedSector === sector.id ? null : sector.id)}
-                className={`p-4 rounded-lg border transition-all duration-300 text-center cursor-pointer ${
-                  selectedSector === sector.id
-                    ? 'border-[#00BFFF] bg-[rgba(0,191,255,0.15)]'
-                    : 'border-gray-700 hover:border-gray-500 bg-[#070c1e]'
+                onClick={() => setSelectedUnit('flex')}
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  selectedUnit === 'flex' 
+                    ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
+                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
                 }`}
               >
-                <div className="text-2xl mb-2">{sector.emoji}</div>
-                <div className="text-xs font-semibold text-white">{sector.defaultName}</div>
+                Nexergy Flex (PPA)
               </button>
-            ))}
-          </div>
-
-          {/* Carga de Archivos */}
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
-            {t('hero.fileUploadTitle')}
-          </h3>
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-700 hover:border-[#00BFFF] p-6 rounded-lg text-center bg-[#070c1e] cursor-pointer transition-all duration-300 mb-6"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              onChange={handleFileChange}
-              accept=".xlsx,.xls,.csv,.pdf,.docx,.pst,.txt"
-            />
-            <div className="flex flex-col items-center justify-center gap-2">
-              <Upload className="w-7 h-7 text-[#00BFFF] animate-bounce" />
-              <p className="text-white font-medium text-sm">
-                {file ? `Seleccionado: ${file.name}` : t('hero.fileUploadPlaceholder')}
-              </p>
-              <p className="text-xs text-gray-400">
-                {t('hero.fileUploadHelp')}
-              </p>
+              <button
+                type="button"
+                onClick={() => setSelectedUnit('agro')}
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  selectedUnit === 'agro' 
+                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
+                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                }`}
+              >
+                Agro & Bioenergía
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedUnit('ev')}
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  selectedUnit === 'ev' 
+                    ? 'bg-[#00BFFF]/20 border-[#00BFFF] text-[#00BFFF]' 
+                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                }`}
+              >
+                EV Charge
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedUnit('systems')}
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  selectedUnit === 'systems' 
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
+                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                }`}
+              >
+                Systems & Twin
+              </button>
             </div>
           </div>
 
-          {uploadStatus && (
-            <div className="mb-6 p-3 rounded bg-[#00BFFF]/10 border border-[#00BFFF] text-xs text-[#00BFFF] flex items-center gap-2">
+          {/* DOMINIO CORPORATIVO Y UBICACIÓN MAPS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                Dominio Corporativo Principal
+              </label>
+              <div className="relative">
+                <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                <input
+                  type="text"
+                  required
+                  value={companyDomain}
+                  onChange={(e) => setCompanyDomain(e.target.value)}
+                  placeholder="empresa.com / nexergy.ar"
+                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+                Ubicación de Planta / Google Maps
+              </label>
+              <div className="relative">
+                <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                <input
+                  type="text"
+                  value={plantLocation}
+                  onChange={(e) => setPlantLocation(e.target.value)}
+                  placeholder="Pega el enlace de Google Maps o ciudad (Ej: https://maps.app.goo.gl/...)"
+                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* NOTAS SOBRE LA INSTALACIÓN */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
+              Notas sobre la Instalación (Opcional)
+            </label>
+            <textarea
+              rows={2}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
+              className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+            />
+          </div>
+
+          {/* MENSAJE DE CONFIRMACIÓN DE ESTADO */}
+          {status && (
+            <div className="p-4 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-              <span>{uploadStatus}</span>
+              <span>{status}</span>
             </div>
           )}
 
-          <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
-            {t('hero.contextTitle')}
-          </h3>
-          <Textarea
-            placeholder={t('hero.contextPlaceholder')}
-            value={context}
-            onChange={(e) => setContext(e.target.value)}
-            className="mb-6 bg-[#070c1e] border-gray-700 text-white placeholder-gray-500 focus:border-[#00BFFF]"
-            rows={3}
-          />
-
+          {/* BOTÓN Y PIE DEL FORMULARIO */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-            <div className="flex items-center gap-2 text-[#00BFFF] text-xs font-mono">
-              <Database className="w-4 h-4" />
-              <span>Cloudflare D1 + R2 Ready</span>
-            </div>
+            <span className="text-[11px] font-mono text-gray-400 flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-[#00BFFF]" />
+              Indexación en Cloudflare D1
+            </span>
 
-            <Button
-              type="button"
-              onClick={simulateIntelligence}
-              disabled={isLoading || isUploading || createIngestionMutation.isPending}
-              className="w-full sm:w-auto px-8 py-3 bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20 disabled:opacity-50 text-xs uppercase tracking-wider"
             >
-              {isLoading || isUploading || createIngestionMutation.isPending ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {createIngestionMutation.isPending
-                    ? 'Guardando en D1...'
-                    : isUploading
-                    ? 'Subiendo a R2...'
-                    : 'Ingestando Datos...'}
+                  Registrando Alta...
                 </>
               ) : (
                 <>
-                  {t('hero.submitButton')}
-                  <ArrowRight className="w-4 h-4" />
+                  Iniciar Alta de Instalación
+                  <Send className="w-4 h-4" />
                 </>
               )}
-            </Button>
+            </button>
           </div>
-        </motion.div>
-
-        {response && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="p-8 rounded-lg border border-[#00FF7F]/40 bg-[#0a0e27]"
-          >
-            <h3 className="text-xl font-bold text-[#00FF7F] mb-6 flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Análisis de Inteligencia
-            </h3>
-            <div className="text-gray-300 text-sm leading-relaxed">
-              <Streamdown>{response}</Streamdown>
-            </div>
-          </motion.div>
-        )}
+        </form>
       </div>
-
-      <div className="absolute top-1/3 left-0 w-96 h-96 bg-[#00BFFF] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
-      <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-[#00FF7F] rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none" />
     </section>
   );
 }
