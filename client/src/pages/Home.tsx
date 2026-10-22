@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, Loader2, Globe, MapPin, Activity, ShieldCheck 
+  ArrowRight, Loader2, Globe, MapPin, Activity, ShieldCheck, Mail, ExternalLink 
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
       
-      {/* 1. NAVEGACIÓN MINIMALISTA CON INVENTIVA PI */}
+      {/* 1. NAVEGACIÓN CON BOTÓN DE MAIL DIRECTO */}
       <header className="border-b border-white/10 backdrop-blur-md bg-[#070c1e]/80 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -58,7 +58,7 @@ export default function Home() {
             </span>
             <span className="hidden lg:inline-flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-widest px-2.5 py-1 rounded border border-[#00BFFF]/40 text-[#00BFFF] bg-[#00BFFF]/10">
               <ShieldCheck className="w-3 h-3 text-[#00BFFF]" />
-              USPTO Patent Pending: PYUS/J Bosso/PV/001
+              USPTO Patent Pending: PYUS/PV/001
             </span>
           </div>
 
@@ -69,11 +69,11 @@ export default function Home() {
           </nav>
 
           <a 
-            href="#contacto"
-            className="bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-all shadow-lg shadow-[#00BFFF]/20 flex items-center gap-2"
+            href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
+            className="bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-all shadow-lg shadow-[#00BFFF]/20 flex items-center gap-2 cursor-pointer"
           >
             Iniciar Proyecto
-            <ArrowRight className="w-4 h-4" />
+            <Mail className="w-4 h-4" />
           </a>
         </div>
       </header>
@@ -104,16 +104,17 @@ export default function Home() {
               <ArrowRight className="w-4 h-4" />
             </a>
             <a 
-              href="#contacto"
+              href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
               className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
             >
               Hablemos de tu Proyecto
+              <Mail className="w-4 h-4" />
             </a>
           </div>
         </div>
       </section>
 
-      {/* 3. LAS 4 UNIDADES DE NEGOCIO */}
+      {/* 3. TRES UNIDADES DE NEGOCIO + COMPLIANCE */}
       <section id="unidades" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -127,7 +128,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* UNIDAD 1: NEXERGY FLEX (PROTEGIDA USPTO) */}
+            {/* UNIDAD 1: NEXERGY FLEX (PATENT PENDING SIN APELLIDO) */}
             <div className="bg-[#0a0e27] border border-purple-500/40 rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
                 PATENT PENDING
@@ -518,13 +519,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER CON ACREDITACIÓN DE PROPIEDAD INTELECTUAL */}
-      <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500">
-        <p className="mb-2">© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
-        <p className="font-mono text-[10px] text-gray-400 mb-1">
-          USPTO Patent Pending Application Docket: PYUS/J Bosso/PV/001 · Serial No. 64/181,819
+      {/* FOOTER CON ENLACE A LINKTREE Y MARCA DE PATENTE PPA */}
+      <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
+        <p>© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
+        
+        <p className="font-mono text-[10px] text-gray-400">
+          USPTO Patent Pending Application Serial No. 64/181,819 · Docket: PYUS/PV/001
         </p>
-        <p className="font-mono text-[10px]">Tecnología argentina para un futuro sostenible · nexergy.ar</p>
+        
+        <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
+          <a 
+            href="mailto:contacto@nexergy.ar" 
+            className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors inline-flex items-center gap-1.5"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            contacto@nexergy.ar
+          </a>
+          <span className="text-gray-700">•</span>
+          <a 
+            href="https://linktr.ee/nexergy.ar" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            linktr.ee/nexergy.ar
+          </a>
+        </div>
       </footer>
 
     </div>
