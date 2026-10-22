@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { Loader2, Send, CheckCircle2, Building2, MapPin, Globe, ExternalLink } from 'lucide-react';
+import { Loader2, Send, CheckCircle2, Building2, MapPin, Globe } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
-import { useLanguage } from '@/context/LanguageContext';
 
 export default function OperationalInput() {
-  const { t } = useLanguage();
   const [selectedUnit, setSelectedUnit] = useState<string>('flex');
   const [companyDomain, setCompanyDomain] = useState<string>('');
   const [plantLocation, setPlantLocation] = useState<string>('');
@@ -142,7 +140,7 @@ export default function OperationalInput() {
                   type="text"
                   value={plantLocation}
                   onChange={(e) => setPlantLocation(e.target.value)}
-                  placeholder="Pega el enlace de Google Maps o ciudad (Ej: https://maps.app.goo.gl/...)"
+                  placeholder="Pega el enlace de Google Maps (Ej: https://www.google.com/maps/place/...)"
                   className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
                 />
               </div>
@@ -163,7 +161,7 @@ export default function OperationalInput() {
             />
           </div>
 
-          {/* MENSAJE DE CONFIRMACIÓN DE ESTADO */}
+          {/* MENSAJE DE CONFIRMACIÓN */}
           {status && (
             <div className="p-4 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
@@ -171,7 +169,7 @@ export default function OperationalInput() {
             </div>
           )}
 
-          {/* BOTÓN Y PIE DEL FORMULARIO */}
+          {/* BOTÓN Y SUBMIT */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
             <span className="text-[11px] font-mono text-gray-400 flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-[#00BFFF]" />
