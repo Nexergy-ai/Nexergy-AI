@@ -32,8 +32,19 @@ export function Navigation() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#070c1e]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        
+        {/* LOGO CON LA IMAGEN BLANCA INTEGRADA */}
         <div className="flex items-center gap-3">
-          <span className="text-xl font-bold tracking-wider text-white">NEXERGY</span>
+          <a href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <img 
+              src="/logo-white.png" 
+              alt="NEXERGY Logo" 
+              className="h-9 w-auto object-contain" 
+            />
+            <span className="text-xl font-black tracking-wider text-white">
+              NEX<span className="text-[#00BFFF]">E</span>RGY
+            </span>
+          </a>
         </div>
 
         <nav className="hidden md:flex items-center gap-8 text-sm text-gray-300">
