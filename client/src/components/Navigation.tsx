@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ManusDialog } from "./ManusDialog";
-import { Globe, ChevronDown } from "lucide-react";
+import { Globe, ChevronDown, Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Language } from "@/i18n/translations";
 
@@ -33,32 +33,29 @@ export function Navigation() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#070c1e]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
-        {/* LOGO CON LA IMAGEN BLANCA INTEGRADA */}
+        {/* LOGO OFICIAL CON LA 'E' CIAN DE MERCHANDISING */}
         <div className="flex items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <img 
-              src="/logo-white.png" 
-              alt="NEXERGY Logo" 
-              className="h-9 w-auto object-contain" 
-            />
             <span className="text-xl font-black tracking-wider text-white">
               NEX<span className="text-[#00BFFF]">E</span>RGY
             </span>
           </a>
         </div>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm text-gray-300">
-          <a href="#data-ingestion" className="hover:text-white transition-colors">{t('nav.dataIngestion')}</a>
-          <a href="#intelligence" className="hover:text-white transition-colors">{t('nav.intelligence')}</a>
-          <a href="#governance" className="hover:text-white transition-colors">{t('nav.governance')}</a>
+        {/* NAVEGACIÓN PRINCIPAL */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
+          <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
+          <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO NEXERGY</a>
+          <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
         </nav>
 
+        {/* ZONA DERECHA: SELECTOR DE IDIOMA Y BOTÓN DE MAIL DIRECTO */}
         <div className="flex items-center gap-4">
           <div className="relative">
             <button
               type="button"
               onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-              className="flex items-center gap-2 bg-[#0a0e27] hover:bg-white/10 text-gray-200 border border-white/15 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+              className="flex items-center gap-2 bg-[#0a0e27] hover:bg-white/10 text-gray-200 border border-white/15 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer"
             >
               <Globe className="w-3.5 h-3.5 text-[#00BFFF]" />
               <span>{selectedLangOption.flag}</span>
@@ -73,7 +70,7 @@ export function Navigation() {
                     key={lang.code}
                     type="button"
                     onClick={() => handleSelectLanguage(lang.code)}
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-[#00BFFF]/20 transition-colors ${
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-[#00BFFF]/20 transition-colors cursor-pointer ${
                       language === lang.code ? 'text-[#00BFFF] font-bold bg-white/5' : 'text-gray-300'
                     }`}
                   >
@@ -85,13 +82,13 @@ export function Navigation() {
             )}
           </div>
 
-          <Button
-            type="button"
-            onClick={() => setIsDialogOpen(true)}
-            className="bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-5 py-2 rounded-lg text-xs tracking-wider transition-all"
+          <a
+            href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
+            className="bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-5 py-2 rounded-lg text-xs tracking-wider transition-all flex items-center gap-2 shadow-md shadow-[#00BFFF]/20 cursor-pointer"
           >
-            {t('nav.join')}
-          </Button>
+            INICIAR PROYECTO
+            <Mail className="w-3.5 h-3.5" />
+          </a>
         </div>
       </div>
 
