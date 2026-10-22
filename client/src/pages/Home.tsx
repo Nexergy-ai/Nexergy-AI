@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { 
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, Loader2, Globe, MapPin, Activity 
+  ArrowRight, Loader2, Globe, MapPin, Activity, ShieldCheck 
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
 export default function Home() {
-  const [selectedUnit, setSelectedUnit] = useState<string>('agro');
+  const [selectedUnit, setSelectedUnit] = useState<string>('flex');
   const [companyDomain, setCompanyDomain] = useState<string>('');
   const [plantLocation, setPlantLocation] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
@@ -49,21 +49,22 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
       
-      {/* 1. NAVEGACIÓN MINIMALISTA */}
+      {/* 1. NAVEGACIÓN MINIMALISTA CON INVENTIVA PI */}
       <header className="border-b border-white/10 backdrop-blur-md bg-[#070c1e]/80 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl font-black tracking-wider text-white flex items-center gap-1">
               NEX<span className="text-[#00BFFF]">E</span>RGY
             </span>
-            <span className="hidden md:inline-block text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded border border-[#00BFFF]/30 text-[#00BFFF] bg-[#00BFFF]/10">
-              Energía · Tecnología · Futuro
+            <span className="hidden lg:inline-flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-widest px-2.5 py-1 rounded border border-[#00BFFF]/40 text-[#00BFFF] bg-[#00BFFF]/10">
+              <ShieldCheck className="w-3 h-3 text-[#00BFFF]" />
+              USPTO Patent Pending: PYUS/J Bosso/PV/001
             </span>
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
             <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
-            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">EL MÉTODO</a>
+            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO NEXERGY</a>
             <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
           </nav>
 
@@ -78,12 +79,12 @@ export default function Home() {
       </header>
 
       {/* 2. HERO PRINCIPAL */}
-      <section className="relative py-28 px-6 overflow-hidden border-b border-white/5">
+      <section className="relative py-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20 mb-6">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20 mb-6">
             <Globe className="w-3.5 h-3.5" />
-            Tecnología Argentina para un Futuro Sostenible
+            Propiedad Intelectual Protegida & Tecnología Argentina
           </span>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
@@ -91,7 +92,7 @@ export default function Home() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Ingeniería, tecnología e inteligencia operacional para transformar biomasa en energía, integrar movilidad eléctrica y estructurar gemelos digitales industriales.
+            Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad eléctrica y orquestar excedentes energéticos con patente pendiente ante la USPTO.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -117,7 +118,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3">
-              Brochure Institucional
+              Brochure Institucional & Propiedad Intelectual
             </h2>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white">
               Unidades Especializadas de Ingeniería & Tecnología
@@ -126,22 +127,68 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* UNIDAD 1: AGRO & BIOENERGÍA */}
+            {/* UNIDAD 1: NEXERGY FLEX (PROTEGIDA USPTO) */}
+            <div className="bg-[#0a0e27] border border-purple-500/40 rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
+                PATENT PENDING
+              </div>
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400">Nexergy Flex</span>
+                <h4 className="text-xl font-bold text-white mt-1 mb-2">Energía Bidireccional</h4>
+                <p className="text-gray-400 text-xs leading-relaxed mb-4">
+                  Convertidores de potencia de última generación (SST/VSC) y motor multivector (MVDE) para valorizar excedentes y estabilizar la red.
+                </p>
+
+                <div className="p-2.5 mb-5 rounded bg-purple-950/40 border border-purple-500/20 text-[10px] font-mono text-purple-300">
+                  <span className="font-bold block text-purple-200">USPTO PPA App #: 64/181,819</span>
+                  Multi-Vector Energy Surplus Valorization
+                </div>
+
+                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Control bidireccional SST / VSC</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Índice CVI (Zero Curtailment)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Optimización BESS e Hidrógeno</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a 
+                href="#contacto" 
+                onClick={() => setSelectedUnit('flex')}
+                className="w-full py-2.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Consultar Nexergy Flex
+                <ArrowRight className="w-3 h-3" />
+              </a>
+            </div>
+
+            {/* UNIDAD 2: AGRO & BIOENERGÍA */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
                   <Leaf className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400">Nexergy Agro</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-3">Bioenergía & Biomasa</h4>
+                <h4 className="text-xl font-bold text-white mt-1 mb-2">Bioenergía & Biomasa</h4>
                 <p className="text-gray-400 text-xs leading-relaxed mb-6">
                   Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar.
                 </p>
 
-                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
+                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span>Biomass Intelligence & Relevamiento</span>
+                    <span>Biomass Intelligence & Mapeo</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
@@ -164,30 +211,30 @@ export default function Home() {
               </a>
             </div>
 
-            {/* UNIDAD 2: EV CHARGE */}
+            {/* UNIDAD 3: EV CHARGE */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#00BFFF] mb-6 group-hover:scale-110 transition-transform">
                   <Zap className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#00BFFF]">Nexergy EV Charge</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-3">Movilidad Eléctrica</h4>
+                <h4 className="text-xl font-bold text-white mt-1 mb-2">Movilidad Eléctrica</h4>
                 <p className="text-gray-400 text-xs leading-relaxed mb-6">
                   Estaciones de carga para vehículos eléctricos alimentadas con energía solar/eólica y almacenamiento para barrios privados e industrias.
                 </p>
 
-                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
+                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Cargadores AC/DC con control inteligente</span>
+                    <span>Cargadores AC/DC inteligentes</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Integración solar y baterías</span>
+                    <span>Integración solar y BESS</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Plusvalía para barrios y comunidades</span>
+                    <span>Plusvalía para comunidades</span>
                   </li>
                 </ul>
               </div>
@@ -202,44 +249,6 @@ export default function Home() {
               </a>
             </div>
 
-            {/* UNIDAD 3: NEXERGY FLEX */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Cpu className="w-6 h-6" />
-                </div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400">Nexergy Flex</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-3">Energía Bidireccional</h4>
-                <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                  Convertidor de potencia modular de última generación para intercambiar energía de forma bidireccional entre renovables, red y almacenamiento.
-                </p>
-
-                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Control bidireccional de potencia</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Filtrado activo y corrección de red</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Ideal para microredes e industrias</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a 
-                href="#contacto" 
-                onClick={() => setSelectedUnit('flex')}
-                className="w-full py-2.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
-              >
-                Consultar Nexergy Flex
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
-
             {/* UNIDAD 4: NEXERGY SYSTEMS & COMPLIANCE */}
             <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
               <div>
@@ -247,23 +256,23 @@ export default function Home() {
                   <Activity className="w-6 h-6" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400">Nexergy Systems</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-3">Sistemas Industrial & Compliance</h4>
+                <h4 className="text-xl font-bold text-white mt-1 mb-2">Sistemas & Compliance</h4>
                 <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                  Digital Twin, auditoría energética y estructura legal-financiera autofinanciada mediante el ahorro generado (En alianza con Arcondo & Asociados).
+                  Digital Twin, auditoría energética y estructura legal-financiera autofinanciada mediante el ahorro generado (En alianza con Arcondo & Asoc.).
                 </p>
 
-                <ul className="space-y-2.5 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-4">
+                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
                     <span>Modelado Digital Twin e Industria 4.0</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span>Calidad de energía y Res. CRPEE 13/2012</span>
+                    <span>Res. CRPEE 13/2012 e ISO 50001</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span>Plan 100% autofinanciado por ahorros</span>
+                    <span>Plan 100% autofinanciado</span>
                   </li>
                 </ul>
               </div>
@@ -374,6 +383,17 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <button
                   type="button"
+                  onClick={() => setSelectedUnit('flex')}
+                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
+                    selectedUnit === 'flex' 
+                      ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
+                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                  }`}
+                >
+                  Nexergy Flex (PPA)
+                </button>
+                <button
+                  type="button"
                   onClick={() => setSelectedUnit('agro')}
                   className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
                     selectedUnit === 'agro' 
@@ -393,17 +413,6 @@ export default function Home() {
                   }`}
                 >
                   EV Charge
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedUnit('flex')}
-                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
-                    selectedUnit === 'flex' 
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
-                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                  }`}
-                >
-                  Nexergy Flex
                 </button>
                 <button
                   type="button"
@@ -431,7 +440,7 @@ export default function Home() {
                     required
                     value={companyDomain}
                     onChange={(e) => setCompanyDomain(e.target.value)}
-                    placeholder="agd.com.ar / empresa.com"
+                    placeholder="empresa.com / nexergy.ar"
                     className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
                   />
                 </div>
@@ -509,9 +518,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* FOOTER CON ACREDITACIÓN DE PROPIEDAD INTELECTUAL */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500">
-        <p className="mb-2">© 2026 NEXERGY. Todos los derechos reservados.</p>
+        <p className="mb-2">© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
+        <p className="font-mono text-[10px] text-gray-400 mb-1">
+          USPTO Patent Pending Application Docket: PYUS/J Bosso/PV/001 · Serial No. 64/181,819
+        </p>
         <p className="font-mono text-[10px]">Tecnología argentina para un futuro sostenible · nexergy.ar</p>
       </footer>
 
