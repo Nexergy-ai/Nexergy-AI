@@ -4,12 +4,12 @@ import {
   ArrowRight, Loader2, Globe, MapPin, Activity, ShieldCheck, Mail, ExternalLink 
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { Navigation } from '@/components/Navigation';
 
 export default function Home() {
   const [selectedUnit, setSelectedUnit] = useState<string>('flex');
   const [companyDomain, setCompanyDomain] = useState<string>('');
   const [plantLocation, setPlantLocation] = useState<string>('');
-  const [contactEmail, setContactEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -18,16 +18,16 @@ export default function Home() {
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!companyDomain.trim() || !contactEmail.trim()) {
-      alert('Por favor ingresa el dominio corporativo y tu correo de contacto.');
+    if (!companyDomain.trim()) {
+      alert('Por favor ingresa el dominio corporativo principal.');
       return;
     }
 
     setIsSubmitting(true);
-    setStatus('Procesando alta de instalación...');
+    setStatus('Procesando alta e indexando en Cloudflare D1...');
 
     try {
-      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación: ${plantLocation || 'No especificada'} | Contacto: ${contactEmail} | Nota: ${message || 'Sin mensaje'}`;
+      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación/Maps: ${plantLocation || 'No especificada'} | Nota: ${message || 'Sin mensaje'}`;
       
       await createIngestionMutation.mutateAsync({
         sourceName: summaryText,
@@ -36,7 +36,6 @@ export default function Home() {
       setStatus(`¡Instalación "${companyDomain}" registrada con éxito! Un especialista estructurará el modelo inicial.`);
       setCompanyDomain('');
       setPlantLocation('');
-      setContactEmail('');
       setMessage('');
     } catch (error: any) {
       console.error('Error al enviar consulta:', error);
@@ -49,37 +48,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
       
-      {/* 1. NAVEGACIÓN CON BOTÓN DE MAIL DIRECTO */}
-      <header className="border-b border-white/10 backdrop-blur-md bg-[#070c1e]/80 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-black tracking-wider text-white flex items-center gap-1">
-              NEX<span className="text-[#00BFFF]">E</span>RGY
-            </span>
-            <span className="hidden lg:inline-flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-widest px-2.5 py-1 rounded border border-[#00BFFF]/40 text-[#00BFFF] bg-[#00BFFF]/10">
-              <ShieldCheck className="w-3 h-3 text-[#00BFFF]" />
-              USPTO Patent Pending: PYUS/PV/001
-            </span>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
-            <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
-            <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO NEXERGY</a>
-            <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
-          </nav>
-
-          <a 
-            href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
-            className="bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-all shadow-lg shadow-[#00BFFF]/20 flex items-center gap-2 cursor-pointer"
-          >
-            Iniciar Proyecto
-            <Mail className="w-4 h-4" />
-          </a>
-        </div>
-      </header>
+      {/* 1. NAVEGACIÓN SUPERIOR */}
+      <Navigation />
 
       {/* 2. HERO PRINCIPAL */}
-      <section className="relative py-24 px-6 overflow-hidden border-b border-white/5">
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20 mb-6">
@@ -128,7 +101,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* UNIDAD 1: NEXERGY FLEX (PATENT PENDING SIN APELLIDO) */}
+            {/* UNIDAD 1: NEXERGY FLEX */}
             <div className="bg-[#0a0e27] border border-purple-500/40 rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
                 PATENT PENDING
@@ -363,7 +336,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FORMULARIO DE ALTA Y CONTACTO DIRECTO */}
+      {/* 5. FORMULARIO DE ALTA SIMPLIFICADO (SIN CAMPO REDUNDANTE DE MAIL) */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
@@ -457,25 +430,11 @@ export default function Home() {
                     type="text"
                     value={plantLocation}
                     onChange={(e) => setPlantLocation(e.target.value)}
-                    placeholder="San Luis, Argentina / Link Google Maps"
+                    placeholder="Pega el enlace de Google Maps (Ej: https://www.google.com/maps/place/...)"
                     className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
                   />
                 </div>
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                Correo Electrónico de Contacto
-              </label>
-              <input
-                type="email"
-                required
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-                placeholder="contacto@empresa.com"
-                className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-              />
             </div>
 
             <div>
@@ -519,7 +478,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER CON ENLACE A LINKTREE Y MARCA DE PATENTE PPA */}
+      {/* FOOTER */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
         <p>© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
         
