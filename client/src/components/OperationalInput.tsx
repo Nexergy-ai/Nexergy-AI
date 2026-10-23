@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Loader2, Upload, FileText, CheckCircle2, Database, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc';
@@ -36,7 +36,7 @@ export default function OperationalInput() {
 
       setUploadStatus(`Subiendo ${fileToUpload.name} a Cloudflare R2...`);
 
-      // PUT directo sin cabeceras Content-Type para evitar descalce de firma en R2
+      // PUT directo sin cabeceras Content-Type redundantes para evitar descalce de firma en R2
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
         body: fileToUpload,
