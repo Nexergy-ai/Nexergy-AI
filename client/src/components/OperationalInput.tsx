@@ -1,201 +1,180 @@
-import { useState } from 'react';
-import { Loader2, Send, CheckCircle2, Building2, MapPin, Globe } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Loader2, Upload, FileText, CheckCircle2, Database, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc';
 
 export default function OperationalInput() {
-  const [selectedUnit, setSelectedUnit] = useState<string>('flex');
-  const [companyDomain, setCompanyDomain] = useState<string>('');
-  const [plantLocation, setPlantLocation] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [sourceName, setSourceName] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [response, setResponse] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Mutaciones tRPC hacia Cloudflare D1, R2 y LLM
+  const analyzeMutation = trpc.ai.analyzeLLM.useMutation();
+  const getUploadUrlMutation = trpc.ai.getUploadUrl.useMutation();
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  const handleStartIngestion = async (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setUploadStatus(`Archivo seleccionado: ${e.target.files[0].name}`);
+    }
+  };
+
+  const uploadToR2 = async (fileToUpload: File) => {
+    setIsUploading(true);
+    setUploadStatus('Generando enlace seguro con Cloudflare R2...');
+
+    try {
+      const { uploadUrl } = await getUploadUrlMutation.mutateAsync({
+        fileName: fileToUpload.name,
+        fileType: fileToUpload.type || 'application/octet-stream',
+      });
+
+      setUploadStatus(`Subiendo ${fileToUpload.name} a Cloudflare R2...`);
+
+      // PUT directo sin cabeceras Content-Type para evitar descalce de firma en R2
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error('Error al almacenar el archivo en Cloudflare R2.');
+
+      setUploadStatus('¡Archivo indexado exitosamente en Cloudflare R2!');
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setUploadStatus(`Error al subir archivo: ${err?.message || 'Fallo de red'}`);
+      throw err;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const simulateIntelligence = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!companyDomain.trim()) {
-      alert('Por favor ingresa el dominio corporativo principal.');
+
+    if (!sourceName.trim() && !file) {
+      alert('Por favor ingresá el Dominio Corporativo o adjuntá un archivo.');
       return;
     }
 
-    setIsSubmitting(true);
-    setStatus('Procesando alta e indexando en Cloudflare D1...');
+    setIsLoading(true);
+    setResponse('');
+    setUploadStatus('Conectando con Cloudflare D1 + R2...');
 
     try {
-      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación/Maps: ${plantLocation || 'No especificada'} | Nota: ${message || 'Sin mensaje'}`;
+      // 1. Guardar registro del dominio en Cloudflare D1
+      if (sourceName.trim()) {
+        await createIngestionMutation.mutateAsync({
+          sourceName: sourceName.trim(),
+        });
+      }
 
-      await createIngestionMutation.mutateAsync({
-        sourceName: summaryText,
-      });
+      // 2. Subida directa del archivo técnico/factura a Cloudflare R2 vía presigned URL
+      if (file) {
+        await uploadToR2(file);
+      }
 
-      setStatus(`¡Instalación "${companyDomain}" registrada exitosamente! Se han enviado las notificaciones de onboarding.`);
-      setCompanyDomain('');
-      setPlantLocation('');
-      setMessage('');
+      setUploadStatus(`¡Instalación "${sourceName || file?.name}" e información técnica indexadas con éxito!`);
+
+      // 3. Generar evaluación preliminar técnica
+      const prompt = `You are NEXERGY AI. Provide a brief operational status assessment for domain/plant: ${sourceName || file?.name}. Include technical recommendations.`;
+      const result = await analyzeMutation.mutateAsync({ prompt });
+      const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
+      setResponse(content);
+
+      setSourceName('');
+      setFile(null);
     } catch (error: any) {
-      console.error('Error al registrar instalación:', error);
-      setStatus(`Instalación registrada exitosamente para ${companyDomain}.`);
+      console.error('Error durante la ingesta:', error);
+      setUploadStatus(`Error al procesar: ${error?.message || 'Fallo de conexión'}`);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
+      setIsUploading(false);
     }
   };
 
   return (
-    <section id="analytics" className="py-20 px-6 bg-[#070c1e] relative">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="text-xs font-mono font-semibold text-[#00BFFF] uppercase tracking-widest block mb-2">
-            Onboarding Simplificado
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
-            Alta de Instalación / Planta Industrial
-          </h2>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            Ingresa el dominio corporativo y la ubicación de tu planta en Google Maps para modelar el sistema inicial.
-          </p>
+    <div className="max-w-4xl mx-auto bg-[#0a0e27] border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl">
+      <div className="mb-6">
+        <label className="block text-xs font-bold tracking-wider text-cyan-400 uppercase mb-2 flex items-center gap-2">
+          <Building2 className="w-4 h-4" />
+          Nombre de tu instalación, Dominio Corporativo...
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            value={sourceName}
+            onChange={(e) => setSourceName(e.target.value)}
+            placeholder="Ej: arcor.com.ar / Planta Central"
+            className="w-full bg-[#070c1e] border border-gray-700 rounded-xl p-3.5 pl-4 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-400 font-mono"
+          />
+        </div>
+      </div>
+
+      {/* Selector de Archivos para Cloudflare R2 */}
+      <div
+        onClick={() => fileInputRef.current?.click()}
+        className="border-2 border-dashed border-gray-700 hover:border-cyan-400 p-6 rounded-xl text-center bg-[#070c1e] cursor-pointer mb-6 transition-all group"
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+          accept=".xlsx,.xls,.csv,.pdf,.docx,.txt"
+        />
+        <Upload className="w-8 h-8 text-cyan-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+        <p className="text-sm text-gray-200 font-medium">
+          {file ? `Archivo seleccionado: ${file.name}` : 'Click para seleccionar o arrastrar facturas o datos para Cloudflare R2'}
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          Soporta Excel (.xlsx), PDF, Word (.docx), WhatsApp (.txt)
+        </p>
+      </div>
+
+      {uploadStatus && (
+        <div className="mb-6 p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-400 flex items-center gap-2 font-mono">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          <span>{uploadStatus}</span>
+        </div>
+      )}
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono">
+          <Database className="w-4 h-4" />
+          <span>Cloudflare D1 + R2 Ready</span>
         </div>
 
-        <form onSubmit={handleStartIngestion} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
-          
-          {/* SELECCIÓN DE UNIDAD DE NEGOCIO */}
-          <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
-              Unidad de Negocio Principal
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedUnit('flex')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                  selectedUnit === 'flex' 
-                    ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
-                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                Nexergy Flex (PPA)
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedUnit('agro')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                  selectedUnit === 'agro' 
-                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                Agro & Bioenergía
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedUnit('ev')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                  selectedUnit === 'ev' 
-                    ? 'bg-[#00BFFF]/20 border-[#00BFFF] text-[#00BFFF]' 
-                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                EV Charge
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedUnit('systems')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                  selectedUnit === 'systems' 
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
-                    : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                Systems & Twin
-              </button>
-            </div>
-          </div>
-
-          {/* DOMINIO CORPORATIVO Y UBICACIÓN MAPS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                Dominio Corporativo Principal
-              </label>
-              <div className="relative">
-                <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
-                <input
-                  type="text"
-                  required
-                  value={companyDomain}
-                  onChange={(e) => setCompanyDomain(e.target.value)}
-                  placeholder="empresa.com / nexergy.ar"
-                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                Ubicación de Planta / Google Maps
-              </label>
-              <div className="relative">
-                <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
-                <input
-                  type="text"
-                  value={plantLocation}
-                  onChange={(e) => setPlantLocation(e.target.value)}
-                  placeholder="Pega el enlace de Google Maps (Ej: https://www.google.com/maps/place/...)"
-                  className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* NOTAS SOBRE LA INSTALACIÓN */}
-          <div>
-            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-              Notas sobre la Instalación (Opcional)
-            </label>
-            <textarea
-              rows={2}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
-              className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-            />
-          </div>
-
-          {/* MENSAJE DE CONFIRMACIÓN */}
-          {status && (
-            <div className="p-4 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-              <span>{status}</span>
-            </div>
+        <Button
+          type="button"
+          onClick={simulateIntelligence}
+          disabled={isLoading || isUploading}
+          className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+        >
+          {isLoading || isUploading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Procesando...
+            </>
+          ) : (
+            'Iniciar Alta de Instalación'
           )}
-
-          {/* BOTÓN Y SUBMIT */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-            <span className="text-[11px] font-mono text-gray-400 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-[#00BFFF]" />
-              Indexación en Cloudflare D1
-            </span>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20 disabled:opacity-50 text-xs uppercase tracking-wider"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Registrando Alta...
-                </>
-              ) : (
-                <>
-                  Iniciar Alta de Instalación
-                  <Send className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+        </Button>
       </div>
-    </section>
+
+      {response && (
+        <div className="mt-8 p-6 bg-[#070c1e] border border-cyan-500/20 rounded-xl text-gray-200 text-sm leading-relaxed whitespace-pre-wrap">
+          <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2">
+            Evaluación Técnica Preliminar
+          </h4>
+          {response}
+        </div>
+      )}
+    </div>
   );
 }
