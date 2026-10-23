@@ -26,7 +26,7 @@ export default function OperationalInput() {
     setStatusMessage('Registrando solicitud en Cloudflare D1...');
 
     try {
-      // 1. Guardar registro del Lead en Cloudflare D1
+      // Guardar registro del Lead en Cloudflare D1
       await createIngestionMutation.mutateAsync({
         sourceName: `[Lead ${selectedUnit.toUpperCase()}] Email: ${email.trim()} | Ubicación: ${locationUrl.trim() || 'No provista'} | Notas: ${notes.trim()}`,
       });
@@ -50,7 +50,7 @@ export default function OperationalInput() {
           Primer Contacto
         </h2>
         <p className="text-gray-400 text-xs md:text-sm mt-2 max-w-2xl mx-auto">
-          Ingresa tu correo corporativo y la ubicación de tu planta para estructurar el modelo inicial sin trámites innecesarios.
+          Ingresa tu correo de contacto y la ubicación de tu planta para estructurar el modelo inicial sin trámites innecesarios.
         </p>
       </div>
 
