@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ManusDialog } from "./ManusDialog";
 import { Globe, ChevronDown, Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -20,7 +19,7 @@ const languages: LanguageOption[] = [
 export function Navigation() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
 
   const selectedLangOption = languages.find((l) => l.code === language) || languages[0];
 
@@ -33,7 +32,7 @@ export function Navigation() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#070c1e]/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
-        {/* LOGO OFICIAL CON LA 'E' CIAN DE MERCHANDISING */}
+        {/* BRAND LOGO CON LA 'E' CIAN DE MERCHANDISING */}
         <div className="flex items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <span className="text-xl font-black tracking-wider text-white">
@@ -42,14 +41,14 @@ export function Navigation() {
           </a>
         </div>
 
-        {/* NAVEGACIÓN PRINCIPAL */}
+        {/* NAVEGACIÓN */}
         <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
           <a href="#unidades" className="hover:text-[#00BFFF] transition-colors">UNIDADES DE NEGOCIO</a>
           <a href="#metodo" className="hover:text-[#00BFFF] transition-colors">MÉTODO NEXERGY</a>
           <a href="#contacto" className="hover:text-[#00BFFF] transition-colors">CONTACTO</a>
         </nav>
 
-        {/* ZONA DERECHA: SELECTOR DE IDIOMA Y BOTÓN DE MAIL DIRECTO */}
+        {/* CONTROLES NAVEGACIÓN Y CORREO DIRECTO */}
         <div className="flex items-center gap-4">
           <div className="relative">
             <button
