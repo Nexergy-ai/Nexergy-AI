@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Building2, MapPin, Send, CheckCircle2, ArrowRight, Loader2, Globe, 
-  ShieldCheck, ExternalLink, Mail, Zap, Cpu, Leaf, Activity, Users, HelpCircle 
+  ShieldCheck, ExternalLink, Mail, Zap, Leaf, Activity, HelpCircle, DollarSign, BatteryCharging, Sparkles
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
@@ -16,7 +16,7 @@ export default function SaaSLanding() {
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  // Onboarding automático y registro
+  // Onboarding automático y alta directa
   const handleOnboardingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyDomain.trim() || !contactEmail.trim()) {
@@ -49,7 +49,7 @@ export default function SaaSLanding() {
 
   // Simulación de Login Social
   const handleSocialAuth = (provider: string) => {
-    alert(`Redirigiendo a autenticación con ${provider}... Tu dominio se autocompletará en el onboarding.`);
+    alert(`Redirigiendo a autenticación con ${provider}... Tu dominio corporativo se autocompletará en el onboarding.`);
   };
 
   return (
@@ -85,11 +85,11 @@ export default function SaaSLanding() {
         </div>
       </header>
 
-      {/* 2. HERO + SECCIÓN ONBOARDING AUTOMÁTICO (LO PRIMERO EN LA WEB) */}
+      {/* 2. HERO + SECCIÓN ONBOARDING AUTOMÁTICO (HERO DE CONVERSIÓN) */}
       <section id="onboarding" className="relative py-16 px-6 overflow-hidden border-b border-white/5 bg-gradient-to-b from-[#0a0e27] to-[#070c1e]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Lado Izquierdo: Copy de Ventas & Pitch SaaS */}
+          {/* Lado Izquierdo: Pitch de Ventas SaaS */}
           <div className="lg:col-span-6 space-y-6">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20">
               <Globe className="w-3.5 h-3.5" />
@@ -97,27 +97,27 @@ export default function SaaSLanding() {
             </span>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-              Orquesta la energía de tu planta en una sola <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-cyan-300 to-teal-300">plataforma SaaS</span>.
+              Transforma tu operación en un modelo <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-cyan-300 to-teal-300">autosustentable</span> y maximiza tu margen.
             </h1>
 
-            <p className="text-gray-400 text-base md:text-lg leading-relaxed font-light">
-              Alta automática e ingesta inteligente de datos de tus instalaciones. Automatiza PPA, movilidad eléctrica, biomasa y gemelos digitales con total compliance.
+            <p className="text-gray-300 text-base md:text-lg leading-relaxed font-light">
+              Digitalizamos tu infraestructura para generar <strong className="text-white font-semibold">ahorro de energía directo</strong>, <strong className="text-[#00BFFF] font-semibold">ganar dinero con desperdicios</strong> e impulsar la resiliencia al <strong className="text-emerald-400 font-semibold">mejorar tus servicios críticos energéticos</strong>.
             </p>
 
-            {/* Banner de invitación a DEMO */}
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-4">
+            {/* Banner de invitación a DEMO Institucional */}
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-4 shadow-lg">
               <div className="flex items-center gap-3">
                 <HelpCircle className="w-6 h-6 text-[#00BFFF] flex-shrink-0" />
                 <div className="text-xs">
-                  <p className="font-bold text-white">¿Quieres una DEMO personalizada para tu organización?</p>
-                  <p className="text-gray-400">Te mostramos el gemelo digital en tiempo real con tus propios datos.</p>
+                  <p className="font-bold text-white">¿Quieres una DEMO para tu organización?</p>
+                  <p className="text-gray-400">Analizamos el retorno de inversión y tu gemelo digital en vivo.</p>
                 </div>
               </div>
               <a 
                 href="#demo"
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-xs font-bold rounded-lg border border-white/20 text-white whitespace-nowrap transition-colors"
+                className="px-4 py-2 bg-[#00BFFF]/20 hover:bg-[#00BFFF]/30 text-xs font-bold rounded-lg border border-[#00BFFF]/40 text-[#00BFFF] whitespace-nowrap transition-colors"
               >
-                Pedir DEMO
+                Solicitar DEMO
               </a>
             </div>
           </div>
@@ -129,11 +129,11 @@ export default function SaaSLanding() {
               <div className="text-center">
                 <h2 className="text-2xl font-bold text-white">Primer Contacto & Alta SaaS</h2>
                 <p className="text-xs text-gray-400 mt-1">
-                  Ingresa tu correo y ubicación para estructurar el modelo inicial sin trámites innecesarios.
+                  Ingresa tu correo corporativo y ubicación para activar el modelo inicial sin trámites innecesarios.
                 </p>
               </div>
 
-              {/* Botones de Social Login */}
+              {/* Botones de Social Login (Google / Facebook) */}
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -163,7 +163,7 @@ export default function SaaSLanding() {
 
               <div className="relative flex items-center justify-center">
                 <hr className="w-full border-white/10" />
-                <span className="absolute bg-[#0a0e27] px-3 text-[10px] font-mono uppercase text-gray-500">O registro manual</span>
+                <span className="absolute bg-[#0a0e27] px-3 text-[10px] font-mono uppercase text-gray-500">O registro directo</span>
               </div>
 
               <form onSubmit={handleOnboardingSubmit} className="space-y-4">
@@ -221,7 +221,7 @@ export default function SaaSLanding() {
                   </div>
                 </div>
 
-                {/* Dominio y Ubicación Google Maps */}
+                {/* Dominio Corporativo y Ubicación Google Maps */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold tracking-wider text-gray-300 uppercase mb-1">
@@ -322,16 +322,182 @@ export default function SaaSLanding() {
         </div>
       </section>
 
-      {/* 3. EXPLICACIÓN TRANSPARENTE DEL FLUJO DE TRABAJO */}
-      <section id="flujo" className="py-20 px-6 bg-[#070c1e] border-b border-white/5">
+      {/* 3. PROPUESTA DE VALOR DE LAS UNIDADES DE NEGOCIO (TARJETAS COMERCIALES SAAS) */}
+      <section id="unidades" className="py-20 px-6 bg-[#070c1e] border-b border-white/5">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase block">
+              Unidades Especializadas de Ingeniería & Software
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Modelos de Negocio Diseñados para Generar Retorno
+            </h2>
+            <p className="text-gray-400 text-sm">
+              Potencia cada activo de tu empresa mediante nuestras cuatro verticales de tecnología integrada.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* UNIDAD 1: AGRO & BIOENERGÍA */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-xl group">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                  <Leaf className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono uppercase text-emerald-400 tracking-wider">Agro & Bioenergía</span>
+                <h3 className="text-lg font-bold text-white">Ganar Dinero con Desperdicios</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor comercializable y biochar de alto valor.
+                </p>
+                <ul className="space-y-2 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                  <li className="flex items-center gap-2">
+                    <DollarSign className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Valorización de Biomasa Residual</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Gasificación y Co-generación</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <span>Modelo 100% Autosustentable</span>
+                  </li>
+                </ul>
+              </div>
+              <a 
+                href="#onboarding"
+                onClick={() => setSelectedUnit('agro')}
+                className="mt-6 w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Suscribir Agro
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* UNIDAD 2: NEXERGY FLEX */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/50 transition-all shadow-xl group">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono uppercase text-purple-400 tracking-wider">Nexergy Flex (PPA)</span>
+                <h3 className="text-lg font-bold text-white">Ahorro de Energía Directo</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Convertidores de potencia bidireccionales (SST/VSC) y motor multivector para eliminar penalizaciones tarifarias y monetizar excedentes.
+                </p>
+                <ul className="space-y-2 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Reducción de Picos (Peak Shaving)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Índice CVI (Zero Curtailment)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+                    <span>Optimización BESS e Hidrógeno</span>
+                  </li>
+                </ul>
+              </div>
+              <a 
+                href="#onboarding"
+                onClick={() => setSelectedUnit('flex')}
+                className="mt-6 w-full py-2.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Suscribir Flex
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* UNIDAD 3: EV CHARGE */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-[#00BFFF]/50 transition-all shadow-xl group">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center text-[#00BFFF] group-hover:scale-110 transition-transform">
+                  <BatteryCharging className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono uppercase text-[#00BFFF] tracking-wider">Nexergy EV Charge</span>
+                <h3 className="text-lg font-bold text-white">Mejorar Servicios Críticos</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Infraestructura inteligente de carga vehicular con respaldo solar y baterías para garantizar continuidad operativa y plusvalía en barrios e industrias.
+                </p>
+                <ul className="space-y-2 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Cargadores AC/DC Ultra-Rápidos</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Red Microgrid Independiente</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
+                    <span>Gestión de Carga Inteligente</span>
+                  </li>
+                </ul>
+              </div>
+              <a 
+                href="#onboarding"
+                onClick={() => setSelectedUnit('ev')}
+                className="mt-6 w-full py-2.5 bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Suscribir EV Charge
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* UNIDAD 4: SYSTEMS & TWIN */}
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-amber-500/50 transition-all shadow-xl group">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono uppercase text-amber-400 tracking-wider">Systems & Twin</span>
+                <h3 className="text-lg font-bold text-white">Gemelo Digital Autofinanciado</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Modelado industrial en tiempo real, auditoría ISO 50001 y estructuración legal-financiera autofinanciada mediante el ahorro generado.
+                </p>
+                <ul className="space-y-2 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Modelado Industria 4.0</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Alianza Arcondo & Asoc. (Legal)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <span>Plan 100% Autofinanciado</span>
+                  </li>
+                </ul>
+              </div>
+              <a 
+                href="#onboarding"
+                onClick={() => setSelectedUnit('systems')}
+                className="mt-6 w-full py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                Suscribir Systems
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 4. EXPLICACIÓN DEL FLUJO DE TRABAJO AUTOMÁTICO (TRANSPARENTE PARA EL CLIENTE) */}
+      <section id="flujo" className="py-20 px-6 bg-[#0a0e27]/40 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase block mb-2">
-              Experiencia Transparente
+              Flujo de Trabajo Claro
             </span>
             <h2 className="text-3xl font-extrabold text-white">¿Cómo funciona el Onboarding Automático?</h2>
             <p className="text-gray-400 text-sm mt-2">
-              Un recorrido de 3 pasos simple para comenzar a modelar tu infraestructura sin perder tiempo en burocracia.
+              Un recorrido de 3 pasos simple para comenzar a modelar tu infraestructura sin burocracia.
             </p>
           </div>
 
@@ -342,7 +508,7 @@ export default function SaaSLanding() {
               </div>
               <h3 className="text-lg font-bold text-white">Alta de Instalación & Dominio</h3>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Ingresas con Google, Facebook o tu mail corporativo. El sistema habilita la instancia en Cloudflare D1 en tiempo real.
+                Ingresas con Google, Facebook o tu correo corporativo. El sistema habilita tu instancia en Cloudflare D1 en tiempo real.
               </p>
             </div>
 
@@ -352,7 +518,7 @@ export default function SaaSLanding() {
               </div>
               <h3 className="text-lg font-bold text-white">Asignación de Roles Operativos</h3>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Se estructuran los 4 accesos clave (Governance, Legal, Energy Manager y Financial Controller) para tu equipo.
+                Se estructuran los accesos clave (Governance, Legal, Energy Manager y Financial Controller) para tu equipo.
               </p>
             </div>
 
@@ -362,15 +528,15 @@ export default function SaaSLanding() {
               </div>
               <h3 className="text-lg font-bold text-white">Ingesta & Modelo Gemelo Digital</h3>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Se habilita el nivel 2 para la carga directa de 3 facturas eléctricas o documentación de proceso directamente a Cloudflare R2.
+                Se habilita la carga directa de 3 facturas eléctricas o documentación de proceso directamente a Cloudflare R2.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. SOLICITUD DE DEMO ORGANIZACIONAL */}
-      <section id="demo" className="py-20 px-6 bg-[#0a0e27]/60 border-b border-white/5">
+      {/* 5. SOLICITUD DE DEMO ORGANIZACIONAL */}
+      <section id="demo" className="py-20 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-cyan-950/40 via-[#0a0e27] to-purple-950/40 border border-[#00BFFF]/30 rounded-3xl p-10 text-center space-y-6 shadow-2xl">
           <span className="text-xs font-mono font-bold text-[#00BFFF] uppercase tracking-widest px-3 py-1 bg-[#00BFFF]/10 rounded-full border border-[#00BFFF]/30">
             Enterprise & Corporate
