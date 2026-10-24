@@ -16,7 +16,7 @@ export default function SaaSLanding() {
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  // Onboarding automático y alta directa
+  // Onboarding automático y alta directa en Cloudflare D1
   const handleOnboardingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyDomain.trim() || !contactEmail.trim()) {
@@ -47,7 +47,7 @@ export default function SaaSLanding() {
     }
   };
 
-  // Simulación de Login Social
+  // Simulación de Login Social (Google / Facebook)
   const handleSocialAuth = (provider: string) => {
     alert(`Redirigiendo a autenticación con ${provider}... Tu dominio corporativo se autocompletará en el onboarding.`);
   };
@@ -85,11 +85,11 @@ export default function SaaSLanding() {
         </div>
       </header>
 
-      {/* 2. HERO + SECCIÓN ONBOARDING AUTOMÁTICO (HERO DE CONVERSIÓN) */}
+      {/* 2. HERO + ONBOARDING AUTOMÁTICO (LO PRIMERO EN LA WEB) */}
       <section id="onboarding" className="relative py-16 px-6 overflow-hidden border-b border-white/5 bg-gradient-to-b from-[#0a0e27] to-[#070c1e]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Lado Izquierdo: Pitch de Ventas SaaS */}
+          {/* Lado Izquierdo: Copy de Ventas & Pitch SaaS */}
           <div className="lg:col-span-6 space-y-6">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20">
               <Globe className="w-3.5 h-3.5" />
@@ -109,7 +109,7 @@ export default function SaaSLanding() {
               <div className="flex items-center gap-3">
                 <HelpCircle className="w-6 h-6 text-[#00BFFF] flex-shrink-0" />
                 <div className="text-xs">
-                  <p className="font-bold text-white">¿Quieres una DEMO para tu organización?</p>
+                  <p className="font-bold text-white">¿Quieres una DEMO personalizada para tu organización?</p>
                   <p className="text-gray-400">Analizamos el retorno de inversión y tu gemelo digital en vivo.</p>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function SaaSLanding() {
                 </p>
               </div>
 
-              {/* Botones de Social Login (Google / Facebook) */}
+              {/* Botones de Social Login */}
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -488,7 +488,7 @@ export default function SaaSLanding() {
         </div>
       </section>
 
-      {/* 4. EXPLICACIÓN DEL FLUJO DE TRABAJO AUTOMÁTICO (TRANSPARENTE PARA EL CLIENTE) */}
+      {/* 4. EXPLICACIÓN DEL FLUJO DE TRABAJO AUTOMÁTICO */}
       <section id="flujo" className="py-20 px-6 bg-[#0a0e27]/40 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
