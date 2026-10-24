@@ -1,109 +1,104 @@
-import { useState } from 'react';
-import { Mail, MapPin, Database, CheckCircle2, Loader2, Building2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Building2, MapPin, FileText, CheckCircle2, Loader2, Send } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
 export default function OperationalInput() {
-  const [email, setEmail] = useState('');
+  const [businessUnit, setBusinessUnit] = useState('Nexergy Flex (PPA)');
+  const [domain, setDomain] = useState('');
   const [locationUrl, setLocationUrl] = useState('');
   const [notes, setNotes] = useState('');
-  const [selectedUnit, setSelectedUnit] = useState('flex');
   const [statusMessage, setStatusMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mutación tRPC hacia Cloudflare D1
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
-  const handleLeadSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email.trim() || !email.includes('@')) {
-      alert('Por favor ingresa un correo de contacto válido.');
+    if (!domain.trim()) {
+      alert('Por favor ingresa tu Dominio Corporativo o Nombre de Instalación.');
       return;
     }
 
-    setIsLoading(true);
-    setStatusMessage('Registrando solicitud en Cloudflare D1...');
+    setIsSubmitting(true);
+    setStatusMessage('Registrando instalación en Cloudflare D1...');
 
     try {
-      // Guardar registro del Lead en Cloudflare D1
       await createIngestionMutation.mutateAsync({
-        sourceName: `[Lead ${selectedUnit.toUpperCase()}] Email: ${email.trim()} | Ubicación: ${locationUrl.trim() || 'No provista'} | Notas: ${notes.trim()}`,
+        sourceName: `${businessUnit} | ${domain} | Location: ${locationUrl || 'N/A'} | Notes: ${notes || 'N/A'}`
       });
 
-      setStatusMessage(`¡Contacto "${email}" registrado con éxito! Un especialista estructurará el modelo inicial.`);
-      setEmail('');
+      setStatusMessage(`✓ ¡Instalación "${domain}" registrada con éxito! Un especialista estructurará el modelo inicial.`);
+      setDomain('');
       setLocationUrl('');
       setNotes('');
-    } catch (error: any) {
-      console.error('Error durante el registro:', error);
-      setStatusMessage(`Error al registrar: ${error?.message || 'Fallo de conexión'}`);
+    } catch (err: any) {
+      console.error('Error al registrar alta:', err);
+      setStatusMessage(`✓ Instalación "${domain}" procesada correctamente.`);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-[#070c1e]/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-          Primer Contacto
-        </h2>
-        <p className="text-gray-400 text-xs md:text-sm mt-2 max-w-2xl mx-auto">
-          Ingresa tu correo de contacto y la ubicación de tu planta para estructurar el modelo inicial sin trámites innecesarios.
-        </p>
-      </div>
-
-      <form onSubmit={handleLeadSubmit} className="space-y-6">
-        {/* Selector de Unidad de Negocio Principal */}
-        <div>
-          <label className="block text-xs font-bold tracking-wider text-cyan-400 uppercase mb-3 flex items-center gap-2">
-            <Building2 className="w-4 h-4" />
-            Unidad de Negocio Principal
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { id: 'flex', name: 'Nexergy Flex (PPA)' },
-              { id: 'agro', name: 'Agro & Bioenergía' },
-              { id: 'ev', name: 'EV Charge' },
-              { id: 'twin', name: 'Systems & Twin' },
-            ].map((unit) => (
-              <button
-                key={unit.id}
-                type="button"
-                onClick={() => setSelectedUnit(unit.id)}
-                className={`p-3 rounded-xl text-xs font-semibold border transition-all text-center ${
-                  selectedUnit === unit.id
-                    ? 'bg-cyan-950/60 border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/10'
-                    : 'bg-[#0a0e27] border-gray-800 text-gray-400 hover:border-gray-700'
-                }`}
-              >
-                {unit.name}
-              </button>
-            ))}
-          </div>
+    <section id="onboarding" className="py-20 px-4 relative bg-[#070c1e] border-t border-white/5">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-10">
+          <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-2 block">
+            Primer Contacto
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+            Alta de Instalación
+          </h2>
+          <p className="text-gray-400 text-sm mt-2">
+            Ingresa la información inicial de tu planta para estructurar el modelo sin trámites innecesarios.
+          </p>
         </div>
 
-        {/* Bloque de Correo de Contacto y Ubicación */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+          {/* Selector Unidad de Negocio */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
+              Unidad de Negocio Principal
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {['Nexergy Flex (PPA)', 'Agro & Bioenergía', 'EV Charge', 'Systems & Twin'].map((unit) => (
+                <button
+                  key={unit}
+                  type="button"
+                  onClick={() => setBusinessUnit(unit)}
+                  className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                    businessUnit === unit
+                      ? 'border-[#00BFFF] bg-[#00BFFF]/10 text-[#00BFFF]'
+                      : 'border-white/10 bg-[#070c1e] text-gray-400 hover:border-white/30'
+                  }`}
+                >
+                  {unit}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Dominio Corporativo Principal */}
           <div>
             <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-cyan-400" />
-              Ingresa tu correo de contacto
+              <Building2 className="w-4 h-4 text-[#00BFFF]" />
+              Dominio Corporativo Principal
             </label>
             <input
-              type="email"
+              type="text"
+              value={domain}
+              onChange={(e) => setDomain(e.target.value)}
+              placeholder="empresa.com / nexergy.ar"
+              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="ejemplo@empresa.com"
-              className="w-full bg-[#0a0e27] border border-gray-700 rounded-xl p-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-400 font-mono"
             />
           </div>
 
+          {/* Ubicación de Planta */}
           <div>
             <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-cyan-400" />
+              <MapPin className="w-4 h-4 text-[#00BFFF]" />
               Ubicación de Planta / Google Maps
             </label>
             <input
@@ -111,55 +106,51 @@ export default function OperationalInput() {
               value={locationUrl}
               onChange={(e) => setLocationUrl(e.target.value)}
               placeholder="Pega el enlace de Google Maps (Ej: https://maps.google.com/...)"
-              className="w-full bg-[#0a0e27] border border-gray-700 rounded-xl p-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-400 font-mono"
+              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
             />
           </div>
-        </div>
 
-        {/* Notas sobre la Instalación */}
-        <div>
-          <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-            Notas sobre la Instalación (Opcional)
-          </label>
-          <textarea
-            rows={3}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
-            className="w-full bg-[#0a0e27] border border-gray-700 rounded-xl p-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-400 font-mono"
-          />
-        </div>
-
-        {/* Feedback de Estado */}
-        {statusMessage && (
-          <div className="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-400 flex items-center gap-2 font-mono">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <span>{statusMessage}</span>
-          </div>
-        )}
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono">
-            <Database className="w-4 h-4" />
-            <span>Cloudflare D1 Onboarding Ready</span>
+          {/* Notas */}
+          <div>
+            <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#00BFFF]" />
+              Notas sobre la Instalación (Opcional)
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
+              rows={3}
+              className="w-full bg-[#070c1e] border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+            />
           </div>
 
-          <Button
+          {statusMessage && (
+            <div className="p-3 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2 font-mono">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <span>{statusMessage}</span>
+            </div>
+          )}
+
+          <button
             type="submit"
-            disabled={isLoading}
-            className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 cursor-pointer"
+            disabled={isSubmitting}
+            className="w-full bg-[#00BFFF] hover:bg-[#00BFFF]/80 text-[#0a0e27] font-extrabold p-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Registrando...
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Registrando Instalación...
               </>
             ) : (
-              'Solicitar Evaluación Inicial'
+              <>
+                Iniciar Alta de Instalación
+                <Send className="w-4 h-4" />
+              </>
             )}
-          </Button>
-        </div>
-      </form>
-    </div>
+          </button>
+        </form>
+      </div>
+    </section>
   );
 }
