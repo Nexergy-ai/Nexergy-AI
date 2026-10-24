@@ -3,27 +3,24 @@ import fs from "fs";
 import path from "path";
 
 export function serveStatic(app: Express) {
-  // Asegurar la ruta fija de compilación dist/public dentro del directorio de trabajo de Docker (/app/dist/public)
   const distPath = path.resolve(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
-    console.error(
-      `[Server Error] Could not find the build directory: ${distPath}. Make sure 'npm run build' generates dist/public.`
-    );
+    console.error(`[Server Error] Could not find build directory: ${distPath}`);
   } else {
     console.log(`[Server] Serving static files from: ${distPath}`);
   }
 
-  // 1. Servir archivos estáticos reales y existentes
+  // 1. Servir archivos estáticos reales
   app.use(express.static(distPath));
 
-  // 2. Regla para assets inexistentes: Evitar que /assets/* devuelva index.html con HTTP 200
+  // 2. Interceptar assets inexistentes (EVITAR HTTP 200 con index.html)
   app.get("/assets/*", (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
     res.sendStatus(404);
   });
 
-  // 3. Fallback SPA: Solo para rutas de la aplicación de React
+  // 3. Fallback SPA únicamente para navegación de React
   app.use("*", (_req, res, next) => {
     const indexPath = path.resolve(distPath, "index.html");
     if (fs.existsSync(indexPath)) {
