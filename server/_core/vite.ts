@@ -11,16 +11,18 @@ export function serveStatic(app: Express) {
     console.log(`[Server] Serving static files from: ${distPath}`);
   }
 
-  // 1. Servir archivos estáticos reales
+  // 1. Servir archivos estáticos que SÍ existen en /dist/public
   app.use(express.static(distPath));
 
-  // 2. Interceptar assets inexistentes (EVITAR HTTP 200 con index.html)
+  // 2. Interceptar activos estáticos inexistentes (/assets/*) para evitar el fallback SPA
   app.get("/assets/*", (_req, res) => {
-    res.setHeader("Cache-Control", "no-store");
-    res.sendStatus(404);
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.status(404).send("Asset not found");
   });
 
-  // 3. Fallback SPA únicamente para navegación de React
+  // 3. Fallback SPA únicamente para las rutas de la aplicación React
   app.use("*", (_req, res, next) => {
     const indexPath = path.resolve(distPath, "index.html");
     if (fs.existsSync(indexPath)) {
