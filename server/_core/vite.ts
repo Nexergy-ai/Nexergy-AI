@@ -55,21 +55,20 @@ export function serveStatic(app: Express) {
     console.log(`[Server] Serving static files from: ${distPath}`);
   }
 
-  // 1. Servir los archivos estáticos compilados (/assets conserva caché por 1 día)
+  // 1. Archivos estáticos en /assets conservan caché por 1 día
   app.use(express.static(distPath, { maxAge: "1d" }));
 
-  // 2. Archivos dentro de /assets que no existan devuelven 404 estricto sin caer en el fallback HTML
+  // 2. Archivos en /assets inexistentes devuelven 404 estricto
   app.use("/assets/*", (_req, res) => {
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     res.status(404).send("Asset Not Found");
   });
 
-  // 3. Fallback SPA únicamente para peticiones HTML válidas (¡DESHABILITA CACHÉ EN INDEX.HTML!)
+  // 3. Fallback SPA: index.html SIEMPRE SIN CACHÉ
   app.use("*", (req, res, next) => {
     if (req.method === "GET" || req.method === "HEAD") {
       const indexPath = path.resolve(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
-        // EVITA QUE EL NAVEGADOR O PERÍMETRO CONGELE LA PLANTILLA HTML DURANTE 24 HORAS
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
