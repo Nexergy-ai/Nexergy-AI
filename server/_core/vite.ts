@@ -64,12 +64,12 @@ export function serveStatic(app: Express) {
     res.status(404).send("Asset Not Found");
   });
 
-  // 3. Fallback SPA únicamente para peticiones HTML válidas (¡NO-CACHE PARA INDEX.HTML!)
+  // 3. Fallback SPA únicamente para peticiones HTML válidas (¡DESHABILITA CACHÉ EN INDEX.HTML!)
   app.use("*", (req, res, next) => {
     if (req.method === "GET" || req.method === "HEAD") {
       const indexPath = path.resolve(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
-        // PREVIENE QUE EL HTML PRINCIPAL SE RETENGA 24 HORAS EN EL ORIGEN / PERÍMETRO
+        // EVITA QUE EL NAVEGADOR O PERÍMETRO CONGELE LA PLANTILLA HTML DURANTE 24 HORAS
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
