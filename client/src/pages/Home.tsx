@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
@@ -129,6 +129,10 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.title = "NEXERGY®";
+  }, []);
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
@@ -495,10 +499,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
-        <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9. Todos los derechos reservados.</p>
-        <p className="font-mono text-[10px] text-gray-400">
-          Marca Registrada INPI Arg. Reg. Nº 3.941.093 · USPTO Provisional App. Nº 64/181,819
-        </p>
+        <p>© 2026 <strong>NEXERGY®</strong> — Todos los derechos reservados.</p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
             <AtSign className="w-3.5 h-3.5" />
