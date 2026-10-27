@@ -36,7 +36,7 @@ const UNITS: Unit[] = [
     selector: 'Nexergy Flex',
     cta: 'Consultar Nexergy Flex',
     description:
-      'Convertidores de potencia (SST/VSC) y un motor multivector para valorizar excedentes y estabilizar la red.',
+      'Convertidores de potencia (SST/VSC) y motor multivector para valorizar excedentes y optimizar flexibilidad energética.',
     bullets: ['Control bidireccional SST / VSC', 'Índice CVI (Zero Curtailment)', 'Optimización BESS e hidrógeno'],
     patent: true,
     card: 'border-purple-500/40 hover:border-purple-400',
@@ -88,7 +88,7 @@ const UNITS: Unit[] = [
     selector: 'Systems y Twin',
     cta: 'Consultar Systems',
     description:
-      'Digital Twin, auditoría energética y una estructura legal-financiera que puede financiarse con el ahorro generado (en alianza con Arcondo & Asoc.).',
+      'Digital Twin, auditoría energética y estructura legal-financiera autofinanciada con el ahorro generado (alianza Arcondo & Asoc.).',
     bullets: [
       'Modelado Digital Twin e Industria 4.0',
       'Res. CRPEE 13/2012 e ISO 50001',
@@ -179,10 +179,16 @@ export default function Home() {
       <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20 mb-6">
-            <Globe className="w-3.5 h-3.5" />
-            Patente en trámite · Tecnología argentina
-          </span>
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20">
+              <Globe className="w-3.5 h-3.5" />
+              EBT OPTINEX S.A.S. · CUIT 30-71945566-9
+            </span>
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 bg-purple-500/10 border border-purple-500/20">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Marca Reg. INPI Nº 3.941.093 · Patent Pending USPTO
+            </span>
+          </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
             Convertimos tus desafíos energéticos en{' '}
@@ -194,7 +200,7 @@ export default function Home() {
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
             Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad
-            eléctrica y orquestar excedentes energéticos, con solicitud de patente presentada ante la USPTO.
+            eléctrica y orquestar excedentes energéticos con tecnología desarrollada por OPTINEX S.A.S.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -280,38 +286,47 @@ export default function Home() {
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología</h2>
+            <span className="text-xs font-bold font-mono tracking-widest text-emerald-400 uppercase mb-2 block">
+              Validación Científica & Respaldo I+D+i
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología (TRL 5)</h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Qué está validado, qué está protegido y qué documentación puedes pedirnos.
+              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> en articulación con la Universidad Nacional de Villa Mercedes (UNViMe - Proyectos PFI / PDTS OPTIMIA-HV).
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
-              <FlaskConical className="w-6 h-6 text-[#00BFFF] mb-4" />
-              <h3 className="text-base font-bold mb-2">Prueba de concepto en desarrollo</h3>
+            <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-emerald-500/30">
+                TRL 5 VALIDADO
+              </div>
+              <FlaskConical className="w-6 h-6 text-emerald-400 mb-4" />
+              <h3 className="text-base font-bold mb-2 text-white">Prototipo en entorno relevante</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Estamos validando la plataforma sobre una planta industrial de referencia con datos anonimizados. Las
-                plantas que se suman al programa piloto ayudan a calibrar el modelo con datos reales.
+                Validado en la microrred experimental UNViMe con 6.528 registros reales de telemetría e infraestructura. Motor predictivo MIOM™ con precisión <strong>AUC-ROC de 0.942</strong> en detección de fallas críticas.
               </p>
             </div>
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
+
+            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
+                IP PROTEGIDA
+              </div>
               <ShieldCheck className="w-6 h-6 text-purple-400 mb-4" />
-              <h3 className="text-base font-bold mb-2">Solicitud de patente presentada</h3>
+              <h3 className="text-base font-bold mb-2 text-white">Activos de propiedad intelectual</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Solicitud provisional ante la USPTO (Nº 64/181,819, octubre de 2026) sobre la valorización inteligente de
-                excedentes de energía renovable. Patent pending.
+                • <strong>Marca Registrada INPI Nº 3.941.093</strong> (Clase 9, Software & Control de Energía).<br />
+                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Provisional EE.UU., Octubre 2026).
               </p>
             </div>
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
+
+            <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden">
               <FileText className="w-6 h-6 text-amber-400 mb-4" />
-              <h3 className="text-base font-bold mb-2">Documentación técnica bajo NDA</h3>
+              <h3 className="text-base font-bold mb-2 text-white">Data Room Técnico bajo NDA</h3>
               <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                Si eres inversor o parte de una institución, pídenos el detalle técnico. Lo compartimos bajo acuerdo de
-                confidencialidad.
+                Acceso a dataset analítico, informe contable y arquitectura de software para evaluadores e inversores institucionales.
               </p>
               <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
-                Solicitar información <ArrowRight className="w-3 h-3" />
+                Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -485,9 +500,9 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
-        <p>© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
+        <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9. Todos los derechos reservados.</p>
         <p className="font-mono text-[10px] text-gray-400">
-          Patent pending · Solicitud provisional USPTO Nº 64/181,819
+          Marca Registrada INPI Arg. Reg. Nº 3.941.093 · USPTO Provisional App. Nº 64/181,819 (Docket: PYUS/J Bosso/PV/001)
         </p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
