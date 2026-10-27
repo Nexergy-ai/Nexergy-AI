@@ -22,7 +22,6 @@ export function Navigation() {
         <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-gray-300">
           <a href="#unidades" className="hover:text-[#00BFFF] transition-colors uppercase">Unidades de Negocio</a>
           <a href="#madurez" className="hover:text-[#00BFFF] transition-colors uppercase">Madurez TRL 5</a>
-          <a href="#metodo" className="hover:text-[#00BFFF] transition-colors uppercase">Método Nexergy</a>
           <a href="#contacto" className="hover:text-[#00BFFF] transition-colors uppercase">Contacto</a>
         </nav>
 
