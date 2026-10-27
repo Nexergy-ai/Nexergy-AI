@@ -36,7 +36,7 @@ const UNITS: Unit[] = [
     selector: 'Nexergy Flex',
     cta: 'Consultar Nexergy Flex',
     description:
-      'Convertidores de potencia (SST/VSC) y motor multivector para valorizar excedentes y optimizar flexibilidad energética.',
+      'Convertidores de potencia (SST/VSC) y motor de control adaptativo (MVDE) para calcular el Espacio de Flexibilidad (Ω_EFS) y maximizar el CVI.',
     bullets: ['Control bidireccional SST / VSC', 'Índice CVI (Zero Curtailment)', 'Optimización BESS e hidrógeno'],
     patent: true,
     card: 'border-purple-500/40 hover:border-purple-400',
@@ -200,7 +200,7 @@ export default function Home() {
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
             Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad
-            eléctrica y orquestar excedentes energéticos con tecnología desarrollada por OPTINEX S.A.S.
+            eléctrica y orquestar excedentes energéticos con tecnología propietaria desarrollada por OPTINEX S.A.S.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -291,7 +291,7 @@ export default function Home() {
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología (TRL 5)</h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> en articulación con la Universidad Nacional de Villa Mercedes (UNViMe - Proyectos PFI / PDTS OPTIMIA-HV).
+              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> enfocada en control adaptativo multi-vector y optimización en tiempo real.
             </p>
           </div>
 
@@ -303,7 +303,7 @@ export default function Home() {
               <FlaskConical className="w-6 h-6 text-emerald-400 mb-4" />
               <h3 className="text-base font-bold mb-2 text-white">Prototipo en entorno relevante</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Validado en la microrred experimental UNViMe con 6.528 registros reales de telemetría e infraestructura. Motor predictivo MIOM™ con precisión <strong>AUC-ROC de 0.942</strong> en detección de fallas críticas.
+                Validado sobre un conjunto de 6.528 registros reales de telemetría e infraestructura industrial anonimizada, adaptados para la calibración del modelo de planta piloto. Motor predictivo de control con precisión <strong>AUC-ROC de 0.942</strong> en detección temprana de anomalías críticas.
               </p>
             </div>
 
@@ -315,7 +315,7 @@ export default function Home() {
               <h3 className="text-base font-bold mb-2 text-white">Activos de propiedad intelectual</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
                 • <strong>Marca Registrada INPI Nº 3.941.093</strong> (Clase 9, Software & Control de Energía).<br />
-                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Provisional EE.UU., Octubre 2026).
+                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Provisional EE.UU., Octubre 2026: Control Adaptativo Multi-Vector, Ω_EFS y CVI).
               </p>
             </div>
 
@@ -502,7 +502,7 @@ export default function Home() {
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
         <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9. Todos los derechos reservados.</p>
         <p className="font-mono text-[10px] text-gray-400">
-          Marca Registrada INPI Arg. Reg. Nº 3.941.093 · USPTO Provisional App. Nº 64/181,819 (Docket: PYUS/J Bosso/PV/001)
+          Marca Registrada INPI Arg. Reg. Nº 3.941.093 · USPTO Provisional App. Nº 64/181,819
         </p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
