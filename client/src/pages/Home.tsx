@@ -1,45 +1,171 @@
 import { useState } from 'react';
-import { 
-  Zap, Cpu, Leaf, Building2, Send, CheckCircle2, 
-  ArrowRight, Loader2, Globe, MapPin, Activity, ShieldCheck, Mail, ExternalLink 
+import type { ComponentType } from 'react';
+import {
+  Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
+  Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck, FlaskConical, FileText,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
 
+type UnitId = 'flex' | 'agro' | 'ev' | 'systems';
+
+interface Unit {
+  id: UnitId;
+  Icon: ComponentType<{ className?: string }>;
+  tag: string;
+  title: string;
+  selector: string;
+  cta: string;
+  description: string;
+  bullets: string[];
+  patent?: boolean;
+  card: string;
+  iconBox: string;
+  text: string;
+  check: string;
+  btn: string;
+  active: string;
+}
+
+const UNITS: Unit[] = [
+  {
+    id: 'flex',
+    Icon: Cpu,
+    tag: 'Nexergy Flex',
+    title: 'Energía bidireccional',
+    selector: 'Nexergy Flex',
+    cta: 'Consultar Nexergy Flex',
+    description:
+      'Convertidores de potencia (SST/VSC) y un motor multivector para valorizar excedentes y estabilizar la red.',
+    bullets: ['Control bidireccional SST / VSC', 'Índice CVI (Zero Curtailment)', 'Optimización BESS e hidrógeno'],
+    patent: true,
+    card: 'border-purple-500/40 hover:border-purple-400',
+    iconBox: 'bg-purple-500/10 border-purple-500/30 text-purple-400',
+    text: 'text-purple-400',
+    check: 'text-purple-400',
+    btn: 'bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border-purple-500/40',
+    active: 'bg-purple-500/20 border-purple-500 text-purple-400',
+  },
+  {
+    id: 'agro',
+    Icon: Leaf,
+    tag: 'Nexergy Agro',
+    title: 'Bioenergía y biomasa',
+    selector: 'Agro y bioenergía',
+    cta: 'Consultar Agro',
+    description:
+      'Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar.',
+    bullets: ['Biomass Intelligence y mapeo', 'Gasificación y cogeneración', 'Economía circular y reducción de CO₂'],
+    card: 'border-white/10 hover:border-[#00BFFF]/50',
+    iconBox: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
+    text: 'text-emerald-400',
+    check: 'text-emerald-400',
+    btn: 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    active: 'bg-emerald-500/20 border-emerald-500 text-emerald-400',
+  },
+  {
+    id: 'ev',
+    Icon: Zap,
+    tag: 'Nexergy EV Charge',
+    title: 'Movilidad eléctrica',
+    selector: 'EV Charge',
+    cta: 'Consultar EV Charge',
+    description:
+      'Estaciones de carga para vehículos eléctricos con energía solar o eólica y almacenamiento, para barrios privados e industrias.',
+    bullets: ['Cargadores AC/DC inteligentes', 'Integración solar y BESS', 'Plusvalía para comunidades'],
+    card: 'border-white/10 hover:border-[#00BFFF]/50',
+    iconBox: 'bg-cyan-500/10 border-cyan-500/30 text-[#00BFFF]',
+    text: 'text-[#00BFFF]',
+    check: 'text-[#00BFFF]',
+    btn: 'bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border-[#00BFFF]/30',
+    active: 'bg-[#00BFFF]/20 border-[#00BFFF] text-[#00BFFF]',
+  },
+  {
+    id: 'systems',
+    Icon: Activity,
+    tag: 'Nexergy Systems',
+    title: 'Sistemas y cumplimiento',
+    selector: 'Systems y Twin',
+    cta: 'Consultar Systems',
+    description:
+      'Digital Twin, auditoría energética y una estructura legal-financiera que puede financiarse con el ahorro generado (en alianza con Arcondo & Asoc.).',
+    bullets: [
+      'Modelado Digital Twin e Industria 4.0',
+      'Res. CRPEE 13/2012 e ISO 50001',
+      'Esquema financiable con el ahorro generado',
+    ],
+    card: 'border-white/10 hover:border-[#00BFFF]/50',
+    iconBox: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
+    text: 'text-amber-400',
+    check: 'text-amber-400',
+    btn: 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30',
+    active: 'bg-amber-500/20 border-amber-500 text-amber-400',
+  },
+];
+
+const METHOD = [
+  ['Hacer requisitos SMART', 'Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frenan la factibilidad.'],
+  ['Eliminar partes del proceso', 'Removemos componentes, intermediarios y trámites prescindibles para acortar la cadena de ejecución.'],
+  ['Simplificar u optimizar', 'Optimizamos únicamente lo indispensable, evitando perfeccionar etapas que nunca debieron existir.'],
+  ['Acelerar el tiempo de ciclo', 'Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.'],
+  ['Automatizar', 'Desplegamos capas de control e inteligencia operacional sobre el flujo simplificado.'],
+];
+
+const inputClass =
+  'w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]';
+const labelClass = 'block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2';
+
+type Feedback = { type: 'success' | 'error'; text: string } | null;
+
 export default function Home() {
-  const [selectedUnit, setSelectedUnit] = useState<string>('flex');
-  const [companyDomain, setCompanyDomain] = useState<string>('');
-  const [plantLocation, setPlantLocation] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [selectedUnit, setSelectedUnit] = useState<UnitId>('flex');
+  const [companyDomain, setCompanyDomain] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [plantLocation, setPlantLocation] = useState('');
+  const [message, setMessage] = useState('');
+  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!companyDomain.trim()) {
-      alert('Por favor ingresa el dominio corporativo principal.');
+    const domain = companyDomain.trim();
+    const email = contactEmail.trim();
+
+    if (!domain) {
+      setFeedback({ type: 'error', text: 'Ingresa el dominio de tu empresa para continuar.' });
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setFeedback({ type: 'error', text: 'Ingresa un correo válido para que podamos responderte.' });
       return;
     }
 
     setIsSubmitting(true);
-    setStatus('Procesando alta e indexando en Cloudflare D1...');
+    setFeedback(null);
 
     try {
-      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${companyDomain} | Ubicación/Maps: ${plantLocation || 'No especificada'} | Nota: ${message || 'Sin mensaje'}`;
-      
-      await createIngestionMutation.mutateAsync({
-        sourceName: summaryText,
-      });
+      const summaryText = `[Unidad: ${selectedUnit.toUpperCase()}] Dominio: ${domain} | Correo: ${email} | Ubicación/Maps: ${
+        plantLocation.trim() || 'No especificada'
+      } | Nota: ${message.trim() || 'Sin mensaje'}`;
 
-      setStatus(`¡Instalación "${companyDomain}" registrada con éxito! Un especialista estructurará el modelo inicial.`);
+      await createIngestionMutation.mutateAsync({ sourceName: summaryText });
+
+      setFeedback({
+        type: 'success',
+        text: `Registramos la instalación de ${domain}. Revisaremos los datos y te escribiremos a ${email}.`,
+      });
       setCompanyDomain('');
+      setContactEmail('');
       setPlantLocation('');
       setMessage('');
-    } catch (error: any) {
-      console.error('Error al enviar consulta:', error);
-      setStatus(`Instalación registrada exitosamente para ${companyDomain}.`);
+    } catch (error) {
+      console.error('Error al registrar la instalación:', error);
+      setFeedback({
+        type: 'error',
+        text: 'No pudimos registrar la instalación. Revisa tu conexión e inténtalo de nuevo en unos minutos.',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -47,415 +173,294 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
-      
-      {/* 1. NAVEGACIÓN SUPERIOR */}
       <Navigation />
 
-      {/* 2. HERO PRINCIPAL */}
+      {/* HERO */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20 mb-6">
             <Globe className="w-3.5 h-3.5" />
-            Propiedad Intelectual Protegida & Tecnología Argentina
+            Patente en trámite · Tecnología argentina
           </span>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
-            Convertimos tus desafíos energéticos en <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] via-cyan-300 to-teal-300">soluciones reales</span>.
+            Convertimos tus desafíos energéticos en{' '}
+            <span className="text-[#00BFFF] bg-clip-text md:text-transparent md:bg-gradient-to-r md:from-[#00BFFF] md:via-cyan-300 md:to-teal-300 print:text-[#00BFFF]">
+              soluciones reales
+            </span>
+            .
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad eléctrica y orquestar excedentes energéticos con patente pendiente ante la USPTO.
+            Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad
+            eléctrica y orquestar excedentes energéticos, con solicitud de patente presentada ante la USPTO.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a 
-              href="#unidades"
+            <a
+              href="#contacto"
               className="w-full sm:w-auto bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-4 rounded-xl text-sm transition-all shadow-xl shadow-[#00BFFF]/20 flex items-center justify-center gap-2"
             >
-              Explorar Unidades de Negocio
+              Iniciar alta de instalación
               <ArrowRight className="w-4 h-4" />
             </a>
-            <a 
-              href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
+            <a
+              href="#unidades"
               className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
             >
-              Hablemos de tu Proyecto
-              <Mail className="w-4 h-4" />
+              Ver unidades de negocio
             </a>
           </div>
         </div>
       </section>
 
-      {/* 3. LAS 4 UNIDADES DE NEGOCIO */}
+      {/* UNIDADES */}
       <section id="unidades" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3">
-              Brochure Institucional & Propiedad Intelectual
+              Brochure institucional
             </h2>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white">
-              Unidades Especializadas de Ingeniería & Tecnología
+              Unidades especializadas de ingeniería y tecnología
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            {/* UNIDAD 1: NEXERGY FLEX */}
-            <div className="bg-[#0a0e27] border border-purple-500/40 rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
-                PATENT PENDING
-              </div>
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Cpu className="w-6 h-6" />
-                </div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400">Nexergy Flex</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-2">Energía Bidireccional</h4>
-                <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                  Convertidores de potencia de última generación (SST/VSC) y motor multivector (MVDE) para valorizar excedentes y estabilizar la red.
-                </p>
-
-                <div className="p-2.5 mb-5 rounded bg-purple-950/40 border border-purple-500/20 text-[10px] font-mono text-purple-300">
-                  <span className="font-bold block text-purple-200">USPTO PPA App #: 64/181,819</span>
-                  Multi-Vector Energy Surplus Valorization
-                </div>
-
-                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Control bidireccional SST / VSC</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Índice CVI (Zero Curtailment)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-                    <span>Optimización BESS e Hidrógeno</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a 
-                href="#contacto" 
-                onClick={() => setSelectedUnit('flex')}
-                className="w-full py-2.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors text-center"
+            {UNITS.map((u) => (
+              <div
+                key={u.id}
+                className={`bg-[#0a0e27] border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden ${u.card}`}
               >
-                Consultar Nexergy Flex
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
+                {u.patent && (
+                  <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
+                    PATENT PENDING
+                  </div>
+                )}
+                <div>
+                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ${u.iconBox}`}>
+                    <u.Icon className="w-6 h-6" />
+                  </div>
+                  <span className={`text-[10px] font-mono uppercase tracking-widest ${u.text}`}>{u.tag}</span>
+                  <h4 className="text-xl font-bold text-white mt-1 mb-2">{u.title}</h4>
+                  <p className="text-gray-400 text-xs leading-relaxed mb-4">{u.description}</p>
 
-            {/* UNIDAD 2: AGRO & BIOENERGÍA */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Leaf className="w-6 h-6" />
+                  {u.patent && (
+                    <div className="p-2.5 mb-5 rounded bg-purple-950/40 border border-purple-500/20 text-[10px] font-mono text-purple-300">
+                      Patent pending · Solicitud provisional USPTO Nº 64/181,819
+                    </div>
+                  )}
+
+                  <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
+                    {u.bullets.map((b) => (
+                      <li key={b} className="flex items-center gap-2">
+                        <CheckCircle2 className={`w-3.5 h-3.5 flex-shrink-0 ${u.check}`} />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400">Nexergy Agro</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-2">Bioenergía & Biomasa</h4>
-                <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                  Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar.
-                </p>
 
-                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span>Biomass Intelligence & Mapeo</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span>Gasificación y co-generación</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span>Economía circular y reducción CO₂</span>
-                  </li>
-                </ul>
+                <a
+                  href="#contacto"
+                  onClick={() => setSelectedUnit(u.id)}
+                  className={`w-full py-2.5 border font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors text-center ${u.btn}`}
+                >
+                  {u.cta}
+                  <ArrowRight className="w-3 h-3" />
+                </a>
               </div>
-
-              <a 
-                href="#contacto" 
-                onClick={() => setSelectedUnit('agro')}
-                className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors text-center"
-              >
-                Consultar Agro
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
-
-            {/* UNIDAD 3: EV CHARGE */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#00BFFF] mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="w-6 h-6" />
-                </div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#00BFFF]">Nexergy EV Charge</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-2">Movilidad Eléctrica</h4>
-                <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                  Estaciones de carga para vehículos eléctricos alimentadas con energía solar/eólica y almacenamiento para barrios privados e industrias.
-                </p>
-
-                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Cargadores AC/DC inteligentes</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Integración solar y BESS</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00BFFF] flex-shrink-0" />
-                    <span>Plusvalía para comunidades</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a 
-                href="#contacto" 
-                onClick={() => setSelectedUnit('ev')}
-                className="w-full py-2.5 bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors text-center"
-              >
-                Consultar EV Charge
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
-
-            {/* UNIDAD 4: NEXERGY SYSTEMS & COMPLIANCE */}
-            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Activity className="w-6 h-6" />
-                </div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400">Nexergy Systems</span>
-                <h4 className="text-xl font-bold text-white mt-1 mb-2">Sistemas & Compliance</h4>
-                <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                  Digital Twin, auditoría energética y estructura legal-financiera autofinanciada mediante el ahorro generado (En alianza con Arcondo & Asoc.).
-                </p>
-
-                <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span>Modelado Digital Twin e Industria 4.0</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span>Res. CRPEE 13/2012 e ISO 50001</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span>Plan 100% autofinanciado</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a 
-                href="#contacto" 
-                onClick={() => setSelectedUnit('systems')}
-                className="w-full py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold text-xs rounded-lg flex items-center justify-center gap-2 transition-colors text-center"
-              >
-                Consultar Systems
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 4. SECCIÓN VISUAL DEL MÉTODO NEXERGY */}
+      {/* MADUREZ Y PROPIEDAD INTELECTUAL */}
+      <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología</h2>
+            <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+              Qué está validado, qué está protegido y qué documentación puedes pedirnos.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
+              <FlaskConical className="w-6 h-6 text-[#00BFFF] mb-4" />
+              <h3 className="text-base font-bold mb-2">Prueba de concepto en desarrollo</h3>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Estamos validando la plataforma sobre una planta industrial de referencia con datos anonimizados. Las
+                plantas que se suman al programa piloto ayudan a calibrar el modelo con datos reales.
+              </p>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
+              <ShieldCheck className="w-6 h-6 text-purple-400 mb-4" />
+              <h3 className="text-base font-bold mb-2">Solicitud de patente presentada</h3>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Solicitud provisional ante la USPTO (Nº 64/181,819, octubre de 2026) sobre la valorización inteligente de
+                excedentes de energía renovable. Patent pending.
+              </p>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
+              <FileText className="w-6 h-6 text-amber-400 mb-4" />
+              <h3 className="text-base font-bold mb-2">Documentación técnica bajo NDA</h3>
+              <p className="text-gray-400 text-xs leading-relaxed mb-4">
+                Si eres inversor o parte de una institución, pídenos el detalle técnico. Lo compartimos bajo acuerdo de
+                confidencialidad.
+              </p>
+              <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
+                Solicitar información <ArrowRight className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* MÉTODO */}
       <section id="metodo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Metodología Operativa
+              Metodología operativa
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              El Método de Optimización y Solución de Problemas
+              El método de optimización y solución de problemas
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Nuestro protocolo sistemático de 5 pasos para eliminar ineficiencias, simplificar procesos y acelerar la transformación energética.
+              Nuestro protocolo de 5 pasos para eliminar ineficiencias, simplificar procesos y acelerar la transformación
+              energética.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
-              <div>
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">01</span>
-                <h3 className="text-sm font-bold text-white mb-2">Hacer Requisitos SMART</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frenan la factibilidad.
-                </p>
+            {METHOD.map(([title, text], i) => (
+              <div key={title} className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 group hover:border-[#00BFFF]/50 transition-all">
+                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-sm font-bold text-white mb-2">{title}</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{text}</p>
               </div>
-            </div>
-
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
-              <div>
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">02</span>
-                <h3 className="text-sm font-bold text-white mb-2">Eliminar Partes del Proceso</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Removemos componentes, intermediarios y trámites prescindibles para acortar la cadena de ejecución.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
-              <div>
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">03</span>
-                <h3 className="text-sm font-bold text-white mb-2">Simplificar u Optimizar</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Optimizamos únicamente lo indispensable, evitando perfeccionar etapas que nunca debieron existir.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
-              <div>
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">04</span>
-                <h3 className="text-sm font-bold text-white mb-2">Acelerar Tiempo de Ciclo</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 relative group hover:border-[#00BFFF]/50 transition-all flex flex-col justify-between">
-              <div>
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">05</span>
-                <h3 className="text-sm font-bold text-white mb-2">Automatizar</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  Desplegamos capas de control e inteligencia operacional sobre el flujo simplificado.
-                </p>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 5. FORMULARIO DE ALTA Y CONTACTO OPERACIONAL */}
+      {/* ALTA DE INSTALACIÓN */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-              Alta de Instalación / Primer Contacto
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Alta de instalación</h2>
             <p className="text-gray-400 text-sm">
-              Carga tu dominio corporativo y la ubicación de tu planta para estructurar el modelo inicial sin trámites innecesarios.
+              Cuéntanos quién eres y dónde está tu planta. Con eso armamos el modelo inicial, sin trámites innecesarios.
             </p>
           </div>
 
-          <form onSubmit={handleContactSubmit} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
-            
+          <form onSubmit={handleContactSubmit} noValidate className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
             <div>
-              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-3">
-                Unidad de Negocio Principal
-              </label>
+              <span className={labelClass}>Unidad de negocio principal</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedUnit('flex')}
-                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
-                    selectedUnit === 'flex' 
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-400' 
-                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                  }`}
-                >
-                  Nexergy Flex (PPA)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedUnit('agro')}
-                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
-                    selectedUnit === 'agro' 
-                      ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' 
-                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                  }`}
-                >
-                  Agro & Bioenergía
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedUnit('ev')}
-                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
-                    selectedUnit === 'ev' 
-                      ? 'bg-[#00BFFF]/20 border-[#00BFFF] text-[#00BFFF]' 
-                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                  }`}
-                >
-                  EV Charge
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedUnit('systems')}
-                  className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
-                    selectedUnit === 'systems' 
-                      ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
-                      : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
-                  }`}
-                >
-                  Systems & Twin
-                </button>
+                {UNITS.map((u) => (
+                  <button
+                    key={u.id}
+                    type="button"
+                    aria-pressed={selectedUnit === u.id}
+                    onClick={() => setSelectedUnit(u.id)}
+                    className={`py-3 px-3 rounded-xl text-xs font-bold border transition-all ${
+                      selectedUnit === u.id ? u.active : 'bg-[#070c1e] border-gray-800 text-gray-400 hover:border-gray-700'
+                    }`}
+                  >
+                    {u.selector}
+                  </button>
+                ))}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                  Dominio Corporativo Principal
-                </label>
+                <label htmlFor="domain" className={labelClass}>Dominio corporativo principal</label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
                   <input
+                    id="domain"
                     type="text"
                     required
+                    maxLength={120}
                     value={companyDomain}
                     onChange={(e) => setCompanyDomain(e.target.value)}
-                    placeholder="empresa.com / nexergy.ar"
-                    className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                    placeholder="empresa.com"
+                    className={inputClass}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                  Ubicación de Planta / Google Maps
-                </label>
+                <label htmlFor="email" className={labelClass}>Correo de contacto</label>
                 <div className="relative">
-                  <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                  <AtSign className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
                   <input
-                    type="text"
-                    value={plantLocation}
-                    onChange={(e) => setPlantLocation(e.target.value)}
-                    placeholder="San Luis, Argentina / Link Google Maps"
-                    className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
+                    id="email"
+                    type="email"
+                    required
+                    maxLength={120}
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="nombre@empresa.com"
+                    className={inputClass}
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold tracking-wider text-gray-300 uppercase mb-2">
-                Notas sobre la Instalación (Opcional)
-              </label>
+              <label htmlFor="location" className={labelClass}>Ubicación de la planta o enlace de Google Maps</label>
+              <div className="relative">
+                <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
+                <input
+                  id="location"
+                  type="text"
+                  maxLength={200}
+                  value={plantLocation}
+                  onChange={(e) => setPlantLocation(e.target.value)}
+                  placeholder="Ciudad, provincia o enlace de Google Maps"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="notes" className={labelClass}>Notas sobre la instalación (opcional)</label>
               <textarea
+                id="notes"
                 rows={2}
+                maxLength={400}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Detalla escala de la planta, potencia contratada o necesidad principal..."
+                placeholder="Escala de la planta, potencia contratada o necesidad principal"
                 className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
               />
             </div>
 
-            {status && (
-              <div className="p-4 rounded-lg bg-[#00BFFF]/10 border border-[#00BFFF]/30 text-xs text-[#00BFFF] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>{status}</span>
-              </div>
-            )}
+            <div aria-live="polite">
+              {feedback && (
+                <div
+                  className={`p-4 rounded-lg border text-xs flex items-start gap-2 ${
+                    feedback.type === 'success'
+                      ? 'bg-[#00BFFF]/10 border-[#00BFFF]/30 text-[#00BFFF]'
+                      : 'bg-red-500/10 border-red-500/30 text-red-300'
+                  }`}
+                >
+                  {feedback.type === 'success' ? (
+                    <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  )}
+                  <span>{feedback.text}</span>
+                </div>
+              )}
+            </div>
 
             <button
               type="submit"
@@ -465,11 +470,11 @@ export default function Home() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Registrando Instalación...
+                  Registrando instalación...
                 </>
               ) : (
                 <>
-                  Iniciar Alta de Instalación
+                  Registrar instalación
                   <Send className="w-4 h-4" />
                 </>
               )}
@@ -478,24 +483,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER CON ACREDITACIÓN DE PROPIEDAD INTELECTUAL */}
+      {/* FOOTER */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
         <p>© 2026 NEXERGY. Todos los derechos reservados. Optinex SAS.</p>
-        <p className="font-mono text-[10px] text-gray-400 mb-1">
-          USPTO Patent Pending Application Docket: PYUS/J Bosso/PV/001 · Serial No. 64/181,819
+        <p className="font-mono text-[10px] text-gray-400">
+          Patent pending · Solicitud provisional USPTO Nº 64/181,819
         </p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
-          <a 
-            href="mailto:contacto@nexergy.ar" 
-            className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors inline-flex items-center gap-1.5"
-          >
-            <Mail className="w-3.5 h-3.5" />
+          <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
+            <AtSign className="w-3.5 h-3.5" />
             contacto@nexergy.ar
-          </a>
+          </span>
           <span className="text-gray-700">•</span>
-          <a 
-            href="https://linktr.ee/nexergy.ar" 
-            target="_blank" 
+          <a
+            href="https://linktr.ee/nexergy.ar"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5"
           >
@@ -504,7 +506,6 @@ export default function Home() {
           </a>
         </div>
       </footer>
-
     </div>
   );
 }
