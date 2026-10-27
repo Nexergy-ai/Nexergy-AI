@@ -31,7 +31,7 @@ export function Navigation() {
             href="mailto:contacto@nexergy.ar?subject=Consulta%20Proyecto%20-%20Nexergy%20AI"
             className="bg-[#00BFFF] hover:bg-cyan-400 text-[#0a0e27] font-bold px-5 py-2 rounded-lg text-xs tracking-wider transition-all flex items-center gap-2 shadow-md shadow-[#00BFFF]/20 cursor-pointer"
           >
-            INICIAR PROYECTO
+            Contacto
             <Mail className="w-3.5 h-3.5" />
           </a>
         </div>
