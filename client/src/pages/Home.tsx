@@ -32,12 +32,16 @@ const UNITS: Unit[] = [
     id: 'flex',
     Icon: Cpu,
     tag: 'Nexergy Flex',
-    title: 'Energía bidireccional',
+    title: 'Energía Bidireccional',
     selector: 'Nexergy Flex',
-    cta: 'Consultar Nexergy Flex',
+    cta: 'Evaluar Flexibilidad Energética',
     description:
-      'Convertidores de potencia (SST/VSC) y motor de control adaptativo para la orquestación y gestión de flexibilidad energética.',
-    bullets: ['Control bidireccional SST / VSC', 'Gestión de flexibilidad y excedentes', 'Optimización BESS e hidrógeno'],
+      'Convertidores de potencia (SST/VSC) y motor de control adaptativo para maximizar el CVI y eliminar el curtailment en instalaciones industriales.',
+    bullets: [
+      'Valorización de excedentes renovables (CVI)',
+      'Mitigación de penalizaciones y cortes',
+      'Orquestación de BESS e Hidrógeno Verde',
+    ],
     patent: true,
     card: 'border-purple-500/40 hover:border-purple-400',
     iconBox: 'bg-purple-500/10 border-purple-500/30 text-purple-400',
@@ -50,12 +54,16 @@ const UNITS: Unit[] = [
     id: 'agro',
     Icon: Leaf,
     tag: 'Nexergy Agro',
-    title: 'Bioenergía y biomasa',
-    selector: 'Agro y bioenergía',
-    cta: 'Consultar Agro',
+    title: 'Bioenergía & Biomasa',
+    selector: 'Agro y Bioenergía',
+    cta: 'Evaluar Biomasa & Biochar',
     description:
-      'Transformamos rastrojos, cáscaras, efluentes y subproductos agroindustriales en energía limpia, calor, electricidad y biochar.',
-    bullets: ['Biomass Intelligence y mapeo', 'Gasificación y cogeneración', 'Economía circular y reducción de CO₂'],
+      'Transformamos efluentes, rastrojos y subproductos agroindustriales en energía térmica, eléctrica y créditos ambientales con economía circular.',
+    bullets: [
+      'Reducción directa de huella de carbono',
+      'Autogeneración continua y cogeneración',
+      'Valorización de residuos agroindustriales',
+    ],
     card: 'border-white/10 hover:border-[#00BFFF]/50',
     iconBox: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
     text: 'text-emerald-400',
@@ -67,12 +75,16 @@ const UNITS: Unit[] = [
     id: 'ev',
     Icon: Zap,
     tag: 'Nexergy EV Charge',
-    title: 'Movilidad eléctrica',
+    title: 'Movilidad Eléctrica Pesada',
     selector: 'EV Charge',
-    cta: 'Consultar EV Charge',
+    cta: 'Evaluar Infraestructura EV',
     description:
-      'Estaciones de carga para vehículos eléctricos con energía solar o eólica y almacenamiento, para barrios privados e industrias.',
-    bullets: ['Cargadores AC/DC inteligentes', 'Integración solar y BESS', 'Plusvalía para comunidades'],
+      'Estaciones de carga inteligente AC/DC con BESS integrado para flotas industriales y parques sin saturar la red de distribución.',
+    bullets: [
+      'Carga de alta potencia sin picos de red',
+      'Integración solar y eólica in situ',
+      'Reducción de OPEX en logística corporativa',
+    ],
     card: 'border-white/10 hover:border-[#00BFFF]/50',
     iconBox: 'bg-cyan-500/10 border-cyan-500/30 text-[#00BFFF]',
     text: 'text-[#00BFFF]',
@@ -84,15 +96,15 @@ const UNITS: Unit[] = [
     id: 'systems',
     Icon: Activity,
     tag: 'Nexergy Systems',
-    title: 'Sistemas y cumplimiento',
+    title: 'Sistemas & Compliance',
     selector: 'Systems y Twin',
-    cta: 'Consultar Systems',
+    cta: 'Solicitar Diagnóstico Autofinanciado',
     description:
-      'Digital Twin, auditoría energética y estructura legal-financiera autofinanciada con el ahorro generado (alianza Arcondo & Asoc.).',
+      'Digital Twin, auditoría energética ISO 50001 y estructura legal-financiera autofinanciada con el ahorro energético generado.',
     bullets: [
       'Modelado Digital Twin e Industria 4.0',
       'Res. CRPEE 13/2012 e ISO 50001',
-      'Esquema financiable con el ahorro generado',
+      'Esquema autofinanciado por ahorros',
     ],
     card: 'border-white/10 hover:border-[#00BFFF]/50',
     iconBox: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
@@ -325,19 +337,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ALTA DE INSTALACIÓN */}
+      {/* SECCIÓN ONBOARDING & VALOR AGREGADO (#contacto) */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Alta de instalación</h2>
-            <p className="text-gray-400 text-sm">
-              Cuéntanos quién eres y dónde está tu planta. Con eso armamos el modelo inicial, sin trámites innecesarios.
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Funnel de Onboarding & Diagnóstico Inicial
+            </span>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
+              Alta de Instalación & Diagnóstico de Valor
+            </h2>
+            <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              Cuéntanos la ubicación y escala de tu planta. Construimos el modelo inicial de flexibilidad sin trámites innecesarios para cuantificar el valor agregado y retorno económico en tus instalaciones.
             </p>
+          </div>
+
+          {/* TARJETAS DE IMPACTO Y VALOR AGREGADO PARA EL CLIENTE */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
+              <span className="text-lg font-bold text-[#00BFFF] block">Cero Curtailment</span>
+              <span className="text-xs text-gray-400">Valorización del 100% de excedentes renovables</span>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
+              <span className="text-lg font-bold text-emerald-400 block">Esquema Autofinanciado</span>
+              <span className="text-xs text-gray-400">Repagado mediante el ahorro económico generado</span>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
+              <span className="text-lg font-bold text-purple-400 block">Control Adaptativo</span>
+              <span className="text-xs text-gray-400">Respuesta en milisegundos sin desgaste de activos</span>
+            </div>
           </div>
 
           <form onSubmit={handleContactSubmit} noValidate className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
             <div>
-              <span className={labelClass}>Unidad de negocio principal</span>
+              <span className={labelClass}>Unidad de negocio o vector principal de interés</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {UNITS.map((u) => (
                   <button
@@ -374,7 +407,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label htmlFor="email" className={labelClass}>Correo de contacto</label>
+                <label htmlFor="email" className={labelClass}>Correo corporativo de contacto</label>
                 <div className="relative">
                   <AtSign className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
                   <input
@@ -408,14 +441,14 @@ export default function Home() {
             </div>
 
             <div>
-              <label htmlFor="notes" className={labelClass}>Notas sobre la instalación (opcional)</label>
+              <label htmlFor="notes" className={labelClass}>Parámetros de la instalación (Opcional)</label>
               <textarea
                 id="notes"
                 rows={2}
                 maxLength={400}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Escala de la planta, potencia contratada o necesidad principal"
+                placeholder="Potencia contratada (kW/MW), tipo de tarifa o principal desafío de costo/sustentabilidad"
                 className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
               />
             </div>
@@ -447,11 +480,11 @@ export default function Home() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Registrando instalación...
+                  Generando modelo de onboarding...
                 </>
               ) : (
                 <>
-                  Registrar instalación
+                  Registrar instalación y solicitar modelo inicial
                   <Send className="w-4 h-4" />
                 </>
               )}
