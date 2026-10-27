@@ -36,8 +36,8 @@ const UNITS: Unit[] = [
     selector: 'Nexergy Flex',
     cta: 'Consultar Nexergy Flex',
     description:
-      'Convertidores de potencia (SST/VSC) y motor de control adaptativo (MVDE) para calcular el Espacio de Flexibilidad (Ω_EFS) y maximizar el CVI.',
-    bullets: ['Control bidireccional SST / VSC', 'Índice CVI (Zero Curtailment)', 'Optimización BESS e hidrógeno'],
+      'Convertidores de potencia (SST/VSC) y motor de control adaptativo para la orquestación y gestión de flexibilidad energética.',
+    bullets: ['Control bidireccional SST / VSC', 'Gestión de flexibilidad y excedentes', 'Optimización BESS e hidrógeno'],
     patent: true,
     card: 'border-purple-500/40 hover:border-purple-400',
     iconBox: 'bg-purple-500/10 border-purple-500/30 text-purple-400',
@@ -101,14 +101,6 @@ const UNITS: Unit[] = [
     btn: 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30',
     active: 'bg-amber-500/20 border-amber-500 text-amber-400',
   },
-];
-
-const METHOD = [
-  ['Hacer requisitos SMART', 'Cuestionamos los parámetros iniciales y suprimimos restricciones infundadas que frenan la factibilidad.'],
-  ['Eliminar partes del proceso', 'Removemos componentes, intermediarios y trámites prescindibles para acortar la cadena de ejecución.'],
-  ['Simplificar u optimizar', 'Optimizamos únicamente lo indispensable, evitando perfeccionar etapas que nunca debieron existir.'],
-  ['Acelerar el tiempo de ciclo', 'Comprimimos la velocidad de respuesta e iteración para lograr resultados operativos en tiempo récord.'],
-  ['Automatizar', 'Desplegamos capas de control e inteligencia operacional sobre el flujo simplificado.'],
 ];
 
 const inputClass =
@@ -186,7 +178,7 @@ export default function Home() {
             </span>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 bg-purple-500/10 border border-purple-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Marca Reg. INPI Nº 3.941.093 · Patent Pending USPTO
+              Marca Reg. INPI Nº 3.941.093 · Solicitud de Patente USPTO
             </span>
           </div>
 
@@ -291,7 +283,7 @@ export default function Home() {
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología (TRL 5)</h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> enfocada en control adaptativo multi-vector y optimización en tiempo real.
+              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> enfocada en la gestión adaptativa multi-vector de activos energéticos.
             </p>
           </div>
 
@@ -301,9 +293,9 @@ export default function Home() {
                 TRL 5 VALIDADO
               </div>
               <FlaskConical className="w-6 h-6 text-emerald-400 mb-4" />
-              <h3 className="text-base font-bold mb-2 text-white">Prototipo en entorno relevante</h3>
+              <h3 className="text-base font-bold mb-2 text-white">Prototipo en Entorno Relevante</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Validado sobre un conjunto de 6.528 registros reales de telemetría e infraestructura industrial anonimizada, adaptados para la calibración del modelo de planta piloto. Motor predictivo de control con precisión <strong>AUC-ROC de 0.942</strong> en detección temprana de anomalías críticas.
+                Nivel de madurez TRL 5 alcanzado mediante modelo de simulación y calibración funcional sobre datos industriales de planta piloto. Plataforma orientada a la detección temprana y control adaptativo de activos energéticos.
               </p>
             </div>
 
@@ -315,7 +307,7 @@ export default function Home() {
               <h3 className="text-base font-bold mb-2 text-white">Activos de propiedad intelectual</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
                 • <strong>Marca Registrada INPI Nº 3.941.093</strong> (Clase 9, Software & Control de Energía).<br />
-                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Provisional EE.UU., Octubre 2026: Control Adaptativo Multi-Vector, Ω_EFS y CVI).
+                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Solicitud provisional EE.UU. de método adaptativo multi-vector).
               </p>
             </div>
 
@@ -329,36 +321,6 @@ export default function Home() {
                 Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
               </a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* MÉTODO */}
-      <section id="metodo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Metodología operativa
-            </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              El método de optimización y solución de problemas
-            </h2>
-            <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Nuestro protocolo de 5 pasos para eliminar ineficiencias, simplificar procesos y acelerar la transformación
-              energética.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {METHOD.map(([title, text], i) => (
-              <div key={title} className="bg-[#0a0e27] border border-white/10 rounded-xl p-6 group hover:border-[#00BFFF]/50 transition-all">
-                <span className="text-4xl font-black text-[#00BFFF]/20 group-hover:text-[#00BFFF]/50 transition-colors font-mono block mb-2">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-sm font-bold text-white mb-2">{title}</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">{text}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
