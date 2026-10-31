@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck, FlaskConical, FileText,
-  Sun, BatteryCharging, Car,
+  Sun, BatteryCharging, Car, Users, Award, Microscope, TrendingUp,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -20,6 +20,7 @@ interface Unit {
   description: string;
   bullets: string[];
   patent?: boolean;
+  primary?: boolean;
   card: string;
   iconBox: string;
   text: string;
@@ -32,19 +33,20 @@ const UNITS: Unit[] = [
   {
     id: 'flex',
     Icon: Cpu,
-    tag: 'Nexergy Flex',
+    tag: 'NEXERGY FLEX™',
     title: 'Energía Bidireccional',
     selector: 'Nexergy Flex',
     cta: 'Evaluar Flexibilidad Energética',
     description:
-      'Convertidores de potencia (SST/VSC) y motor de control adaptativo para maximizar el CVI y eliminar el curtailment en instalaciones industriales.',
+      'Plataforma inteligente de orquestación multi-vectorial para optimizar excedentes de generación renovable y eventos de curtailment mediante IA, analítica predictiva y optimización multiobjetivo.',
     bullets: [
+      'Motor MIOM™ — orquestación multi-vectorial en tiempo real',
       'Valorización de excedentes renovables (CVI)',
-      'Mitigación de penalizaciones y cortes',
-      'Orquestación de BESS e Hidrógeno Verde',
+      'Orquestación de BESS, Hidrógeno Verde y e-fuels',
     ],
     patent: true,
-    card: 'border-purple-500/40 hover:border-purple-400',
+    primary: true,
+    card: 'border-purple-500/40 hover:border-purple-400 ring-1 ring-purple-500/20',
     iconBox: 'bg-purple-500/10 border-purple-500/30 text-purple-400',
     text: 'text-purple-400',
     check: 'text-purple-400',
@@ -132,7 +134,7 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    document.title = "NEXERGY®";
+    document.title = "NEXERGY® | Tecnología propietaria para gestión inteligente de energía distribuida";
   }, []);
 
   const createIngestionMutation = trpc.ai.createIngestion.useMutation();
@@ -184,7 +186,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
       <Navigation />
 
-      {/* HERO - CAMBIO 1 */}
+      {/* HERO */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -195,11 +197,10 @@ export default function Home() {
             </span>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 bg-purple-500/10 border border-purple-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Marca Reg. INPI Nº 3.941.093 · Solicitud de Patente USPTO
+              Marca Reg. INPI Nº 3.941.093 · Patent Pending USPTO 64/181,819
             </span>
           </div>
 
-          {/* Badges TRL / Patent / Marca */}
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30">
               <FlaskConical className="w-3.5 h-3.5" />
@@ -245,8 +246,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* CAMBIO 2 - PLATAFORMA TECNOLÓGICA */}
+      {/* PLATAFORMA TECNOLÓGICA */}
       <section id="plataforma" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -263,6 +263,20 @@ export default function Home() {
             <p className="text-gray-400 text-sm md:text-base leading-relaxed">
               NEXERGY® desarrolla una arquitectura de control adaptativo capaz de coordinar estos activos energéticos
               para maximizar eficiencia, disponibilidad operativa y valorización económica.
+            </p>
+          </div>
+
+          {/* Motor MIOM™ */}
+          <div className="bg-gradient-to-r from-purple-500/10 to-[#00BFFF]/10 border border-purple-500/30 rounded-2xl p-8 mb-8 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 mb-4">
+              <Cpu className="w-5 h-5 text-purple-400" />
+              <span className="text-sm font-mono font-bold text-purple-300">Motor MIOM™</span>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Motor Inteligente de Orquestación Multi-Vectorial</h3>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-2xl mx-auto">
+              Núcleo analítico híbrido que combina ingeniería de requerimientos formales (977 requerimientos según
+              ISO/IEC 25010) con algoritmos de Machine Learning multimodal para procesar variables estructuradas y
+              texto libre, aislar fallas críticas y predecir el comportamiento dinámico de la demanda y generación.
             </p>
           </div>
 
@@ -310,19 +324,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAMBIO 3 - UNIDADES DE NEGOCIO */}
+      {/* UNIDADES */}
       <section id="unidades" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3">
-              Brochure institucional
+              Aplicaciones comerciales
             </h2>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
               Aplicaciones comerciales de nuestra arquitectura tecnológica
             </h3>
             <p className="text-gray-400 text-sm md:text-base leading-relaxed">
               Todas las unidades comparten la misma base tecnológica: electrónica de potencia, control adaptativo e
-              inteligencia operacional para la gestión multi-vector de activos energéticos.
+              inteligencia operacional para la gestión multi-vector de activos energéticos.{' '}
+              <span className="text-purple-400 font-semibold">NEXERGY FLEX™</span> es el producto principal, actualmente
+              en validación TRL 5.
             </p>
           </div>
 
@@ -337,6 +353,11 @@ export default function Home() {
                     PATENT PENDING
                   </div>
                 )}
+                {u.primary && (
+                  <div className="absolute top-0 left-0 bg-[#00BFFF]/20 text-[#00BFFF] text-[9px] font-mono font-bold px-2.5 py-1 rounded-br border-b border-r border-[#00BFFF]/30">
+                    PRODUCTO PRINCIPAL
+                  </div>
+                )}
                 <div>
                   <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ${u.iconBox}`}>
                     <u.Icon className="w-6 h-6" />
@@ -347,7 +368,7 @@ export default function Home() {
 
                   {u.patent && (
                     <div className="p-2.5 mb-5 rounded bg-purple-950/40 border border-purple-500/20 text-[10px] font-mono text-purple-300">
-                      Patent pending · Solicitud provisional USPTO Nº 64/181,819
+                      Patent pending · USPTO Nº 64/181,819
                     </div>
                   )}
 
@@ -375,7 +396,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAMBIO 4 - OPORTUNIDAD TECNOLÓGICA */}
+      {/* OPORTUNIDAD TECNOLÓGICA */}
       <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
@@ -395,8 +416,7 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      {/* CAMBIO 5 - TECNOLOGÍA DEEP-TECH */}
+      {/* TECNOLOGÍA DEEP-TECH con métricas reales */}
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -408,8 +428,34 @@ export default function Home() {
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
               Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> para la coordinación inteligente de activos
-              energéticos distribuidos mediante control adaptativo y electrónica de potencia avanzada.
+              energéticos distribuidos mediante control adaptativo y electrónica de potencia avanzada. Origen en
+              proyectos <strong>PFI 2022</strong>, <strong>PFI 2023</strong> y <strong>PDTS OPTIMIA-HV</strong> (Cod. 32756)
+              de la <strong>Universidad Nacional de Villa Mercedes (UNViMe)</strong>.
             </p>
+          </div>
+
+          {/* Métricas TRL 5 */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6 text-center">
+              <TrendingUp className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
+              <div className="text-3xl font-extrabold text-emerald-400">0.942</div>
+              <div className="text-xs text-gray-400 mt-1">AUC-ROC</div>
+            </div>
+            <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-6 text-center">
+              <FileText className="w-6 h-6 text-[#00BFFF] mx-auto mb-2" />
+              <div className="text-3xl font-extrabold text-[#00BFFF]">6.528</div>
+              <div className="text-xs text-gray-400 mt-1">Registros reales</div>
+            </div>
+            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6 text-center">
+              <Microscope className="w-6 h-6 text-purple-400 mx-auto mb-2" />
+              <div className="text-3xl font-extrabold text-purple-400">977</div>
+              <div className="text-xs text-gray-400 mt-1">Requerimientos ISO/IEC 25010</div>
+            </div>
+            <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6 text-center">
+              <FlaskConical className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+              <div className="text-3xl font-extrabold text-amber-400">&lt;4.8%</div>
+              <div className="text-xs text-gray-400 mt-1">Falsos positivos</div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -420,7 +466,8 @@ export default function Home() {
               <FlaskConical className="w-6 h-6 text-emerald-400 mb-4" />
               <h3 className="text-base font-bold mb-2 text-white">Prototipo en Entorno Relevante</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Nivel de madurez TRL 5 alcanzado mediante modelo de simulación y calibración funcional sobre datos industriales de planta piloto. Plataforma orientada a la detección temprana y control adaptativo de activos energéticos.
+                Validado en microrred experimental UNViMe (fotovoltaica + BESS + electrólisis PEM + Power-to-X).
+                Modelo Random Forest con 100 estimadores, K-Fold Cross-Validation (20 repeticiones, σ &lt; 0.015).
               </p>
             </div>
 
@@ -431,16 +478,18 @@ export default function Home() {
               <ShieldCheck className="w-6 h-6 text-purple-400 mb-4" />
               <h3 className="text-base font-bold mb-2 text-white">Activos de propiedad intelectual</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                • <strong>Marca Registrada INPI Nº 3.941.093</strong> (Clase 9, Software & Control de Energía).<br />
-                • <strong>Patent Pending USPTO Nº 64/181,819</strong> (Solicitud provisional EE.UU. de método adaptativo multi-vector).
+                • <strong>Patent Pending USPTO Nº 64/181,819</strong> — "Systems and Methods for Intelligent Valorization
+                of Renewable Energy Surplus Through Adaptive Multi-Vector Management" (Provisional, 22/10/2026).<br />
+                • <strong>Marca Registrada INPI Nº 3.941.093</strong> — OPTINEX, Clase 9 (Software & Control de Energía).
               </p>
             </div>
 
             <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden">
               <FileText className="w-6 h-6 text-amber-400 mb-4" />
-              <h3 className="text-base font-bold mb-2 text-white">Data Room Técnico bajo NDA</h3>
+              <h3 className="text-base font-bold mb-2 text-white">Data Room técnico bajo NDA</h3>
               <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                Acceso a dataset analítico, informe contable y arquitectura de software para evaluadores e inversores institucionales.
+                Acceso a dataset analítico, informe contable y arquitectura de software para evaluadores e inversores
+                institucionales.
               </p>
               <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
                 Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
@@ -450,7 +499,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAMBIO 6 - SECCIÓN INVERSORES */}
+      {/* INVERSORES */}
       <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-xs font-bold font-mono tracking-widest text-amber-400 uppercase mb-3 block">
@@ -459,15 +508,107 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
             Data Room técnico disponible bajo NDA
           </h2>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-3xl mx-auto">
+          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-3xl mx-auto mb-8">
             NEXERGY® dispone de documentación técnica, modelos económicos, propiedad intelectual, datasets industriales,
             arquitectura de software y evidencia experimental para procesos de due diligence, evaluación tecnológica y
             programas de financiamiento a la innovación.
           </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="text-xs font-mono text-emerald-400">2 Cartas de Intención (LOI) firmadas</span>
+          </div>
         </div>
       </section>
 
-      {/* CAMBIO 7 - FORMULARIO */}
+      {/* EQUIPO */}
+      <section id="equipo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Equipo Fundador
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Investigación + Industria = Tecnología con impacto real
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Dr. Bosso */}
+            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-8">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-16 h-16 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+                  <Microscope className="w-8 h-8 text-purple-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Dr. Ing. Jonathan Bosso</h3>
+                  <p className="text-purple-400 text-xs font-mono">CEO — Director Ejecutivo</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-4">
+                Investigador CONICET. Doctor en Ciencias de la Ingeniería (UNRC). Profesor Asociado UNViMe y UNSL.
+                18 publicaciones científicas (Elsevier, IET). Director del PDTS OPTIMIA-HV UNViMe (1er lugar región
+                Nuevo Cuyo, 2do lugar nacional — Res. CIN P Nº 522/25). 15+ años en electrónica de potencia, microrredes
+                e hidrógeno verde.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CONICET</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">UNViMe</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 publicaciones</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CYTED</span>
+              </div>
+              <a
+                href="https://www.linkedin.com/in/jonathan-bosso-6138b849/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Ver perfil en LinkedIn
+              </a>
+            </div>
+
+            {/* Mgtr. López */}
+            <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-8">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-16 h-16 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-8 h-8 text-[#00BFFF]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Mgtr. Ing. Juan José López</h3>
+                  <p className="text-[#00BFFF] text-xs font-mono">CTO — Director Científico</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-4">
+                Magíster en Ingeniería de Software (UNSL). Diplomatura en IA aplicada a Ingeniería Eléctrica (UNSJ).
+                14+ años en gestión de activos industriales (AGD, Mabe, Maxion Wheels). Especialista en automatización
+                industrial, SCADA, Digital Twin y eficiencia energética. Ingeniero matriculado MP 3.026 (Cynitec, San Luis).
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">IA Eléctrica</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">SCADA/IoT</span>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">14+ años industria</span>
+              </div>
+              <a
+                href="https://www.linkedin.com/in/iejjlopez/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Ver perfil en LinkedIn
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-500 text-xs">
+              Equipo a incorporar: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
+            </p>
+          </div>
+        </div>
+      </section>
+      {/* FORMULARIO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -483,7 +624,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* TARJETAS DE IMPACTO Y VALOR AGREGADO PARA EL CLIENTE */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
               <span className="text-lg font-bold text-[#00BFFF] block">Cero Curtailment</span>
