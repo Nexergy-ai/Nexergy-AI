@@ -3,7 +3,8 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck,
-  FlaskConical, Users, Microscope, Briefcase
+  FlaskConical, Users, Microscope, Briefcase,
+  Sun, BatteryCharging, Car
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -396,7 +397,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EQUIPO TECNOLÓGICO, INVENTORES USPTO & CFO (4 INTEGRANTES) */}
+      {/* EQUIPO TECNOLÓGICO & FINANCIERO (4 INTEGRANTES) */}
       <section id="equipo" className="py-20 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
