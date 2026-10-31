@@ -3,8 +3,9 @@ import react from "@vitejs/plugin-react";
 import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
+  root: "client",
   plugins: [react(), cloudflare()],
   build: {
-    outDir: "dist/public",
+    outDir: "../dist/public",
   },
 });
