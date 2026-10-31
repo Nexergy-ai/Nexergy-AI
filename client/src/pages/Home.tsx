@@ -38,7 +38,7 @@ const UNITS: Unit[] = [
     selector: 'Nexergy Flex',
     cta: 'Evaluar Flexibilidad Energética',
     description:
-      'Plataforma inteligente de orquestación multi-vectorial para optimizar excedentes de generación renovable y eventos de curtailment mediante IA, analítica predictiva y optimización multiobjetivo.',
+      'Plataforma de orquestación multi-vectorial para optimizar excedentes renovables y eventos de curtailment mediante IA y optimización multiobjetivo.',
     bullets: [
       'Motor MIOM™ — orquestación multi-vectorial en tiempo real',
       'Valorización de excedentes renovables (CVI)',
@@ -61,7 +61,7 @@ const UNITS: Unit[] = [
     selector: 'Agro y Bioenergía',
     cta: 'Evaluar Biomasa & Biochar',
     description:
-      'Transformamos efluentes, rastrojos y subproductos agroindustriales en energía térmica, eléctrica y créditos ambientales con economía circular.',
+      'Conversión de residuos agroindustriales en energía térmica, eléctrica y créditos ambientales con economía circular.',
     bullets: [
       'Reducción directa de huella de carbono',
       'Autogeneración continua y cogeneración',
@@ -82,7 +82,7 @@ const UNITS: Unit[] = [
     selector: 'EV Charge',
     cta: 'Evaluar Infraestructura EV',
     description:
-      'Estaciones de carga inteligente AC/DC con BESS integrado para flotas industriales y parques sin saturar la red de distribución.',
+      'Estaciones de carga inteligente AC/DC con BESS integrado para flotas industriales sin saturar la red de distribución.',
     bullets: [
       'Carga de alta potencia sin picos de red',
       'Integración solar y eólica in situ',
@@ -103,7 +103,7 @@ const UNITS: Unit[] = [
     selector: 'Systems y Twin',
     cta: 'Solicitar Diagnóstico Autofinanciado',
     description:
-      'Digital Twin, auditoría energética ISO 50001 y estructura legal-financiera autofinanciada con el ahorro energético generado.',
+      'Digital Twin, auditoría energética ISO 50001 y estructura legal-financiera autofinanciada con el ahorro generado.',
     bullets: [
       'Modelado Digital Twin e Industria 4.0',
       'Res. CRPEE 13/2012 e ISO 50001',
@@ -193,7 +193,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20">
               <Globe className="w-3.5 h-3.5" />
-              EBT OPTINEX S.A.S. · CUIT 30-71945566-9
+              OPTINEX S.A.S. · CUIT 30-71945566-9
             </span>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 bg-purple-500/10 border border-purple-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -204,7 +204,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30">
               <FlaskConical className="w-3.5 h-3.5" />
-              TRL 5 VALIDADO
+              TRL 5 — BASE DE PATENTE USPTO
             </span>
             <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30">
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -224,9 +224,8 @@ export default function Home() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            NEXERGY® desarrolla una arquitectura tecnológica basada en electrónica de potencia, control adaptativo e
-            inteligencia operacional para coordinar activos energéticos complejos en tiempo real y maximizar su valor
-            económico.
+            Arquitectura tecnológica basada en electrónica de potencia, control adaptativo e inteligencia operacional
+            para coordinar activos energéticos complejos en tiempo real y maximizar su valor económico.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -256,13 +255,9 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
               Una plataforma. Múltiples vectores energéticos.
             </h2>
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
-              La transición energética está incorporando generación renovable, almacenamiento energético, biomasa,
-              movilidad eléctrica e hidrógeno dentro de una misma infraestructura industrial.
-            </p>
             <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-              NEXERGY® desarrolla una arquitectura de control adaptativo capaz de coordinar estos activos energéticos
-              para maximizar eficiencia, disponibilidad operativa y valorización económica.
+              Arquitectura de control adaptativo capaz de coordinar generación renovable, almacenamiento, biomasa,
+              movilidad eléctrica e hidrógeno para maximizar eficiencia y valorización económica.
             </p>
           </div>
 
@@ -274,9 +269,9 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Motor Inteligente de Orquestación Multi-Vectorial</h3>
             <p className="text-gray-400 text-sm leading-relaxed max-w-2xl mx-auto">
-              Núcleo analítico híbrido que combina ingeniería de requerimientos formales (977 requerimientos según
-              ISO/IEC 25010) con algoritmos de Machine Learning multimodal para procesar variables estructuradas y
-              texto libre, aislar fallas críticas y predecir el comportamiento dinámico de la demanda y generación.
+              Núcleo analítico híbrido: 977 requerimientos formales (ISO/IEC 25010) + Machine Learning multimodal.
+              Procesa variables estructuradas y texto libre para aislar fallas críticas y predecir el comportamiento
+              dinámico de demanda y generación. <strong className="text-purple-300">Tecnología sustentada por la Solicitud de Patente Provisional USPTO Nº 64/181,819.</strong>
             </p>
           </div>
 
@@ -286,39 +281,28 @@ export default function Home() {
                 <Sun className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">RENOVABLES</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                Integración y valorización de excedentes energéticos.
-              </p>
+              <p className="text-gray-400 text-xs leading-relaxed">Integración y valorización de excedentes.</p>
             </div>
-
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-emerald-500/40">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">BIOMASA</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                Conversión de residuos en energía y valor ambiental.
-              </p>
+              <p className="text-gray-400 text-xs leading-relaxed">Conversión de residuos en energía.</p>
             </div>
-
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-purple-500/40">
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto mb-4">
                 <BatteryCharging className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">BESS E HIDRÓGENO</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                Flexibilidad energética y almacenamiento inteligente.
-              </p>
+              <p className="text-gray-400 text-xs leading-relaxed">Flexibilidad y almacenamiento inteligente.</p>
             </div>
-
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-[#00BFFF]/40">
-              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-[#00BFFF] flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border-cyan-500/30 text-[#00BFFF] flex items-center justify-center mx-auto mb-4">
                 <Car className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">MOVILIDAD ELÉCTRICA</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                Infraestructura para movilidad eléctrica industrial.
-              </p>
+              <p className="text-gray-400 text-xs leading-relaxed">Infraestructura para flotas industriales.</p>
             </div>
           </div>
         </div>
@@ -332,13 +316,12 @@ export default function Home() {
               Aplicaciones comerciales
             </h2>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-              Aplicaciones comerciales de nuestra arquitectura tecnológica
+              Aplicaciones de nuestra arquitectura tecnológica
             </h3>
             <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-              Todas las unidades comparten la misma base tecnológica: electrónica de potencia, control adaptativo e
-              inteligencia operacional para la gestión multi-vector de activos energéticos.{' '}
-              <span className="text-purple-400 font-semibold">NEXERGY FLEX™</span> es el producto principal, actualmente
-              en validación TRL 5.
+              Todas las unidades comparten la misma base tecnológica.{' '}
+              <span className="text-purple-400 font-semibold">NEXERGY FLEX™</span> es el producto principal, en
+              validación TRL 5 y amparado por la Solicitud de Patente Provisional USPTO.
             </p>
           </div>
 
@@ -395,41 +378,19 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* OPORTUNIDAD TECNOLÓGICA */}
-      <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-            Oportunidad Tecnológica
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
-            La transición energética necesita nuevas herramientas
-          </h2>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
-            La electrificación industrial, el almacenamiento energético, la movilidad eléctrica y las energías
-            renovables están incrementando la complejidad de los sistemas energéticos.
-          </p>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-            Sin embargo, la mayoría de estos activos continúan operándose de forma aislada. NEXERGY® desarrolla una
-            arquitectura capaz de coordinarlos en tiempo real para transformar complejidad técnica en eficiencia y
-            rentabilidad.
-          </p>
-        </div>
-      </section>
-
-      {/* TECNOLOGÍA DEEP-TECH con métricas reales */}
+      {/* TRL 5 + PATENTE — Sección unificada */}
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-emerald-400 uppercase mb-2 block">
-              Validación Científica & Respaldo I+D+i
+              Validación Científica & Propiedad Intelectual
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              Tecnología Deep-Tech aplicada a la transición energética
+              TRL 5 validado — base de la Solicitud de Patente Provisional USPTO
             </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> para la coordinación inteligente de activos
-              energéticos distribuidos mediante control adaptativo y electrónica de potencia avanzada. Origen en
-              proyectos de investigación de la <strong>Universidad Nacional de Villa Mercedes (UNViMe)</strong>.
+              Los resultados experimentales que sustentan el nivel TRL 5 constituyen la evidencia técnica de la
+              Solicitud de Patente Provisional USPTO Nº 64/181,819, titularidad de OPTINEX S.A.S.
             </p>
           </div>
 
@@ -448,7 +409,7 @@ export default function Home() {
             <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6 text-center">
               <Microscope className="w-6 h-6 text-purple-400 mx-auto mb-2" />
               <div className="text-3xl font-extrabold text-purple-400">977</div>
-              <div className="text-xs text-gray-400 mt-1">Requerimientos ISO/IEC 25010</div>
+              <div className="text-xs text-gray-400 mt-1">Req. ISO/IEC 25010</div>
             </div>
             <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6 text-center">
               <FlaskConical className="w-6 h-6 text-amber-400 mx-auto mb-2" />
@@ -457,39 +418,53 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-emerald-500/30">
-                TRL 5 VALIDADO
-              </div>
-              <FlaskConical className="w-6 h-6 text-emerald-400 mb-4" />
-              <h3 className="text-base font-bold mb-2 text-white">Prototipo en Entorno Relevante</h3>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                Validado en microrred experimental UNViMe (fotovoltaica + BESS + electrólisis PEM + Power-to-X).
-                Modelo Random Forest con 100 estimadores, K-Fold Cross-Validation (20 repeticiones, σ &lt; 0.015).
-              </p>
-            </div>
-
-            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6 relative overflow-hidden">
+          {/* Patente + Marca */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
-                IP PROTEGIDA
+                PATENTE PROVISIONAL
               </div>
-              <ShieldCheck className="w-6 h-6 text-purple-400 mb-4" />
-              <h3 className="text-base font-bold mb-2 text-white">Activos de propiedad intelectual</h3>
-              <p className="text-gray-400 text-xs leading-relaxed">
-                • <strong>Patent Pending USPTO Nº 64/181,819</strong> — "Systems and Methods for Intelligent Valorization
-                of Renewable Energy Surplus Through Adaptive Multi-Vector Management" (Provisional, 22/10/2026).<br />
-                • <strong>Marca Registrada INPI Nº 3.941.093</strong> — OPTINEX, Clase 9 (Software & Control de Energía).
+              <ShieldCheck className="w-8 h-8 text-purple-400 mb-4" />
+              <h3 className="text-lg font-bold mb-3 text-white">USPTO Nº 64/181,819</h3>
+              <p className="text-gray-400 text-xs leading-relaxed mb-2">
+                <strong>"Systems and Methods for Intelligent Valorization of Renewable Energy Surplus Through
+                Adaptive Multi-Vector Management"</strong>
+              </p>
+              <p className="text-gray-500 text-xs leading-relaxed">
+                Solicitud Provisional (35 USC 111(b)) presentada el 22/10/2026.<br />
+                Titular: OPTINEX S.A.S. · Inventor: Jonathan Emmanuel Bosso.
               </p>
             </div>
 
-            <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden">
-              <FileText className="w-6 h-6 text-amber-400 mb-4" />
-              <h3 className="text-base font-bold mb-2 text-white">Data Room técnico bajo NDA</h3>
-              <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                Acceso a dataset analítico, informe contable y arquitectura de software para evaluadores e inversores
-                institucionales.
+            <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-[#00BFFF]/20 text-[#00BFFF] text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-[#00BFFF]/30">
+                MARCA REGISTRADA
+              </div>
+              <ShieldCheck className="w-8 h-8 text-[#00BFFF] mb-4" />
+              <h3 className="text-lg font-bold mb-3 text-white">INPI Nº 3.941.093</h3>
+              <p className="text-gray-400 text-xs leading-relaxed mb-2">
+                Marca <strong>OPTINEX</strong> — Clase 9 (Niza)
               </p>
+              <p className="text-gray-500 text-xs leading-relaxed">
+                Concedida el 14/09/2026 · Vence 14/09/2036.<br />
+                Disposición DI-2026-319-APN-DNM#INPI.
+              </p>
+            </div>
+          </div>
+
+          {/* Data Room */}
+          <div className="mt-6 bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-8 text-center">
+            <FileText className="w-8 h-8 text-amber-400 mx-auto mb-4" />
+            <h3 className="text-lg font-bold mb-2 text-white">Data Room técnico bajo NDA</h3>
+            <p className="text-gray-400 text-xs leading-relaxed max-w-2xl mx-auto mb-4">
+              Documentación técnica, modelos económicos, datasets industriales y evidencia experimental disponibles
+              para procesos de due diligence y evaluación tecnológica.
+            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 mb-4">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-mono text-emerald-400">2 Cartas de Intención (LOI) firmadas</span>
+            </div>
+            <div>
               <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
                 Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
               </a>
@@ -497,33 +472,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* INVERSORES */}
-      <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-xs font-bold font-mono tracking-widest text-amber-400 uppercase mb-3 block">
-            Inversores · Organismos · Venture Capital
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
-            Data Room técnico disponible bajo NDA
-          </h2>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-3xl mx-auto mb-8">
-            NEXERGY® dispone de documentación técnica, modelos económicos, propiedad intelectual, datasets industriales,
-            arquitectura de software y evidencia experimental para procesos de due diligence, evaluación tecnológica y
-            programas de financiamiento a la innovación.
-          </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs font-mono text-emerald-400">2 Cartas de Intención (LOI) firmadas</span>
-          </div>
-        </div>
-      </section>
-      {/* EQUIPO — 4 miembros */}
+      {/* EQUIPO */}
       <section id="equipo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Equipo Fundador
+              Equipo
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
               Investigación + Industria + Ciencia + Finanzas
@@ -531,7 +485,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Dr. Bosso — CEO */}
+            {/* CEO */}
             <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
@@ -543,14 +497,13 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Investigador CONICET. Doctor en Ingeniería (UNRC). Profesor Asociado UNViMe y UNSL.
-                18 publicaciones científicas. Director PDTS UNViMe (1er lugar regional, 2do nacional).
-                15+ años en electrónica de potencia e hidrógeno verde.
+                Doctor en Ingeniería. Investigador científico. 18 publicaciones científicas.
+                15+ años en electrónica de potencia e hidrógeno verde. Inventor de la Patente USPTO Nº 64/181,819.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CONICET</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 pubs</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CYTED</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Dr. Ingeniería</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 publicaciones</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Inventor USPTO</span>
               </div>
               <a
                 href="https://www.linkedin.com/in/jonathan-bosso-6138b849/"
@@ -563,7 +516,7 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Mgtr. López — CTO */}
+            {/* CTO */}
             <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
@@ -575,13 +528,12 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Magíster en Ing. de Software (UNSL). Diplomatura IA Eléctrica (UNSJ).
-                14+ años en industria (AGD, Mabe, Maxion Wheels). Especialista SCADA/IoT,
-                Digital Twin. Ing. matriculado MP 3.026 (San Luis).
+                Magíster en Ingeniería de Software. 14+ años en empresas industriales líderes.
+                Especialista en SCADA/IoT, Digital Twin y eficiencia energética. Ing. matriculado.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">IA Eléctrica</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">SCADA/IoT</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">14+ años</span>
               </div>
               <a
@@ -595,7 +547,7 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Dr. Guerreiro — CSO */}
+            {/* CSO */}
             <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
@@ -607,13 +559,12 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Doctor en Química (UNSL). Master en Innovación Empresarial (UPV, España).
-                21+ años en industria: Colgate Palmolive (12 años), Bayer CropScience (9 años).
-                Profesor UNSL y UNViMe. Coordinador CYTED H2Transel. Six Sigma Master Black Belt.
+                Doctor en Química. Master en Innovación Empresarial. 21+ años en empresas multinacionales.
+                Six Sigma Master Black Belt. Auditor ISO 9001/14000. Especialista en hidrógeno y biomasa.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Dr. Química</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">CYTED H₂</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Six Sigma MBB</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">21+ años</span>
               </div>
               <span className="text-xs text-gray-500 inline-flex items-center gap-1.5">
@@ -622,7 +573,7 @@ export default function Home() {
               </span>
             </div>
 
-            {/* Joaquín Arcondo — CFO */}
+            {/* CFO */}
             <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
@@ -634,8 +585,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Contador Público. Director de Estudio Arcondo & Asociados.
-                Especialista en estructuración financiera de EBTs, rendición de fondos
+                Contador Público. Especialista en estructuración financiera de EBTs, rendición de fondos
                 públicos y auditoría. Asesor en plan de inversiones y cashflow del proyecto.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
@@ -657,7 +607,7 @@ export default function Home() {
 
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-xs">
-              Equipo a incorporar con fondo CFI: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
+              Equipo a incorporar: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
             </p>
           </div>
         </div>
@@ -668,29 +618,29 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Funnel de Onboarding & Diagnóstico Inicial
+              Diagnóstico Inicial
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
-              Diagnóstico Inicial de Oportunidad Energética
+              Diagnóstico de Oportunidad Energética
             </h2>
             <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
               Analizamos el potencial técnico y económico de cada instalación para identificar oportunidades de
-              valorización energética, reducción de costes operativos y descarbonización.
+              valorización energética, reducción de costos y descarbonización.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
               <span className="text-lg font-bold text-[#00BFFF] block">Cero Curtailment</span>
-              <span className="text-xs text-gray-400">Valorización del 100% de excedentes renovables</span>
+              <span className="text-xs text-gray-400">Valorización del 100% de excedentes</span>
             </div>
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
-              <span className="text-lg font-bold text-emerald-400 block">Esquema Autofinanciado</span>
-              <span className="text-xs text-gray-400">Repagado mediante el ahorro económico generado</span>
+              <span className="text-lg font-bold text-emerald-400 block">Autofinanciado</span>
+              <span className="text-xs text-gray-400">Repagado con el ahorro generado</span>
             </div>
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
               <span className="text-lg font-bold text-purple-400 block">Control Adaptativo</span>
-              <span className="text-xs text-gray-400">Respuesta en milisegundos sin desgaste de activos</span>
+              <span className="text-xs text-gray-400">Respuesta en milisegundos</span>
             </div>
           </div>
 
@@ -821,7 +771,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="py-12 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-3">
-        <p>© 2026 <strong>NEXERGY®</strong> — Todos los derechos reservados.</p>
+        <p>© 2026 <strong>NEXERGY®</strong> — OPTINEX S.A.S. — Todos los derechos reservados.</p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
             <AtSign className="w-3.5 h-3.5" />
