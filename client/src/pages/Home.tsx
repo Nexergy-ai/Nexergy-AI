@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck,
-  FlaskConical, FileText, Sun, BatteryCharging, Car, Users, Microscope,
+  FlaskConical, FileText, Sun, BatteryCharging, Car, Users, Microscope, Briefcase
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -396,76 +396,96 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EQUIPO TECNOLÓGICO E INVENTORES USPTO */}
+      {/* EQUIPO TECNOLÓGICO, INVENTORES USPTO & CFO (4 INTEGRANTES) */}
       <section id="equipo" className="py-20 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Equipo Fundador e Inventores USPTO
+              Equipo Fundador & Dirección Ejecutiva
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              Investigación, Industria y Finanzas
+              Investigación, Industria, Ciencia y Finanzas
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* JONATHAN */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* 1. JONATHAN (CEO) */}
             <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
-                  <Microscope className="w-7 h-7 text-purple-400" />
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+                  <Microscope className="w-6 h-6 text-purple-400" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Dr. Ing. Jonathan Bosso</h3>
-                  <p className="text-purple-400 text-xs font-mono">CEO — Director Ejecutivo</p>
+                  <h3 className="text-sm font-bold text-white">Dr. Ing. Jonathan Bosso</h3>
+                  <p className="text-purple-400 text-[11px] font-mono">CEO — Director Ejecutivo</p>
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
                 Doctor en Ingeniería. 15+ años en electrónica de potencia y convertidores bidireccionales. Co-inventor de la Patente USPTO Nº 64/181,819.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Dr. Ingeniería</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Inventor USPTO</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Dr. Ingeniería</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Inventor USPTO</span>
               </div>
             </div>
 
-            {/* JUAN */}
+            {/* 2. JUAN (CTO) */}
             <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-14 h-14 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-7 h-7 text-[#00BFFF]" />
+                <div className="w-12 h-12 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-6 h-6 text-[#00BFFF]" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Mgtr. Ing. Juan José López</h3>
-                  <p className="text-[#00BFFF] text-xs font-mono">CTO — Director de Software</p>
+                  <h3 className="text-sm font-bold text-white">Mgtr. Ing. Juan José López</h3>
+                  <p className="text-[#00BFFF] text-[11px] font-mono">CTO — Director de Software</p>
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
                 Magíster en Ingeniería de Software. 14+ años en industria. Especialista en SCADA, IoT y Digital Twin. Co-inventor de la Patente USPTO Nº 64/181,819.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">Inventor USPTO</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">Inventor USPTO</span>
               </div>
             </div>
 
-            {/* DANIEL */}
+            {/* 3. DANIEL (CSO) */}
             <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                  <FlaskConical className="w-7 h-7 text-emerald-400" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <FlaskConical className="w-6 h-6 text-emerald-400" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Dr. Eduardo Guerreiro</h3>
-                  <p className="text-emerald-400 text-xs font-mono">CSO — Director Científico</p>
+                  <h3 className="text-sm font-bold text-white">Dr. Eduardo Guerreiro</h3>
+                  <p className="text-emerald-400 text-[11px] font-mono">CSO — Director Científico</p>
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
                 Doctor en Química. 21+ años en industria. Especialista en hidrógeno, biomasa y Six Sigma MBB. Co-inventor de la Patente USPTO Nº 64/181,819.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Dr. Química</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Inventor USPTO</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Dr. Química</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Inventor USPTO</span>
+              </div>
+            </div>
+
+            {/* 4. JOAQUÍN ARCONDO (CFO) */}
+            <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
+                  <Briefcase className="w-6 h-6 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Cp. Joaquín Arcondo</h3>
+                  <p className="text-amber-400 text-[11px] font-mono">CFO — Asesor Financiero</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-3">
+                Contador Público. Especialista en estructuración financiera de EBTs, rendición de fondos públicos y auditoría contable.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Contador Público</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Auditoría & Cash Flow</span>
               </div>
             </div>
           </div>
