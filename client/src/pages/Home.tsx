@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
-  Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck, FlaskConical, FileText,
-  Sun, BatteryCharging, Car, Users, Microscope, TrendingUp, Briefcase,
+  Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck,
+  FlaskConical, FileText, Sun, BatteryCharging, Car, Users, Microscope,
+  TrendingUp, Briefcase,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -38,11 +39,11 @@ const UNITS: Unit[] = [
     selector: 'Nexergy Flex',
     cta: 'Evaluar Flexibilidad Energética',
     description:
-      'Plataforma de orquestación multi-vectorial para optimizar excedentes renovables y eventos de curtailment mediante IA y optimización multiobjetivo.',
+      'Orquestación multi-vectorial para optimizar excedentes renovables y eventos de curtailment mediante IA y optimización multiobjetivo.',
     bullets: [
-      'Motor MIOM™ — orquestación multi-vectorial en tiempo real',
+      'Motor MIOM™ — orquestación en tiempo real',
       'Valorización de excedentes renovables (CVI)',
-      'Orquestación de BESS, Hidrógeno Verde y e-fuels',
+      'Orquestación de BESS, H₂ Verde y e-fuels',
     ],
     patent: true,
     primary: true,
@@ -64,7 +65,7 @@ const UNITS: Unit[] = [
       'Conversión de residuos agroindustriales en energía térmica, eléctrica y créditos ambientales con economía circular.',
     bullets: [
       'Reducción directa de huella de carbono',
-      'Autogeneración continua y cogeneración',
+      'Autogeneración y cogeneración',
       'Valorización de residuos agroindustriales',
     ],
     card: 'border-white/10 hover:border-[#00BFFF]/50',
@@ -82,11 +83,11 @@ const UNITS: Unit[] = [
     selector: 'EV Charge',
     cta: 'Evaluar Infraestructura EV',
     description:
-      'Estaciones de carga inteligente AC/DC con BESS integrado para flotas industriales sin saturar la red de distribución.',
+      'Carga inteligente AC/DC con BESS integrado para flotas industriales sin saturar la red de distribución.',
     bullets: [
       'Carga de alta potencia sin picos de red',
       'Integración solar y eólica in situ',
-      'Reducción de OPEX en logística corporativa',
+      'Reducción de OPEX en logística',
     ],
     card: 'border-white/10 hover:border-[#00BFFF]/50',
     iconBox: 'bg-cyan-500/10 border-cyan-500/30 text-[#00BFFF]',
@@ -103,7 +104,7 @@ const UNITS: Unit[] = [
     selector: 'Systems y Twin',
     cta: 'Solicitar Diagnóstico Autofinanciado',
     description:
-      'Digital Twin, auditoría energética ISO 50001 y estructura legal-financiera autofinanciada con el ahorro generado.',
+      'Digital Twin, auditoría ISO 50001 y estructura legal-financiera autofinanciada con el ahorro generado.',
     bullets: [
       'Modelado Digital Twin e Industria 4.0',
       'Res. CRPEE 13/2012 e ISO 50001',
@@ -190,29 +191,14 @@ export default function Home() {
       <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/20">
               <Globe className="w-3.5 h-3.5" />
               OPTINEX S.A.S. · CUIT 30-71945566-9
             </span>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 bg-purple-500/10 border border-purple-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Marca Reg. INPI Nº 3.941.093 · Patent Pending USPTO 64/181,819
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30">
-              <FlaskConical className="w-3.5 h-3.5" />
-              TRL 5 — BASE DE PATENTE USPTO
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              PATENT PENDING USPTO
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/30">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              MARCA REGISTRADA INPI
+              Patent Pending USPTO 64/181,819 · Marca Reg. INPI 3.941.093
             </span>
           </div>
 
@@ -224,8 +210,8 @@ export default function Home() {
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Arquitectura tecnológica basada en electrónica de potencia, control adaptativo e inteligencia operacional
-            para coordinar activos energéticos complejos en tiempo real y maximizar su valor económico.
+            Arquitectura basada en electrónica de potencia, control adaptativo e inteligencia operacional para
+            coordinar activos energéticos en tiempo real y maximizar su valor económico.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -245,23 +231,22 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* PLATAFORMA TECNOLÓGICA */}
+      {/* PLATAFORMA */}
       <section id="plataforma" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-              Plataforma Tecnológica
+              Plataforma
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
               Una plataforma. Múltiples vectores energéticos.
             </h2>
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-              Arquitectura de control adaptativo capaz de coordinar generación renovable, almacenamiento, biomasa,
-              movilidad eléctrica e hidrógeno para maximizar eficiencia y valorización económica.
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Control adaptativo que coordina generación renovable, almacenamiento, biomasa, movilidad eléctrica
+              e hidrógeno para maximizar eficiencia y valorización.
             </p>
           </div>
 
-          {/* Motor MIOM™ */}
           <div className="bg-gradient-to-r from-purple-500/10 to-[#00BFFF]/10 border border-purple-500/30 rounded-2xl p-8 mb-8 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 mb-4">
               <Cpu className="w-5 h-5 text-purple-400" />
@@ -269,9 +254,12 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Motor Inteligente de Orquestación Multi-Vectorial</h3>
             <p className="text-gray-400 text-sm leading-relaxed max-w-2xl mx-auto">
-              Núcleo analítico híbrido: 977 requerimientos formales (ISO/IEC 25010) + Machine Learning multimodal.
-              Procesa variables estructuradas y texto libre para aislar fallas críticas y predecir el comportamiento
-              dinámico de demanda y generación. <strong className="text-purple-300">Tecnología sustentada por la Solicitud de Patente Provisional USPTO Nº 64/181,819.</strong>
+              977 requerimientos formales (ISO/IEC 25010) + Machine Learning multimodal. Procesa variables
+              estructuradas y texto libre para aislar fallas críticas y predecir el comportamiento dinámico de
+              demanda y generación.{' '}
+              <strong className="text-purple-300">
+                Sustentado por la Solicitud de Patente Provisional USPTO Nº 64/181,819.
+              </strong>
             </p>
           </div>
 
@@ -281,47 +269,47 @@ export default function Home() {
                 <Sun className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">RENOVABLES</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">Integración y valorización de excedentes.</p>
+              <p className="text-gray-400 text-xs">Integración y valorización de excedentes.</p>
             </div>
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-emerald-500/40">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">BIOMASA</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">Conversión de residuos en energía.</p>
+              <p className="text-gray-400 text-xs">Conversión de residuos en energía.</p>
             </div>
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-purple-500/40">
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto mb-4">
                 <BatteryCharging className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">BESS E HIDRÓGENO</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">Flexibilidad y almacenamiento inteligente.</p>
+              <p className="text-gray-400 text-xs">Flexibilidad y almacenamiento inteligente.</p>
             </div>
             <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-[#00BFFF]/40">
               <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border-cyan-500/30 text-[#00BFFF] flex items-center justify-center mx-auto mb-4">
                 <Car className="w-6 h-6" />
               </div>
               <h4 className="text-sm font-bold text-white mb-2">MOVILIDAD ELÉCTRICA</h4>
-              <p className="text-gray-400 text-xs leading-relaxed">Infraestructura para flotas industriales.</p>
+              <p className="text-gray-400 text-xs">Infraestructura para flotas industriales.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* UNIDADES */}
+      {/* APLICACIONES */}
       <section id="unidades" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3">
-              Aplicaciones comerciales
-            </h2>
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Aplicaciones
+            </span>
             <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-              Aplicaciones de nuestra arquitectura tecnológica
+              Aplicaciones de la arquitectura tecnológica
             </h3>
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-              Todas las unidades comparten la misma base tecnológica.{' '}
-              <span className="text-purple-400 font-semibold">NEXERGY FLEX™</span> es el producto principal, en
-              validación TRL 5 y amparado por la Solicitud de Patente Provisional USPTO.
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Todas comparten la misma base.{' '}
+              <span className="text-purple-400 font-semibold">NEXERGY FLEX™</span> es el producto principal,
+              en validación TRL 5 y amparado por la Patente Provisional USPTO.
             </p>
           </div>
 
@@ -348,13 +336,6 @@ export default function Home() {
                   <span className={`text-[10px] font-mono uppercase tracking-widest ${u.text}`}>{u.tag}</span>
                   <h4 className="text-xl font-bold text-white mt-1 mb-2">{u.title}</h4>
                   <p className="text-gray-400 text-xs leading-relaxed mb-4">{u.description}</p>
-
-                  {u.patent && (
-                    <div className="p-2.5 mb-5 rounded bg-purple-950/40 border border-purple-500/20 text-[10px] font-mono text-purple-300">
-                      Patent pending · USPTO Nº 64/181,819
-                    </div>
-                  )}
-
                   <ul className="space-y-2 mb-6 text-[11px] text-gray-300 border-t border-white/5 pt-3">
                     {u.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2">
@@ -364,7 +345,6 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
-
                 <a
                   href="#contacto"
                   onClick={() => setSelectedUnit(u.id)}
@@ -378,23 +358,22 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* TRL 5 + PATENTE — Sección unificada */}
+      {/* TRL 5 + PATENTE */}
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-emerald-400 uppercase mb-2 block">
-              Validación Científica & Propiedad Intelectual
+              Validación & Propiedad Intelectual
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              TRL 5 validado — base de la Solicitud de Patente Provisional USPTO
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+              TRL 5 — base de la Patente Provisional USPTO
             </h2>
-            <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Los resultados experimentales que sustentan el nivel TRL 5 constituyen la evidencia técnica de la
-              Solicitud de Patente Provisional USPTO Nº 64/181,819, titularidad de OPTINEX S.A.S.
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Los resultados experimentales sustentan la Solicitud de Patente Provisional USPTO Nº 64/181,819,
+              titularidad de OPTINEX S.A.S.
             </p>
           </div>
 
-          {/* Métricas TRL 5 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6 text-center">
               <TrendingUp className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
@@ -418,21 +397,19 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Patente + Marca */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold px-2.5 py-1 rounded-bl border-b border-l border-purple-500/30">
                 PATENTE PROVISIONAL
               </div>
               <ShieldCheck className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-lg font-bold mb-3 text-white">USPTO Nº 64/181,819</h3>
+              <h3 className="text-lg font-bold mb-2 text-white">USPTO Nº 64/181,819</h3>
               <p className="text-gray-400 text-xs leading-relaxed mb-2">
                 <strong>"Systems and Methods for Intelligent Valorization of Renewable Energy Surplus Through
                 Adaptive Multi-Vector Management"</strong>
               </p>
-              <p className="text-gray-500 text-xs leading-relaxed">
-                Solicitud Provisional (35 USC 111(b)) presentada el 22/10/2026.<br />
-                Titular: OPTINEX S.A.S. · Inventor: Jonathan Emmanuel Bosso.
+              <p className="text-gray-500 text-xs">
+                Provisional (35 USC 111(b)) · 22/10/2026 · Titular: OPTINEX S.A.S.
               </p>
             </div>
 
@@ -441,37 +418,28 @@ export default function Home() {
                 MARCA REGISTRADA
               </div>
               <ShieldCheck className="w-8 h-8 text-[#00BFFF] mb-4" />
-              <h3 className="text-lg font-bold mb-3 text-white">INPI Nº 3.941.093</h3>
+              <h3 className="text-lg font-bold mb-2 text-white">INPI Nº 3.941.093</h3>
               <p className="text-gray-400 text-xs leading-relaxed mb-2">
                 Marca <strong>OPTINEX</strong> — Clase 9 (Niza)
               </p>
-              <p className="text-gray-500 text-xs leading-relaxed">
-                Concedida el 14/09/2026 · Vence 14/09/2036.<br />
-                Disposición DI-2026-319-APN-DNM#INPI.
+              <p className="text-gray-500 text-xs">
+                Concedida 14/09/2026 · Vence 14/09/2036 · DI-2026-319-APN-DNM#INPI
               </p>
             </div>
           </div>
 
-          {/* Data Room */}
-          <div className="mt-6 bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-8 text-center">
-            <FileText className="w-8 h-8 text-amber-400 mx-auto mb-4" />
-            <h3 className="text-lg font-bold mb-2 text-white">Data Room técnico bajo NDA</h3>
-            <p className="text-gray-400 text-xs leading-relaxed max-w-2xl mx-auto mb-4">
-              Documentación técnica, modelos económicos, datasets industriales y evidencia experimental disponibles
-              para procesos de due diligence y evaluación tecnológica.
-            </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 mb-4">
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span className="text-xs font-mono text-emerald-400">2 Cartas de Intención (LOI) firmadas</span>
             </div>
-            <div>
-              <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
-                Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
+            <a href="#contacto" className="text-xs font-semibold text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
+              Solicitar acceso a Data Room <ArrowRight className="w-3 h-3" />
+            </a>
           </div>
         </div>
       </section>
+
       {/* EQUIPO */}
       <section id="equipo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
@@ -485,7 +453,6 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* CEO */}
             <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
@@ -497,26 +464,18 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Doctor en Ingeniería. Investigador científico. 18 publicaciones científicas.
-                15+ años en electrónica de potencia e hidrógeno verde. Inventor de la Patente USPTO Nº 64/181,819.
+                Doctor en Ingeniería. 18 publicaciones científicas. 15+ años en electrónica de potencia e
+                hidrógeno verde. Inventor de la Patente USPTO Nº 64/181,819.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Dr. Ingeniería</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 publicaciones</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Inventor USPTO</span>
               </div>
-              <a
-                href="https://www.linkedin.com/in/jonathan-bosso-6138b849/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                LinkedIn
+              <a href="https://www.linkedin.com/in/jonathan-bosso-6138b849/" target="_blank" rel="noopener noreferrer" className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5" /> LinkedIn
               </a>
             </div>
 
-            {/* CTO */}
             <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
@@ -528,26 +487,18 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
-                Magíster en Ingeniería de Software. 14+ años en empresas industriales líderes.
-                Especialista en SCADA/IoT, Digital Twin y eficiencia energética. Ing. matriculado.
+                Magíster en Ingeniería de Software. 14+ años en empresas industriales líderes. Especialista en
+                SCADA/IoT, Digital Twin y eficiencia energética. Ing. matriculado.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">SCADA/IoT</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">14+ años</span>
               </div>
-              <a
-                href="https://www.linkedin.com/in/iejjlopez/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                LinkedIn
+              <a href="https://www.linkedin.com/in/iejjlopez/" target="_blank" rel="noopener noreferrer" className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5" /> LinkedIn
               </a>
             </div>
 
-            {/* CSO */}
             <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
@@ -565,15 +516,12 @@ export default function Home() {
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Dr. Química</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Six Sigma MBB</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">21+ años</span>
               </div>
               <span className="text-xs text-gray-500 inline-flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5" />
-                CV disponible bajo solicitud
+                <FileText className="w-3.5 h-3.5" /> CV bajo solicitud
               </span>
             </div>
 
-            {/* CFO */}
             <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
@@ -586,34 +534,26 @@ export default function Home() {
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-3">
                 Contador Público. Especialista en estructuración financiera de EBTs, rendición de fondos
-                públicos y auditoría. Asesor en plan de inversiones y cashflow del proyecto.
+                públicos y auditoría.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Contador Público</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Auditoría</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">EBTs</span>
               </div>
-              <a
-                href="https://estudioarcondo.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                estudioarcondo.com
+              <a href="https://estudioarcondo.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5" /> estudioarcondo.com
               </a>
             </div>
           </div>
 
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-xs">
-              Equipo a incorporar: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
+              A incorporar: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
             </p>
           </div>
         </div>
       </section>
-
-      {/* FORMULARIO */}
+      {/* CONTACTO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -623,7 +563,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
               Diagnóstico de Oportunidad Energética
             </h2>
-            <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
               Analizamos el potencial técnico y económico de cada instalación para identificar oportunidades de
               valorización energética, reducción de costos y descarbonización.
             </p>
@@ -632,7 +572,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
               <span className="text-lg font-bold text-[#00BFFF] block">Cero Curtailment</span>
-              <span className="text-xs text-gray-400">Valorización del 100% de excedentes</span>
+              <span className="text-xs text-gray-400">100% de excedentes valorizados</span>
             </div>
             <div className="bg-[#0a0e27] border border-white/10 p-4 rounded-xl text-center">
               <span className="text-lg font-bold text-emerald-400 block">Autofinanciado</span>
@@ -646,7 +586,7 @@ export default function Home() {
 
           <form onSubmit={handleContactSubmit} noValidate className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
             <div>
-              <span className={labelClass}>Unidad de negocio o vector principal de interés</span>
+              <span className={labelClass}>Unidad de interés</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {UNITS.map((u) => (
                   <button
@@ -666,103 +606,48 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="domain" className={labelClass}>Dominio corporativo principal</label>
+                <label htmlFor="domain" className={labelClass}>Dominio corporativo</label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
-                  <input
-                    id="domain"
-                    type="text"
-                    required
-                    maxLength={120}
-                    value={companyDomain}
-                    onChange={(e) => setCompanyDomain(e.target.value)}
-                    placeholder="empresa.com"
-                    className={inputClass}
-                  />
+                  <input id="domain" type="text" required maxLength={120} value={companyDomain} onChange={(e) => setCompanyDomain(e.target.value)} placeholder="empresa.com" className={inputClass} />
                 </div>
               </div>
-
               <div>
-                <label htmlFor="email" className={labelClass}>Correo corporativo de contacto</label>
+                <label htmlFor="email" className={labelClass}>Correo de contacto</label>
                 <div className="relative">
                   <AtSign className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    maxLength={120}
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    placeholder="nombre@empresa.com"
-                    className={inputClass}
-                  />
+                  <input id="email" type="email" required maxLength={120} value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="nombre@empresa.com" className={inputClass} />
                 </div>
               </div>
             </div>
 
             <div>
-              <label htmlFor="location" className={labelClass}>Ubicación de la planta o enlace de Google Maps</label>
+              <label htmlFor="location" className={labelClass}>Ubicación de la planta</label>
               <div className="relative">
                 <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-3.5" />
-                <input
-                  id="location"
-                  type="text"
-                  maxLength={200}
-                  value={plantLocation}
-                  onChange={(e) => setPlantLocation(e.target.value)}
-                  placeholder="Ciudad, provincia o enlace de Google Maps"
-                  className={inputClass}
-                />
+                <input id="location" type="text" maxLength={200} value={plantLocation} onChange={(e) => setPlantLocation(e.target.value)} placeholder="Ciudad, provincia o enlace de Google Maps" className={inputClass} />
               </div>
             </div>
 
             <div>
-              <label htmlFor="notes" className={labelClass}>Parámetros de la instalación (Opcional)</label>
-              <textarea
-                id="notes"
-                rows={2}
-                maxLength={400}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Potencia contratada (kW/MW), tipo de tarifa o principal desafío de costo/sustentabilidad"
-                className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]"
-              />
+              <label htmlFor="notes" className={labelClass}>Parámetros (Opcional)</label>
+              <textarea id="notes" rows={2} maxLength={400} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Potencia contratada (kW/MW), tipo de tarifa o principal desafío" className="w-full bg-[#070c1e] border border-gray-800 rounded-lg p-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#00BFFF]" />
             </div>
 
             <div aria-live="polite">
               {feedback && (
-                <div
-                  className={`p-4 rounded-lg border text-xs flex items-start gap-2 ${
-                    feedback.type === 'success'
-                      ? 'bg-[#00BFFF]/10 border-[#00BFFF]/30 text-[#00BFFF]'
-                      : 'bg-red-500/10 border-red-500/30 text-red-300'
-                  }`}
-                >
-                  {feedback.type === 'success' ? (
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  )}
+                <div className={`p-4 rounded-lg border text-xs flex items-start gap-2 ${feedback.type === 'success' ? 'bg-[#00BFFF]/10 border-[#00BFFF]/30 text-[#00BFFF]' : 'bg-red-500/10 border-red-500/30 text-red-300'}`}>
+                  {feedback.type === 'success' ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
                   <span>{feedback.text}</span>
                 </div>
               )}
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20 disabled:opacity-50"
-            >
+            <button type="submit" disabled={isSubmitting} className="w-full bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20 disabled:opacity-50">
               {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Generando modelo de onboarding...
-                </>
+                <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</>
               ) : (
-                <>
-                  Registrar instalación y solicitar modelo inicial
-                  <Send className="w-4 h-4" />
-                </>
+                <>Registrar instalación <Send className="w-4 h-4" /></>
               )}
             </button>
           </form>
@@ -774,18 +659,11 @@ export default function Home() {
         <p>© 2026 <strong>NEXERGY®</strong> — OPTINEX S.A.S. — Todos los derechos reservados.</p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
-            <AtSign className="w-3.5 h-3.5" />
-            contacto@nexergy.ar
+            <AtSign className="w-3.5 h-3.5" /> contacto@nexergy.ar
           </span>
           <span className="text-gray-700">•</span>
-          <a
-            href="https://linktr.ee/nexergy.ar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            linktr.ee/nexergy.ar
+          <a href="https://linktr.ee/nexergy.ar" target="_blank" rel="noopener noreferrer" className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5">
+            <ExternalLink className="w-3.5 h-3.5" /> linktr.ee/nexergy.ar
           </a>
         </div>
       </footer>
