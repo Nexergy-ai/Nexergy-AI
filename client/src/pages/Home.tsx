@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck, FlaskConical, FileText,
+  Sun, BatteryCharging, Car,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -183,7 +184,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#070c1e] text-white font-sans selection:bg-[#00BFFF] selection:text-[#070c1e]">
       <Navigation />
 
-      {/* HERO */}
+      {/* HERO - CAMBIO 1 */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-b from-[#00BFFF]/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -198,17 +199,33 @@ export default function Home() {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
-            Convertimos tus desafíos energéticos en{' '}
-            <span className="text-[#00BFFF] bg-clip-text md:text-transparent md:bg-gradient-to-r md:from-[#00BFFF] md:via-cyan-300 md:to-teal-300 print:text-[#00BFFF]">
-              soluciones reales
+          {/* Badges TRL / Patent / Marca */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30">
+              <FlaskConical className="w-3.5 h-3.5" />
+              TRL 5 VALIDADO
             </span>
-            .
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              PATENT PENDING USPTO
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-mono font-bold text-[#00BFFF] bg-[#00BFFF]/10 border border-[#00BFFF]/30">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              MARCA REGISTRADA INPI
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
+            Tecnología propietaria para la{' '}
+            <span className="text-[#00BFFF] bg-clip-text md:text-transparent md:bg-gradient-to-r md:from-[#00BFFF] md:via-cyan-300 md:to-teal-300 print:text-[#00BFFF]">
+              gestión inteligente de energía distribuida
+            </span>
           </h1>
 
           <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
-            Ingeniería, electrónica de potencia e inteligencia operacional para transformar biomasa, integrar movilidad
-            eléctrica y orquestar excedentes energéticos con tecnología propietaria desarrollada por OPTINEX S.A.S.
+            NEXERGY® desarrolla una arquitectura tecnológica basada en electrónica de potencia, control adaptativo e
+            inteligencia operacional para coordinar activos energéticos complejos en tiempo real y maximizar su valor
+            económico.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -220,25 +237,93 @@ export default function Home() {
               <ArrowRight className="w-4 h-4" />
             </a>
             <a
-              href="#unidades"
+              href="#plataforma"
               className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
             >
-              Ver unidades de negocio
+              Conocer la plataforma
             </a>
           </div>
         </div>
       </section>
 
-      {/* UNIDADES */}
-      <section id="unidades" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
+      {/* CAMBIO 2 - PLATAFORMA TECNOLÓGICA */}
+      <section id="plataforma" className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Plataforma Tecnológica
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+              Una plataforma. Múltiples vectores energéticos.
+            </h2>
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
+              La transición energética está incorporando generación renovable, almacenamiento energético, biomasa,
+              movilidad eléctrica e hidrógeno dentro de una misma infraestructura industrial.
+            </p>
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+              NEXERGY® desarrolla una arquitectura de control adaptativo capaz de coordinar estos activos energéticos
+              para maximizar eficiencia, disponibilidad operativa y valorización económica.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-[#00BFFF]/40">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto mb-4">
+                <Sun className="w-6 h-6" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-2">RENOVABLES</h4>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Integración y valorización de excedentes energéticos.
+              </p>
+            </div>
+
+            <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-emerald-500/40">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-4">
+                <Leaf className="w-6 h-6" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-2">BIOMASA</h4>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Conversión de residuos en energía y valor ambiental.
+              </p>
+            </div>
+
+            <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-purple-500/40">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto mb-4">
+                <BatteryCharging className="w-6 h-6" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-2">BESS E HIDRÓGENO</h4>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Flexibilidad energética y almacenamiento inteligente.
+              </p>
+            </div>
+
+            <div className="bg-[#070c1e] border border-white/10 rounded-2xl p-6 text-center transition-all hover:border-[#00BFFF]/40">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-[#00BFFF] flex items-center justify-center mx-auto mb-4">
+                <Car className="w-6 h-6" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-2">MOVILIDAD ELÉCTRICA</h4>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                Infraestructura para movilidad eléctrica industrial.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CAMBIO 3 - UNIDADES DE NEGOCIO */}
+      <section id="unidades" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3">
               Brochure institucional
             </h2>
-            <h3 className="text-3xl md:text-4xl font-extrabold text-white">
-              Unidades especializadas de ingeniería y tecnología
+            <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+              Aplicaciones comerciales de nuestra arquitectura tecnológica
             </h3>
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+              Todas las unidades comparten la misma base tecnológica: electrónica de potencia, control adaptativo e
+              inteligencia operacional para la gestión multi-vector de activos energéticos.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -290,16 +375,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MADUREZ Y PROPIEDAD INTELECTUAL */}
+      {/* CAMBIO 4 - OPORTUNIDAD TECNOLÓGICA */}
+      <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+            Oportunidad Tecnológica
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+            La transición energética necesita nuevas herramientas
+          </h2>
+          <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
+            La electrificación industrial, el almacenamiento energético, la movilidad eléctrica y las energías
+            renovables están incrementando la complejidad de los sistemas energéticos.
+          </p>
+          <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+            Sin embargo, la mayoría de estos activos continúan operándose de forma aislada. NEXERGY® desarrolla una
+            arquitectura capaz de coordinarlos en tiempo real para transformar complejidad técnica en eficiencia y
+            rentabilidad.
+          </p>
+        </div>
+      </section>
+
+      {/* CAMBIO 5 - TECNOLOGÍA DEEP-TECH */}
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-emerald-400 uppercase mb-2 block">
               Validación Científica & Respaldo I+D+i
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Estado de la tecnología (TRL 5)</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white">
+              Tecnología Deep-Tech aplicada a la transición energética
+            </h2>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> enfocada en la gestión adaptativa multi-vector de activos energéticos.
+              Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> para la coordinación inteligente de activos
+              energéticos distribuidos mediante control adaptativo y electrónica de potencia avanzada.
             </p>
           </div>
 
@@ -341,7 +450,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECCIÓN ONBOARDING & VALOR AGREGADO (#contacto) */}
+      {/* CAMBIO 6 - SECCIÓN INVERSORES */}
+      <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="text-xs font-bold font-mono tracking-widest text-amber-400 uppercase mb-3 block">
+            Inversores · Organismos · Venture Capital
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+            Data Room técnico disponible bajo NDA
+          </h2>
+          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-3xl mx-auto">
+            NEXERGY® dispone de documentación técnica, modelos económicos, propiedad intelectual, datasets industriales,
+            arquitectura de software y evidencia experimental para procesos de due diligence, evaluación tecnológica y
+            programas de financiamiento a la innovación.
+          </p>
+        </div>
+      </section>
+
+      {/* CAMBIO 7 - FORMULARIO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -349,10 +475,11 @@ export default function Home() {
               Funnel de Onboarding & Diagnóstico Inicial
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
-              Alta de Instalación & Diagnóstico de Valor
+              Diagnóstico Inicial de Oportunidad Energética
             </h2>
             <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-              Cuéntanos la ubicación y escala de tu planta. Construimos el modelo inicial de flexibilidad sin trámites innecesarios para cuantificar el valor agregado y retorno económico en tus instalaciones.
+              Analizamos el potencial técnico y económico de cada instalación para identificar oportunidades de
+              valorización energética, reducción de costes operativos y descarbonización.
             </p>
           </div>
 
