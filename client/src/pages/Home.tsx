@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck,
-  FlaskConical, FileText, Sun, BatteryCharging, Car, Users, Microscope, Briefcase
+  FlaskConical, Users, Microscope, Briefcase
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
