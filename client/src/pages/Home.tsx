@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import {
   Zap, Cpu, Leaf, Building2, Send, CheckCircle2, AlertCircle, ArrowRight,
   Loader2, Globe, MapPin, Activity, ExternalLink, AtSign, ShieldCheck, FlaskConical, FileText,
-  Sun, BatteryCharging, Car, Users, Award, Microscope, TrendingUp,
+  Sun, BatteryCharging, Car, Users, Microscope, TrendingUp, Briefcase,
 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { Navigation } from '@/components/Navigation';
@@ -395,7 +395,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* OPORTUNIDAD TECNOLÓGICA */}
       <section className="py-24 px-6 bg-[#0a0e27]/50 border-b border-white/5">
         <div className="max-w-4xl mx-auto text-center">
@@ -416,6 +415,7 @@ export default function Home() {
           </p>
         </div>
       </section>
+
       {/* TECNOLOGÍA DEEP-TECH con métricas reales */}
       <section id="madurez" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
         <div className="max-w-6xl mx-auto">
@@ -429,8 +429,7 @@ export default function Home() {
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
               Tecnología desarrollada por <strong>OPTINEX S.A.S.</strong> para la coordinación inteligente de activos
               energéticos distribuidos mediante control adaptativo y electrónica de potencia avanzada. Origen en
-              proyectos <strong>PFI 2022</strong>, <strong>PFI 2023</strong> y <strong>PDTS OPTIMIA-HV</strong> (Cod. 32756)
-              de la <strong>Universidad Nacional de Villa Mercedes (UNViMe)</strong>.
+              proyectos de investigación de la <strong>Universidad Nacional de Villa Mercedes (UNViMe)</strong>.
             </p>
           </div>
 
@@ -519,42 +518,39 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* EQUIPO */}
+      {/* EQUIPO — 4 miembros */}
       <section id="equipo" className="py-24 px-6 bg-[#070c1e] border-b border-white/5">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
               Equipo Fundador
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white">
-              Investigación + Industria = Tecnología con impacto real
+              Investigación + Industria + Ciencia + Finanzas
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Dr. Bosso */}
-            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-8">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-16 h-16 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
-                  <Microscope className="w-8 h-8 text-purple-400" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Dr. Bosso — CEO */}
+            <div className="bg-[#0a0e27] border border-purple-500/30 rounded-2xl p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+                  <Microscope className="w-7 h-7 text-purple-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Dr. Ing. Jonathan Bosso</h3>
+                  <h3 className="text-base font-bold text-white">Dr. Ing. Jonathan Bosso</h3>
                   <p className="text-purple-400 text-xs font-mono">CEO — Director Ejecutivo</p>
                 </div>
               </div>
-              <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                Investigador CONICET. Doctor en Ciencias de la Ingeniería (UNRC). Profesor Asociado UNViMe y UNSL.
-                18 publicaciones científicas (Elsevier, IET). Director del PDTS OPTIMIA-HV UNViMe (1er lugar región
-                Nuevo Cuyo, 2do lugar nacional — Res. CIN P Nº 522/25). 15+ años en electrónica de potencia, microrredes
-                e hidrógeno verde.
+              <p className="text-gray-400 text-xs leading-relaxed mb-3">
+                Investigador CONICET. Doctor en Ingeniería (UNRC). Profesor Asociado UNViMe y UNSL.
+                18 publicaciones científicas. Director PDTS UNViMe (1er lugar regional, 2do nacional).
+                15+ años en electrónica de potencia e hidrógeno verde.
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CONICET</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">UNViMe</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 publicaciones</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CYTED</span>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CONICET</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">18 pubs</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">CYTED</span>
               </div>
               <a
                 href="https://www.linkedin.com/in/jonathan-bosso-6138b849/"
@@ -563,31 +559,30 @@ export default function Home() {
                 className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                Ver perfil en LinkedIn
+                LinkedIn
               </a>
             </div>
 
-            {/* Mgtr. López */}
-            <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-8">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-16 h-16 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-8 h-8 text-[#00BFFF]" />
+            {/* Mgtr. López — CTO */}
+            <div className="bg-[#0a0e27] border border-[#00BFFF]/30 rounded-2xl p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-14 h-14 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-7 h-7 text-[#00BFFF]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Mgtr. Ing. Juan José López</h3>
+                  <h3 className="text-base font-bold text-white">Mgtr. Ing. Juan José López</h3>
                   <p className="text-[#00BFFF] text-xs font-mono">CTO — Director Científico</p>
                 </div>
               </div>
-              <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                Magíster en Ingeniería de Software (UNSL). Diplomatura en IA aplicada a Ingeniería Eléctrica (UNSJ).
-                14+ años en gestión de activos industriales (AGD, Mabe, Maxion Wheels). Especialista en automatización
-                industrial, SCADA, Digital Twin y eficiencia energética. Ingeniero matriculado MP 3.026 (Cynitec, San Luis).
+              <p className="text-gray-400 text-xs leading-relaxed mb-3">
+                Magíster en Ing. de Software (UNSL). Diplomatura IA Eléctrica (UNSJ).
+                14+ años en industria (AGD, Mabe, Maxion Wheels). Especialista SCADA/IoT,
+                Digital Twin. Ing. matriculado MP 3.026 (San Luis).
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">IA Eléctrica</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">SCADA/IoT</span>
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">14+ años industria</span>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">M.Sc. Software</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">IA Eléctrica</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/20">14+ años</span>
               </div>
               <a
                 href="https://www.linkedin.com/in/iejjlopez/"
@@ -596,18 +591,78 @@ export default function Home() {
                 className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                Ver perfil en LinkedIn
+                LinkedIn
+              </a>
+            </div>
+
+            {/* Dr. Guerreiro — CSO */}
+            <div className="bg-[#0a0e27] border border-emerald-500/30 rounded-2xl p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                  <FlaskConical className="w-7 h-7 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Dr. Eduardo Guerreiro</h3>
+                  <p className="text-emerald-400 text-xs font-mono">CSO — Chief Science Officer</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-3">
+                Doctor en Química (UNSL). Master en Innovación Empresarial (UPV, España).
+                21+ años en industria: Colgate Palmolive (12 años), Bayer CropScience (9 años).
+                Profesor UNSL y UNViMe. Coordinador CYTED H2Transel. Six Sigma Master Black Belt.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Dr. Química</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">CYTED H₂</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">21+ años</span>
+              </div>
+              <span className="text-xs text-gray-500 inline-flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5" />
+                CV disponible bajo solicitud
+              </span>
+            </div>
+
+            {/* Joaquín Arcondo — CFO */}
+            <div className="bg-[#0a0e27] border border-amber-500/30 rounded-2xl p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
+                  <Briefcase className="w-7 h-7 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Cp. Joaquín Arcondo</h3>
+                  <p className="text-amber-400 text-xs font-mono">CFO — Asesor Financiero</p>
+                </div>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-3">
+                Contador Público. Director de Estudio Arcondo & Asociados.
+                Especialista en estructuración financiera de EBTs, rendición de fondos
+                públicos y auditoría. Asesor en plan de inversiones y cashflow del proyecto.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Contador Público</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Auditoría</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">EBTs</span>
+              </div>
+              <a
+                href="https://estudioarcondo.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#00BFFF] hover:text-cyan-300 inline-flex items-center gap-1.5"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                estudioarcondo.com
               </a>
             </div>
           </div>
 
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-xs">
-              Equipo a incorporar: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
+              Equipo a incorporar con fondo CFI: Ingeniero/a de Software Senior + Especialista en IA y Ciencia de Datos (Full Time)
             </p>
           </div>
         </div>
       </section>
+
       {/* FORMULARIO */}
       <section id="contacto" className="py-24 px-6 bg-[#070c1e] relative">
         <div className="max-w-4xl mx-auto">
