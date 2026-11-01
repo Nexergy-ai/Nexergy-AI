@@ -5,31 +5,31 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
-import Home from "./pages/Home";
+import PublicHome from "@/pages/PublicHome";
+import PrivateHome from "@/pages/PrivateHome";
 
 function Router() {
+  // Ruteo por hostname:
+  //   privado.nexergy.ar  => PrivateHome  (protegido por Cloudflare Access + OTP)
+  //   nexergy.ar (y cualquier otro) => PublicHome
+  const isPrivateHost =
+    typeof window !== "undefined" &&
+    window.location.hostname === "privado.nexergy.ar";
+
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={isPrivateHost ? PrivateHome : PublicHome} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
       <LanguageProvider>
-        <ThemeProvider
-          defaultTheme="dark"
-          // switchable
-        >
+        <ThemeProvider defaultTheme="dark">
           <TooltipProvider>
             <Toaster />
             <Router />
