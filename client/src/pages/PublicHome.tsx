@@ -197,7 +197,7 @@ export default function PublicHome() {
 
       {/* FOOTER SOBRIO */}
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-2">
-        <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 — Todos los derechos reservados.</p>
+        <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 — Cel. +54 9 11 7814 8534 — Todos los derechos reservados.</p>
         <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
             <AtSign className="w-3.5 h-3.5" /> contacto@nexergy.ar
