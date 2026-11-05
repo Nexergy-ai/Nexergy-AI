@@ -7,8 +7,11 @@ const NAV_LINKS = [
   { href: '#modulos', label: 'Módulos' },
   { href: '#evidencia', label: 'Evidencia' },
   { href: '#inversion', label: 'Inversión' },
+  { href: '#fiscal', label: 'Ley EC' },
   { href: '#ip', label: 'Propiedad Intelectual' },
   { href: '#equipo', label: 'Equipo' },
+  { href: '#comercial', label: 'Comercial' },
+  { href: '#ventas', label: 'Ventas' },
   { href: '#impacto', label: 'Impacto' },
 ];
 
