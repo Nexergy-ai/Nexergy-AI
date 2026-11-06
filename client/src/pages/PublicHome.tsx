@@ -44,10 +44,10 @@ export default function PublicHome() {
             Nexergy®
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
-            Optimización energética y valorización de excedentes
+            Optimización energética, transformación de residuos agroindustriales y valorización de excedentes con sistema de gemelo digital de tus instalaciones.
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en 1 minuto cómo Nexergy optimiza tu energía y reduce los costos de tu operación
+            Mirá en 1 minuto cómo Nexergy optimiza tu energía y costos asociados
           </p>
         </div>
 
