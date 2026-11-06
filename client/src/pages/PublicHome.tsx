@@ -47,7 +47,7 @@ export default function PublicHome() {
             Optimización energética y valorización de excedentes
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en 1 minuto cómo Nexergy optimiza tu energía con un sistema que se repaga solo y reduce los costos de tu operación
+            Mirá en 1 minuto cómo Nexergy optimiza tu energía y reduce los costos de tu operación
           </p>
         </div>
 
@@ -71,8 +71,8 @@ export default function PublicHome() {
         {/* CTA ASISTENTE */}
         <div className="mt-20 text-center">
           <p className="text-gray-400 text-sm mb-5 max-w-xl mx-auto">
-            Todo empieza con el asistente de la web y te pre-calificamos
-            en segundos para que el equipo de Nexergy te contacte.
+            Todo empieza con el asistente web y 
+            el equipo de Nexergy te contacta.
           </p>
           <button
             onClick={openAssistant}
