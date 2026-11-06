@@ -1,12 +1,11 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "nexergy-ai",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nexergy-asistente",
+  "main": "src/index.js",
   "compatibility_date": "2026-10-31",
-  "assets": {
-    "directory": "./dist/public",
-    "not_found_handling": "single-page-application"
-  },
-  "observability": {
-    "enabled": true
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  "vars": {
+    "BUSINESS_NAME": "Nexergy"
   }
 }
