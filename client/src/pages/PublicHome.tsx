@@ -7,7 +7,7 @@ export default function PublicHome() {
   useEffect(() => {
     const v = videoRef.current;
     if (v) {
-      v.playbackRate = 0.8; // un poco más lento
+      v.playbackRate = 0.5; // un poco más lento
       v.play().catch(() => {});
     }
   }, []);
@@ -47,7 +47,7 @@ export default function PublicHome() {
             Inteligencia Operacional Energética
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en 2 minutos cómo Nexergy identifica oportunidades de valorización energética
+            Mirá en menos de 1 minuto cómo Nexergy identifica oportunidades de valorización energética
             y reducción de OPEX para tu operación.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function PublicHome() {
             playsInline
             preload="auto"
             poster="/logo.png"
-            className="w-full aspect-video object-contain bg-black"
+            className="w-full h-auto bg-black"
           >
             Tu navegador no soporta video HTML5.
           </video>
