@@ -1,6 +1,17 @@
+import { useRef, useEffect } from 'react';
 import { Lock, Play, MessageSquare, ExternalLink } from 'lucide-react';
 
 export default function PublicHome() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) {
+      v.playbackRate = 0.8; // un poco más lento
+      v.play().catch(() => {});
+    }
+  }, []);
+
   const openAssistant = () => {
     if (typeof window !== 'undefined' && (window as any).nexergyAsistenteOpen) {
       (window as any).nexergyAsistenteOpen();
@@ -36,18 +47,21 @@ export default function PublicHome() {
             Inteligencia Operacional Energética
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en menos de 1 minuto cómo Nexergy identifica oportunidades de valorización energética
+            Mirá en 2 minutos cómo Nexergy identifica oportunidades de valorización energética
             y reducción de OPEX para tu operación.
           </p>
         </div>
 
-        {/* VIDEO R2 */}
+        {/* VIDEO R2 — autoplay, muted, loop, velocidad lenta */}
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
           <video
+            ref={videoRef}
             src="https://video.nexergy.ar/nexergy_publichome_explainer.mp4.mp4"
-            controls
+            autoPlay
+            muted
+            loop
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/logo.png"
             className="w-full aspect-video object-contain bg-black"
           >
