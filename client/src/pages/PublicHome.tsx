@@ -7,7 +7,7 @@ export default function PublicHome() {
   useEffect(() => {
     const v = videoRef.current;
     if (v) {
-      v.playbackRate = 0.28; // un poco más lento
+      v.playbackRate = 0.23; // un poco más lento
       v.play().catch(() => {});
     }
   }, []);
@@ -41,14 +41,13 @@ export default function PublicHome() {
       <main className="py-16 px-6 max-w-4xl mx-auto w-full">
         <div className="text-center mb-10">
           <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-            Cómo funciona Nexergy
+            Nexergy®
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
-            Inteligencia Operacional Energética
+            Optimización energética y valorización de excedentes
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en menos de 1 minuto cómo Nexergy identifica oportunidades de valorización energética
-            y reducción de OPEX para tu operación.
+            Mirá en 1 minuto cómo Nexergy optimiza tu energía con un sistema que se repaga solo y reduce los costos de tu operación
           </p>
         </div>
 
@@ -70,9 +69,9 @@ export default function PublicHome() {
         </div>
 
         {/* CTA ASISTENTE */}
-        <div className="mt-12 text-center">
+        <div className="mt-20 text-center">
           <p className="text-gray-400 text-sm mb-5 max-w-xl mx-auto">
-            Todo empieza con el asistente de la web. Contanos qué necesitás y te pre-calificamos
+            Todo empieza con el asistente de la web y te pre-calificamos
             en segundos para que el equipo de Nexergy te contacte.
           </p>
           <button
@@ -84,7 +83,7 @@ export default function PublicHome() {
           </button>
           <p className="mt-4 text-xs text-gray-500 flex items-center justify-center gap-1.5">
             <Play className="w-3 h-3" />
-            También podés tocar el botón 💬 abajo a la derecha
+             {/* FOOTER También podés tocar el botón 💬 abajo a la derecha */}
           </p>
         </div>
       </main>
