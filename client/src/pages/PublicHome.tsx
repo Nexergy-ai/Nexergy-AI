@@ -7,7 +7,7 @@ export default function PublicHome() {
   useEffect(() => {
     const v = videoRef.current;
     if (v) {
-      v.playbackRate = 0.35; // un poco más lento
+      v.playbackRate = 0.28; // un poco más lento
       v.play().catch(() => {});
     }
   }, []);
