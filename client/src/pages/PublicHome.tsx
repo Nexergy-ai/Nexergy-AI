@@ -43,7 +43,7 @@ export default function PublicHome() {
           <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
             {/* Nexergy® */}
           </span>
-          <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4">
+          <h1 className="text-xl md:text-3xl font-extrabold text-white mb-4">
             Convierta sus desafíos energéticos y ambientales en rentabilidad a través de la optimización inteligente, la valorización de residuos agroindustriales y la precisión predictiva de un gemelo digital en tiempo real.
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
@@ -88,15 +88,15 @@ export default function PublicHome() {
       </main>
 
       {/* FOOTER */}
-      <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-xs text-gray-500 space-y-2">
+      <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
         <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 — Celular +54 9 11 7814 8534 — Todos los derechos reservados.</p>
-        <div className="flex items-center justify-center gap-4 text-[11px] pt-1">
+        <div className="flex items-center justify-center gap-4 text-sm pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
             contacto@nexergy.ar
           </span>
           <span className="text-gray-700">•</span>
           <a href="https://linktr.ee/nexergy.ar" target="_blank" rel="noopener noreferrer" className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5">
-            Linktree <ExternalLink className="w-3 h-3" />
+            Linktree <ExternalLink className="w-4 h-4" />
           </a>
         </div>
       </footer>
