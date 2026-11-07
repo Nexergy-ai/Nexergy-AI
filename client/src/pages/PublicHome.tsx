@@ -89,13 +89,29 @@ export default function PublicHome() {
 
       {/* FOOTER */}
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
-        <p>© 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 — Celular +54 9 11 7814 8534 — Todos los derechos reservados.</p>
+        <p>
+          © 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 —{' '}
+          <a
+            href="https://wa.me/5491178148534"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#25D366] hover:underline font-bold transition-colors inline-block"
+          >
+            Celular +54 9 11 7814 8534
+          </a>{' '}
+          — Todos los derechos reservados.
+        </p>
         <div className="flex items-center justify-center gap-4 text-sm pt-1">
           <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
             contacto@nexergy.ar
           </span>
           <span className="text-gray-700">•</span>
-          <a href="https://linktr.ee/nexergy.ar" target="_blank" rel="noopener noreferrer" className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5">
+          <a
+            href="https://linktr.ee/nexergy.ar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5"
+          >
             Linktree <ExternalLink className="w-4 h-4" />
           </a>
         </div>
