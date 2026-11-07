@@ -41,13 +41,13 @@ export default function PublicHome() {
       <main className="py-16 px-6 max-w-4xl mx-auto w-full">
         <div className="text-center mb-10">
           <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
-            Nexergy®
+            {/* Nexergy® */}
           </span>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
-            Optimización energética, transformación de residuos agroindustriales y valorización de excedentes con sistema de gemelo digital de tus instalaciones.
+          <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4">
+            Convierta sus desafíos energéticos y ambientales en rentabilidad a través de la optimización inteligente, la valorización de residuos agroindustriales y la precisión predictiva de un gemelo digital en tiempo real.
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Mirá en 1 minuto cómo Nexergy optimiza tu energía y costos asociados
+            {/* Mirá en 1 minuto cómo Nexergy optimiza tu energía y costos asociados */}
           </p>
         </div>
 
@@ -71,8 +71,7 @@ export default function PublicHome() {
         {/* CTA ASISTENTE */}
         <div className="mt-20 text-center">
           <p className="text-gray-400 text-sm mb-5 max-w-xl mx-auto">
-            Todo empieza con el asistente web y 
-            el equipo de Nexergy te contacta.
+            Todo empieza con el asistente web.
           </p>
           <button
             onClick={openAssistant}
@@ -82,8 +81,8 @@ export default function PublicHome() {
             Empezar con el asistente
           </button>
           <p className="mt-4 text-xs text-gray-500 flex items-center justify-center gap-1.5">
-            <Play className="w-3 h-3" />
-             {/* FOOTER También podés tocar el botón 💬 abajo a la derecha */}
+            {/* <Play className="w-3 h-3" />
+             FOOTER También podés tocar el botón 💬 abajo a la derecha */}
           </p>
         </div>
       </main>
