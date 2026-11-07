@@ -44,7 +44,7 @@ export default function PublicHome() {
             {/* Nexergy® */}
           </span>
           <h1 className="text-xl md:text-3xl font-extrabold text-white mb-4">
-            Convierta sus desafíos energéticos y ambientales en rentabilidad a través de la optimización inteligente, la valorización de residuos agroindustriales y la precisión predictiva de un gemelo digital en tiempo real.
+            Transforme energía y residuos en rentabilidad mediante gestión inteligente y gemelos digitales.
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
             {/* Mirá en 1 minuto cómo Nexergy optimiza tu energía y costos asociados */}
