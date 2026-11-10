@@ -7,6 +7,7 @@ const ECOSYSTEM = [
     items: [
       { name: 'Consejo Federal de Inversiones (CFI)', logo: 'https://video.nexergy.ar/cfi.png' },
       { name: 'Gobierno de la Provincia de San Luis', logo: 'https://video.nexergy.ar/san-luis.png' },
+      { name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' }
     ],
   },
   {
@@ -17,8 +18,8 @@ const ECOSYSTEM = [
     ],
   },
   {
-    group: 'Emprendimiento y desarrollo empresarial',
-    items: [{ name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' }],
+    //group: 'Emprendimiento y desarrollo empresarial',
+    //items: [{ name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' }],
   },
   {
     group: 'Referentes tecnológicos globales',
@@ -170,16 +171,25 @@ export default function PublicHome() {
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
         <p>
           © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados.— Para solicitar acceso autorizado al portal confidencial {' '}
-          <a
+          //<a
+           // href="https://wa.me/5491178148534"
+            //target="_blank"
+            //rel="noopener noreferrer"
+            //className="text-[#25D366] hover:underline font-bold transition-colors inline-block"
+          //>
+            //Celular +54 9 11 7814 8534
+          //</a>
+              {' '}
+          
+        </p>
+         <a
             href="https://wa.me/5491178148534"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#25D366] hover:underline font-bold transition-colors inline-block"
           >
             Celular +54 9 11 7814 8534
-          </a>{' '}
-          —
-        </p>
+          </a>
         <div className="flex items-center justify-center gap-4 text-sm pt-1">
           <button
             onClick={handleContact}
