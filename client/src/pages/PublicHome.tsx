@@ -171,8 +171,8 @@ function PublicHome() {
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
         {/* Renglón 1 — solo copyright */}
         <p>
-          © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados. — Para solicitar acceso
-          autorizado al portal confidencial:
+          © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados. — <strong>Para solicitar acceso
+          autorizado al portal confidencial: </strong>
         </p>
 
         {/* Renglón 2 — Celular • Correo • Linktree */}
