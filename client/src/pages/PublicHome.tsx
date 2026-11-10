@@ -77,12 +77,16 @@ function PublicHome() {
   )}&body=${encodeURIComponent('Hola Nexergy, quiero más información sobre el proyecto.')}`;
 
   return (
-    <div className="min-h-screen bg-[#070c1e] text-white font-sans flex flex-col justify-between selection:bg-[#00BFFF] selection:text-[#070c1e]">
-      {/* HEADER */}
-      <header className="w-full py-6 px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
-        <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
+    <div className="min-h-screen bg-[#070c1e] text-white font-sans flex flex-col selection:bg-[#00BFFF] selection:text-[#070c1e]">
+      {/* HEADER — siempre visible (sticky) */}
+      <header className="sticky top-0 z-50 w-full py-6 px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
+        <button
+          onClick={openAssistant}
+          className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono cursor-pointer hover:text-cyan-300 transition-colors"
+          title="Abrir asistente"
+        >
           NEXERGY<span className="text-white">®</span>
-        </span>
+        </button>
         <a
           href={PORTAL_URL}
           className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-purple-500/10"
@@ -131,9 +135,9 @@ function PublicHome() {
         {/* ECOSISTEMA DE INNOVACIÓN */}
         <section className="mt-24">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+            <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
               Ecosistema de Innovación
-            </span>
+            </h2>
           </div>
 
           <div className="space-y-10">
