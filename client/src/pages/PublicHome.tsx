@@ -1,5 +1,5 @@
 import { useRef, useEffect, memo } from 'react';
-import { Lock, MessageSquare, ExternalLink, Mail, FileText, ShieldCheck, Users, Rocket } from 'lucide-react';
+import { Lock, MessageSquare, ExternalLink, Mail, FileText, ShieldCheck, Users, Rocket, Briefcase, Globe, Scale } from 'lucide-react';
 
 // ── Tipos ──────────────────────────────────────────────
 interface EcosystemItem {
@@ -21,6 +21,13 @@ interface LifecycleStage {
   label: string;
   status: 'done' | 'current' | 'next';
   description: string;
+}
+interface Advisor {
+  name: string;
+  area: string;
+  role: string;
+  focus: string;
+  icon: 'briefcase' | 'globe' | 'scale';
 }
 
 // ── Datos: Ecosistema ──────────────────────────────────
@@ -71,7 +78,32 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-// ── Datos: Ciclo de vida (sin terminología TRL) ────────
+// ── Datos: Gobernanza & Alianzas Estratégicas ──────────
+const ADVISORS: Advisor[] = [
+  {
+    name: 'Estudio Arcondo & Asociados',
+    area: 'Argentina',
+    role: 'Contabilidad corporativa y fiscal',
+    focus: 'Encuadre bajo Ley de Economía del Conocimiento (27.506) y gestión MiPyME.',
+    icon: 'briefcase',
+  },
+  {
+    name: 'Brasil Fácil MX',
+    area: 'Brasil · São Paulo',
+    role: 'Softlanding y expansión regional',
+    focus: 'Estructuración legal, registro fiscal y acompañamiento corporativo para el ingreso al mercado brasileño.',
+    icon: 'globe',
+  },
+  {
+    name: 'Estudio Legal · Propiedad Intelectual',
+    area: 'Internacional',
+    role: 'Patentes y marcas',
+    focus: 'Asesoría especializada en patentes USPTO y registro de marcas INPI.',
+    icon: 'scale',
+  },
+];
+
+// ── Datos: Ciclo de vida ───────────────────────────────
 const LIFECYCLE: LifecycleStage[] = [
   {
     label: 'Validación en laboratorio',
@@ -121,6 +153,32 @@ function TeamCard({ member }: { member: TeamMember }) {
       <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider mb-3">{member.role}</span>
       <p className="text-xs text-gray-400 mb-2 leading-relaxed">{member.credentials}</p>
       <p className="text-sm text-gray-300 leading-relaxed">{member.focus}</p>
+    </div>
+  );
+}
+
+// ── Componente: Tarjeta de asesor ───────────────────────
+const ADVISOR_ICONS = {
+  briefcase: Briefcase,
+  globe: Globe,
+  scale: Scale,
+} as const;
+
+function AdvisorCard({ advisor }: { advisor: Advisor }) {
+  const Icon = ADVISOR_ICONS[advisor.icon];
+  return (
+    <div className="flex flex-col bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/40 transition-colors">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center shrink-0">
+          <Icon className="w-5 h-5 text-[#00BFFF]" />
+        </div>
+        <div>
+          <h4 className="text-sm font-bold text-white leading-tight">{advisor.name}</h4>
+          <span className="text-xs text-purple-300 font-mono">{advisor.area}</span>
+        </div>
+      </div>
+      <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider mb-2">{advisor.role}</span>
+      <p className="text-sm text-gray-400 leading-relaxed">{advisor.focus}</p>
     </div>
   );
 }
@@ -317,6 +375,29 @@ function PublicHome() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TEAM.map((member) => (
               <TeamCard key={member.name} member={member} />
+            ))}
+          </div>
+        </section>
+
+        {/* ── SECCIÓN: GOBERNANZA & ALIANZAS ESTRATÉGICAS ── */}
+        <section className="mt-24">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 text-purple-300 mb-3">
+              <Scale className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono tracking-widest uppercase">Gobernanza & Alianzas</span>
+            </div>
+            <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
+              Respaldo institucional y cumplimiento
+            </h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              Asesores externos y estudios estratégicos que garantizan rigor contable, legal y fiscal
+              en Argentina y en la expansión hacia Brasil.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {ADVISORS.map((advisor) => (
+              <AdvisorCard key={advisor.name} advisor={advisor} />
             ))}
           </div>
         </section>
