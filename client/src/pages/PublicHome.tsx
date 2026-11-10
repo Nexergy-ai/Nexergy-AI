@@ -26,11 +26,11 @@ const ECOSYSTEM = [
       { name: 'Siemens', logo: 'https://video.nexergy.ar/siemens.png' },
       { name: 'ABB', logo: 'https://video.nexergy.ar/abb.png' },
       { name: 'Schneider Electric', logo: 'https://video.nexergy.ar/schneider.png' },
-      { name: 'NVIDIA', logo: 'https://video.nexergy.ar/nvidia.png' },
-      { name: 'Microsoft', logo: 'https://video.nexergy.ar/microsoft.png' },
-      { name: 'GE Vernova', logo: 'https://video.nexergy.ar/ge-vernova.png' },
+      { name: {/*'NVIDIA', logo: 'https://video.nexergy.ar/nvidia.png' */},
+      { name: {/*'Microsoft', logo: 'https://video.nexergy.ar/microsoft.png' */},
+      { name: {/*'GE Vernova', logo: 'https://video.nexergy.ar/ge-vernova.png' */},
       { name: 'Hitachi Energy', logo: 'https://video.nexergy.ar/hitachi.png' },
-      { name: 'All Power Labs', logo: 'https://video.nexergy.ar/all-power-labs.png' },
+      { name: {/*'All Power Labs', logo: 'https://video.nexergy.ar/all-power-labs.png' */},
     ],
   },
 ];
@@ -117,10 +117,10 @@ export default function PublicHome() {
         </div>
 
         {/* CTA ASISTENTE */}
-        <div className="mt-20 text-center">
+       {/* <div className="mt-20 text-center">
           <p className="text-gray-400 text-sm mb-5 max-w-xl mx-auto">
             Todo empieza con el asistente web.
-          </p>
+          </p> */}
           <button
             onClick={openAssistant}
             className="inline-flex items-center gap-2 bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-4 rounded-xl transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20"
