@@ -1,5 +1,39 @@
 import { useRef, useEffect } from 'react';
-import { Lock, Play, MessageSquare, ExternalLink } from 'lucide-react';
+import { Lock, Play, MessageSquare, ExternalLink, Mail } from 'lucide-react';
+
+const ECOSYSTEM = [
+  {
+    group: 'Instituciones y desarrollo productivo',
+    items: [
+      { name: 'Consejo Federal de Inversiones (CFI)', logo: 'https://video.nexergy.ar/cfi.png' },
+      { name: 'Gobierno de la Provincia de San Luis', logo: 'https://video.nexergy.ar/san-luis.png' },
+    ],
+  },
+  {
+    group: 'Ecosistema financiero',
+    items: [
+      { name: 'Banco Galicia', logo: 'https://video.nexergy.ar/galicia.png' },
+      { name: 'Banco BBVA', logo: 'https://video.nexergy.ar/bbva.png' },
+    ],
+  },
+  {
+    group: 'Emprendimiento y desarrollo empresarial',
+    items: [{ name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' }],
+  },
+  {
+    group: 'Referentes tecnológicos globales',
+    items: [
+      { name: 'Siemens', logo: 'https://video.nexergy.ar/siemens.png' },
+      { name: 'ABB', logo: 'https://video.nexergy.ar/abb.png' },
+      { name: 'Schneider Electric', logo: 'https://video.nexergy.ar/schneider.png' },
+      { name: 'NVIDIA', logo: 'https://video.nexergy.ar/nvidia.png' },
+      { name: 'Microsoft', logo: 'https://video.nexergy.ar/microsoft.png' },
+      { name: 'GE Vernova', logo: 'https://video.nexergy.ar/ge-vernova.png' },
+      { name: 'Hitachi Energy', logo: 'https://video.nexergy.ar/hitachi.png' },
+      { name: 'All Power Labs', logo: 'https://video.nexergy.ar/all-power-labs.png' },
+    ],
+  },
+];
 
 export default function PublicHome() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -19,6 +53,20 @@ export default function PublicHome() {
       const btn = document.getElementById('nx-chat-btn');
       if (btn) (btn as HTMLElement).click();
     }
+  };
+
+  // Correo: mailto con asunto preconfigurado + fallback a Gmail si no hay cliente de mail
+  const handleContact = () => {
+    const subject = encodeURIComponent('Consulta desde la web Nexergy');
+    const body = encodeURIComponent('Hola Nexergy, quiero más información sobre el proyecto.');
+    const mailto = `mailto:contacto@nexergy.ar?subject=${subject}&body=${body}`;
+    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=contacto@nexergy.ar&su=${subject}&body=${body}`;
+    window.location.href = mailto;
+    setTimeout(() => {
+      if (!document.hidden && document.hasFocus()) {
+        window.open(gmail, '_blank');
+      }
+    }, 1500);
   };
 
   return (
@@ -85,6 +133,62 @@ export default function PublicHome() {
              FOOTER También podés tocar el botón 💬 abajo a la derecha */}
           </p>
         </div>
+
+        {/* ECOSISTEMA DE INNOVACIÓN */}
+        <section className="mt-24">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
+              Ecosistema de Innovación
+            </span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4">
+              Conectamos tecnología, instituciones, capital y talento.
+            </h2>
+            <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
+              En NEXERGY creemos que la innovación se construye a través de la colaboración y la
+              articulación entre empresas, instituciones, organismos públicos, entidades financieras
+              y referentes tecnológicos.
+            </p>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-relaxed mt-3">
+              Impulsamos relaciones estratégicas con actores del ecosistema productivo, científico,
+              tecnológico y financiero, que contribuyen al desarrollo de nuevas oportunidades de
+              negocio, la transferencia de conocimiento y la implementación de soluciones innovadoras.
+            </p>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-relaxed mt-3">
+              Nuestro ecosistema integra vínculos institucionales, profesionales y empresariales, junto
+              con referentes tecnológicos globales que inspiran nuestra visión de una infraestructura
+              energética más inteligente, eficiente y sostenible.
+            </p>
+          </div>
+
+          <div className="space-y-10">
+            {ECOSYSTEM.map((g) => (
+              <div key={g.group}>
+                <h3 className="text-sm font-bold tracking-wider text-[#00BFFF] uppercase mb-4 text-center">
+                  {g.group}
+                </h3>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {g.items.map((it) => (
+                    <div
+                      key={it.name}
+                      className="flex items-center justify-center bg-[#0a0e27] border border-white/10 rounded-xl px-5 py-4 min-w-[140px] hover:border-[#00BFFF]/40 transition-colors"
+                    >
+                      {it.logo ? (
+                        <img
+                          src={it.logo}
+                          alt={it.name}
+                          className="h-8 w-auto object-contain"
+                          title={it.name}
+                        />
+                      ) : (
+                        <span className="text-sm font-semibold text-gray-200 text-center">{it.name}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
 
       {/* FOOTER */}
@@ -102,9 +206,14 @@ export default function PublicHome() {
           — Todos los derechos reservados.
         </p>
         <div className="flex items-center justify-center gap-4 text-sm pt-1">
-          <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
+          <button
+            onClick={handleContact}
+            className="text-[#00BFFF] hover:text-cyan-300 font-medium transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            title="Escribinos: contacto@nexergy.ar"
+          >
+            <Mail className="w-4 h-4" />
             contacto@nexergy.ar
-          </span>
+          </button>
           <span className="text-gray-700">•</span>
           <a
             href="https://linktr.ee/nexergy.ar"
