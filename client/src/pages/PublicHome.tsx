@@ -26,7 +26,6 @@ interface Advisor {
   name: string;
   area: string;
   role: string;
-  focus: string;
   icon: 'briefcase' | 'globe' | 'scale';
 }
 
@@ -78,27 +77,24 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-// ── Datos: Gobernanza & Alianzas Estratégicas ──────────
+// ── Datos: Gobernanza & Alianzas ────────────────────────
 const ADVISORS: Advisor[] = [
   {
     name: 'Estudio Arcondo & Asociados',
     area: 'Argentina',
     role: 'Contabilidad corporativa y fiscal',
-    focus: 'Encuadre bajo Ley de Economía del Conocimiento (27.506) y gestión MiPyME.',
     icon: 'briefcase',
   },
   {
-    name: 'Brasil Fácil MX',
+    name: 'D2M Contabilidade',
     area: 'Brasil · São Paulo',
-    role: 'Softlanding y expansión regional',
-    focus: 'Estructuración legal, registro fiscal y acompañamiento corporativo para el ingreso al mercado brasileño.',
+    role: 'Softlanding e internacionalización',
     icon: 'globe',
   },
   {
     name: 'Estudio Legal · Propiedad Intelectual',
     area: 'Internacional',
     role: 'Patentes y marcas',
-    focus: 'Asesoría especializada en patentes USPTO y registro de marcas INPI.',
     icon: 'scale',
   },
 ];
@@ -177,8 +173,7 @@ function AdvisorCard({ advisor }: { advisor: Advisor }) {
           <span className="text-xs text-purple-300 font-mono">{advisor.area}</span>
         </div>
       </div>
-      <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider mb-2">{advisor.role}</span>
-      <p className="text-sm text-gray-400 leading-relaxed">{advisor.focus}</p>
+      <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider">{advisor.role}</span>
     </div>
   );
 }
@@ -283,11 +278,6 @@ function PublicHome() {
           <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
             Transforme energía y residuos en rentabilidad mediante gestión inteligente y gemelos digitales.
           </h1>
-
-          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
-            Plataforma de orquestación multi-vectorial con validación industrial.{' '}
-            <strong className="text-gray-200">Postulación al Programa Innova CFI en curso</strong> para escalar hacia el despliegue comercial.
-          </p>
         </div>
 
         {/* VIDEO R2 — autoplay, muted, loop */}
@@ -339,22 +329,6 @@ function PublicHome() {
               <LifecycleStep key={stage.label} stage={stage} isLast={i === LIFECYCLE.length - 1} />
             ))}
           </div>
-
-          {/* Indicadores clave */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-lg font-extrabold text-[#00BFFF]">Pruebas en campo</p>
-              <p className="text-xs text-gray-400 mt-1">Etapa actual</p>
-            </div>
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-lg font-extrabold text-[#00BFFF]">Pre-seed</p>
-              <p className="text-xs text-gray-400 mt-1">Ronda de inversión abierta</p>
-            </div>
-            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-lg font-extrabold text-[#00BFFF]">2036</p>
-              <p className="text-xs text-gray-400 mt-1">Marca INPI vigente</p>
-            </div>
-          </div>
         </section>
 
         {/* ── SECCIÓN: EQUIPO ── */}
@@ -387,12 +361,8 @@ function PublicHome() {
               <span className="text-xs font-bold font-mono tracking-widest uppercase">Gobernanza & Alianzas</span>
             </div>
             <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
-              Respaldo institucional y cumplimiento
+              Respaldo institucional
             </h2>
-            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-              Asesores externos y estudios estratégicos que garantizan rigor contable, legal y fiscal
-              en Argentina y en la expansión hacia Brasil.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
