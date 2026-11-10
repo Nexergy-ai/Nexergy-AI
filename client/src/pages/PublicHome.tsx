@@ -18,7 +18,6 @@ interface TeamMember {
   focus: string;
 }
 interface LifecycleStage {
-  phase: string;
   label: string;
   status: 'done' | 'current' | 'next';
   description: string;
@@ -72,31 +71,27 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-// ── Datos: Ciclo de vida EBT ────────────────────────────
+// ── Datos: Ciclo de vida (sin terminología TRL) ────────
 const LIFECYCLE: LifecycleStage[] = [
   {
-    phase: 'TRL 4',
     label: 'Validación en laboratorio',
     status: 'done',
-    description: 'Núcleo tecnológico desarrollado, arquitectura serverless y calibración de datos de biomasa.',
+    description: 'Núcleo tecnológico desarrollado, arquitectura de software definida y calibración de datos de biomasa.',
   },
   {
-    phase: 'TRL 5–6',
-    label: 'Ensayos en planta relevante',
+    label: 'Pruebas en entorno real',
     status: 'current',
-    description: 'MVP funcional, ensayos HIL en planta AP M30 y validación de gasificación. Respaldo CFI USD 600.000.',
+    description: 'Prototipo funcional en ensayos con equipos industriales. Postulación al Programa Innova CFI en curso.',
   },
   {
-    phase: 'TRL 6–7',
     label: 'Despliegue en pilotos industriales',
     status: 'next',
-    description: 'Validación en vivo en 3 nodos productivos de campo (agroindustria y renovables).',
+    description: 'Validación en vivo en nodos productivos de campo: agroindustria y energías renovables.',
   },
   {
-    phase: 'TRL 7+',
-    label: 'Certificación y escalamiento',
+    label: 'Certificación y escalamiento comercial',
     status: 'next',
-    description: 'Certificación final TRL 7, hardening de ciberseguridad y Data Room para inversores.',
+    description: 'Certificación final del producto, endurecimiento de ciberseguridad y apertura de Data Room para inversores.',
   },
 ];
 
@@ -141,17 +136,13 @@ function LifecycleStep({ stage, isLast }: { stage: LifecycleStage; isLast: boole
   const s = STATUS_STYLES[stage.status];
   return (
     <div className="flex gap-4">
-      {/* Línea vertical + punto */}
       <div className="flex flex-col items-center">
         <div className={`w-4 h-4 rounded-full border-2 ${s.border} ${s.dot} shrink-0 mt-1`} />
         {!isLast && <div className="w-px flex-1 bg-white/10 mt-2" />}
       </div>
-
-      {/* Contenido */}
       <div className={`pb-8 ${isLast ? 'pb-0' : ''}`}>
         <div className="flex items-center gap-3 mb-1">
-          <span className={`text-sm font-mono font-bold ${s.text}`}>{stage.phase}</span>
-          <span className={`text-sm font-bold ${stage.status === 'current' ? 'text-white' : 'text-gray-400'}`}>
+          <span className={`text-base font-bold ${stage.status === 'current' ? 'text-white' : 'text-gray-400'}`}>
             {stage.label}
           </span>
           {stage.status === 'current' && (
@@ -236,8 +227,8 @@ function PublicHome() {
           </h1>
 
           <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
-            Plataforma de orquestación multi-vectorial con validación industrial y respaldo estratégico del{' '}
-            <strong className="text-gray-200">Programa Innova CFI (USD 600.000)</strong> para escalar a TRL 6/7.
+            Plataforma de orquestación multi-vectorial con validación industrial.{' '}
+            <strong className="text-gray-200">Postulación al Programa Innova CFI en curso</strong> para escalar hacia el despliegue comercial.
           </p>
         </div>
 
@@ -269,40 +260,40 @@ function PublicHome() {
           </button>
         </div>
 
-        {/* ── SECCIÓN: EBT + CICLO DE VIDA ── */}
+        {/* ── SECCIÓN: CICLO DE VIDA ── */}
         <section className="mt-24">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 text-[#00BFFF] mb-3">
               <Rocket className="w-5 h-5" />
-              <span className="text-xs font-bold font-mono tracking-widest uppercase">EBT · Ciclo de Vida</span>
+              <span className="text-xs font-bold font-mono tracking-widest uppercase">Nuestra Trayectoria</span>
             </div>
             <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
               OPTINEX S.A.S. — Empresa de Base Tecnológica
             </h2>
             <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-              De la validación en laboratorio al despliegue industrial. Ronda pre-seed abierta para escalar de TRL 5 a TRL 7.
+              De la validación en laboratorio al despliegue industrial. Ronda pre-seed abierta para llegar a la etapa comercial.
             </p>
           </div>
 
           {/* Timeline vertical */}
           <div className="max-w-2xl mx-auto">
             {LIFECYCLE.map((stage, i) => (
-              <LifecycleStep key={stage.phase} stage={stage} isLast={i === LIFECYCLE.length - 1} />
+              <LifecycleStep key={stage.label} stage={stage} isLast={i === LIFECYCLE.length - 1} />
             ))}
           </div>
 
-          {/* Indicadores clave (sin números sensibles) */}
+          {/* Indicadores clave */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">TRL 5–6</p>
+              <p className="text-lg font-extrabold text-[#00BFFF]">Pruebas en campo</p>
               <p className="text-xs text-gray-400 mt-1">Etapa actual</p>
             </div>
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">USD 600K</p>
-              <p className="text-xs text-gray-400 mt-1">Ronda pre-seed</p>
+              <p className="text-lg font-extrabold text-[#00BFFF]">Pre-seed</p>
+              <p className="text-xs text-gray-400 mt-1">Ronda de inversión abierta</p>
             </div>
             <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
-              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">2036</p>
+              <p className="text-lg font-extrabold text-[#00BFFF]">2036</p>
               <p className="text-xs text-gray-400 mt-1">Marca INPI vigente</p>
             </div>
           </div>
@@ -330,12 +321,17 @@ function PublicHome() {
           </div>
         </section>
 
-        {/* ── SECCIÓN: ECOSISTEMA DE INNOVACIÓN ── */}
+        {/* ── SECCIÓN: ECOSISTEMA ── */}
         <section className="mt-24">
           <div className="text-center mb-12">
             <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
-              Ecosistema de Innovación
+              Con quiénes trabajamos
             </h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              Instituciones, entidades financieras y referentes tecnológicos que nos acompañan en el camino
+              hacia el despliegue comercial. Cada vínculo suma: validación institucional, acceso a capital,
+              infraestructura de ensayo y escalabilidad industrial.
+            </p>
           </div>
 
           <div className="space-y-10">
