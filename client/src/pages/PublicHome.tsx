@@ -139,7 +139,7 @@ export default function PublicHome() {
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
               Ecosistema de Innovación
-            </span>
+            {/* </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4">
               Conectamos tecnología, instituciones, capital y talento.
             </h2>
@@ -158,7 +158,7 @@ export default function PublicHome() {
               con referentes tecnológicos globales que inspiran nuestra visión de una infraestructura
               energética más inteligente, eficiente y sostenible.
             </p>
-          </div>
+          </div> */}
 
           <div className="space-y-10">
             {ECOSYSTEM.map((g) => (
@@ -194,7 +194,7 @@ export default function PublicHome() {
       {/* FOOTER */}
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
         <p>
-          © 2026 <strong>OPTINEX S.A.S.</strong> — CUIT 30-71945566-9 —{' '}
+          © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados.— Para solicitar acceso autorizado al portal confidencial {' '}
           <a
             href="https://wa.me/5491178148534"
             target="_blank"
@@ -203,7 +203,7 @@ export default function PublicHome() {
           >
             Celular +54 9 11 7814 8534
           </a>{' '}
-          — Todos los derechos reservados.
+          — 
         </p>
         <div className="flex items-center justify-center gap-4 text-sm pt-1">
           <button
