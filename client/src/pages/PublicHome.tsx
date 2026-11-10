@@ -17,15 +17,10 @@ const ECOSYSTEM: EcosystemGroup[] = [
     group: 'Instituciones y desarrollo productivo',
     items: [
       { name: 'Consejo Federal de Inversiones (CFI)', logo: 'https://video.nexergy.ar/cfi.png' },
-      { name: 'Gobierno de la Provincia de San Luis', logo: 'https://video.nexergy.ar/san-luis.png' },
-      { name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' },
-    ],
-  },
-  {
-    group: 'Ecosistema financiero',
-    items: [
       { name: 'Banco Galicia', logo: 'https://video.nexergy.ar/galicia.png' },
+      { name: 'Gobierno de la Provincia de San Luis', logo: 'https://video.nexergy.ar/san-luis.png' },
       { name: 'Banco BBVA', logo: 'https://video.nexergy.ar/bbva.png' },
+      { name: 'Fundación Endeavor', logo: 'https://video.nexergy.ar/endeavor.png' },
     ],
   },
   {
