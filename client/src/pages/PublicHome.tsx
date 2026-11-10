@@ -1,5 +1,5 @@
 import { useRef, useEffect, memo } from 'react';
-import { Lock, MessageSquare, ExternalLink, Mail } from 'lucide-react';
+import { Lock, MessageSquare, ExternalLink, Mail, FileText, ShieldCheck, Users, Rocket } from 'lucide-react';
 
 // ── Tipos ──────────────────────────────────────────────
 interface EcosystemItem {
@@ -10,8 +10,21 @@ interface EcosystemGroup {
   group: string;
   items: EcosystemItem[];
 }
+interface TeamMember {
+  name: string;
+  role: string;
+  initials: string;
+  credentials: string;
+  focus: string;
+}
+interface LifecycleStage {
+  phase: string;
+  label: string;
+  status: 'done' | 'current' | 'next';
+  description: string;
+}
 
-// ── Datos ──────────────────────────────────────────────
+// ── Datos: Ecosistema ──────────────────────────────────
 const ECOSYSTEM: EcosystemGroup[] = [
   {
     group: 'Instituciones y desarrollo productivo',
@@ -34,18 +47,123 @@ const ECOSYSTEM: EcosystemGroup[] = [
   },
 ];
 
+// ── Datos: Equipo ──────────────────────────────────────
+const TEAM: TeamMember[] = [
+  {
+    name: 'Dr. Ing. Jonathan Bosso',
+    role: 'CEO & Director Ejecutivo',
+    initials: 'JB',
+    credentials: 'Doctor en Ingeniería (UNRC) · Investigador CONICET',
+    focus: '15 años en electrónica de potencia y microredes. Co-inventor de la patente USPTO.',
+  },
+  {
+    name: 'Mgtr. Ing. Juan José López',
+    role: 'CTO & Representante Legal',
+    initials: 'JL',
+    credentials: 'Magíster en Ingeniería de Software (UNSL)',
+    focus: '14 años en industria (ADG, MABE). Experto en SCADA/IoT y Cloud Edge. Co-inventor.',
+  },
+  {
+    name: 'Dr. Eduardo Guerrero',
+    role: 'CSO & Director Científico',
+    initials: 'EG',
+    credentials: 'Doctor en Química (UNSL) · Ex Gerente I+D en Colgate y Bayer',
+    focus: 'Master Black Belt. Especialista en biomasa e hidrógeno. Co-inventor.',
+  },
+];
+
+// ── Datos: Ciclo de vida EBT ────────────────────────────
+const LIFECYCLE: LifecycleStage[] = [
+  {
+    phase: 'TRL 4',
+    label: 'Validación en laboratorio',
+    status: 'done',
+    description: 'Núcleo tecnológico desarrollado, arquitectura serverless y calibración de datos de biomasa.',
+  },
+  {
+    phase: 'TRL 5–6',
+    label: 'Ensayos en planta relevante',
+    status: 'current',
+    description: 'MVP funcional, ensayos HIL en planta AP M30 y validación de gasificación. Respaldo CFI USD 600.000.',
+  },
+  {
+    phase: 'TRL 6–7',
+    label: 'Despliegue en pilotos industriales',
+    status: 'next',
+    description: 'Validación en vivo en 3 nodos productivos de campo (agroindustria y renovables).',
+  },
+  {
+    phase: 'TRL 7+',
+    label: 'Certificación y escalamiento',
+    status: 'next',
+    description: 'Certificación final TRL 7, hardening de ciberseguridad y Data Room para inversores.',
+  },
+];
+
 // ── Constantes ──────────────────────────────────────────
-const VIDEO_SRC = 'https://video.nexergy.ar/nexergy_publichome_explainer.mp4.mp4'; // R2 — doble .mp4 intencional
+const VIDEO_SRC = 'https://video.nexergy.ar/nexergy_publichome_explainer.mp4.mp4';
 const CONTACT_EMAIL = 'contacto@nexergy.ar';
 const WHATSAPP_URL = 'https://wa.me/5491178148534';
 const LINKTREE_URL = 'https://linktr.ee/nexergy.ar';
 const PORTAL_URL = 'https://privado.nexergy.ar/';
+const BROCHURE_PDF_URL = 'https://video.nexergy.ar/Brochure_Hibrido_Completo_NEXERGY.pdf';
 
 // ── Declaración global para el asistente inyectado ────
 declare global {
   interface Window {
     nexergyAsistenteOpen?: () => void;
   }
+}
+
+// ── Componente: Tarjeta de equipo ──────────────────────
+function TeamCard({ member }: { member: TeamMember }) {
+  return (
+    <div className="flex flex-col items-center text-center bg-[#0a0e27] border border-white/10 rounded-2xl p-6 hover:border-[#00BFFF]/40 transition-colors">
+      <div className="w-16 h-16 rounded-full bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center mb-4">
+        <span className="text-xl font-extrabold text-[#00BFFF] font-mono">{member.initials}</span>
+      </div>
+      <h4 className="text-base font-bold text-white mb-1">{member.name}</h4>
+      <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider mb-3">{member.role}</span>
+      <p className="text-xs text-gray-400 mb-2 leading-relaxed">{member.credentials}</p>
+      <p className="text-sm text-gray-300 leading-relaxed">{member.focus}</p>
+    </div>
+  );
+}
+
+// ── Componente: Etapa del ciclo de vida ─────────────────
+const STATUS_STYLES: Record<LifecycleStage['status'], { dot: string; text: string; border: string }> = {
+  done: { dot: 'bg-green-500', text: 'text-green-400', border: 'border-green-500/30' },
+  current: { dot: 'bg-[#00BFFF] animate-pulse', text: 'text-[#00BFFF]', border: 'border-[#00BFFF]/40' },
+  next: { dot: 'bg-gray-600', text: 'text-gray-500', border: 'border-white/10' },
+};
+
+function LifecycleStep({ stage, isLast }: { stage: LifecycleStage; isLast: boolean }) {
+  const s = STATUS_STYLES[stage.status];
+  return (
+    <div className="flex gap-4">
+      {/* Línea vertical + punto */}
+      <div className="flex flex-col items-center">
+        <div className={`w-4 h-4 rounded-full border-2 ${s.border} ${s.dot} shrink-0 mt-1`} />
+        {!isLast && <div className="w-px flex-1 bg-white/10 mt-2" />}
+      </div>
+
+      {/* Contenido */}
+      <div className={`pb-8 ${isLast ? 'pb-0' : ''}`}>
+        <div className="flex items-center gap-3 mb-1">
+          <span className={`text-sm font-mono font-bold ${s.text}`}>{stage.phase}</span>
+          <span className={`text-sm font-bold ${stage.status === 'current' ? 'text-white' : 'text-gray-400'}`}>
+            {stage.label}
+          </span>
+          {stage.status === 'current' && (
+            <span className="text-xs bg-[#00BFFF]/10 text-[#00BFFF] px-2 py-0.5 rounded-full font-mono">
+              etapa actual
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-gray-400 leading-relaxed">{stage.description}</p>
+      </div>
+    </div>
+  );
 }
 
 function PublicHome() {
@@ -66,15 +184,14 @@ function PublicHome() {
     document.getElementById('nx-chat-btn')?.click();
   };
 
-  // mailto semántico — el navegador abre el cliente de correo nativo
   const mailtoHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
     'Consulta desde la web Nexergy',
-  )}&body=${encodeURIComponent('Hola Nexergy, quiero más información sobre el proyecto.')}`;
+  )}&body=${encodeURIComponent('Hola Nexergy, quiero más información sobre el proyecto y la ronda de inversión.')}`;
 
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans flex flex-col selection:bg-[#00BFFF] selection:text-[#070c1e]">
       {/* HEADER — siempre visible (sticky) */}
-      <header className="sticky top-0 z-50 w-full py-6 px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
         <button
           onClick={openAssistant}
           className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono cursor-pointer hover:text-cyan-300 transition-colors"
@@ -82,24 +199,49 @@ function PublicHome() {
         >
           NEXERGY<span className="text-white">®</span>
         </button>
-        <a
-          href={PORTAL_URL}
-          className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-purple-500/10"
-        >
-          <Lock className="w-3.5 h-3.5 text-purple-400" />
-          Acceso Confidencial
-        </a>
+
+        <div className="flex items-center gap-3">
+          <a
+            href={BROCHURE_PDF_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3 py-2 rounded-xl text-xs font-bold transition-all items-center gap-1.5 shadow-lg shadow-cyan-500/10"
+            title="Ver Brochure y Tesis de Inversión"
+          >
+            <FileText className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Deck / Brochure</span>
+          </a>
+
+          <a
+            href={PORTAL_URL}
+            className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-purple-500/10"
+          >
+            <Lock className="w-3.5 h-3.5 text-purple-400" />
+            <span>Acceso Confidencial</span>
+          </a>
+        </div>
       </header>
 
       {/* HERO + VIDEO */}
-      <main className="py-16 px-6 max-w-4xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <h1 className="text-xl md:text-3xl font-extrabold text-white mb-4">
+      <main className="py-12 px-6 max-w-4xl mx-auto w-full">
+        <div className="text-center mb-8">
+          {/* Badge de Patente Internacional */}
+          <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
+            <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
+            <span>USPTO Provisional PPA N.º 64/181,819 • INPI Reg. Nº 3.941.093</span>
+          </div>
+
+          <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
             Transforme energía y residuos en rentabilidad mediante gestión inteligente y gemelos digitales.
           </h1>
+
+          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
+            Plataforma de orquestación multi-vectorial con validación industrial y respaldo estratégico del{' '}
+            <strong className="text-gray-200">Programa Innova CFI (USD 600.000)</strong> para escalar a TRL 6/7.
+          </p>
         </div>
 
-        {/* VIDEO R2 — autoplay, muted, loop, velocidad lenta (< 10 MB) */}
+        {/* VIDEO R2 — autoplay, muted, loop */}
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
           <video
             ref={videoRef}
@@ -117,7 +259,7 @@ function PublicHome() {
         </div>
 
         {/* CTA ASISTENTE */}
-        <div className="mt-20 text-center">
+        <div className="mt-16 text-center">
           <button
             onClick={openAssistant}
             className="inline-flex items-center gap-2 bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-4 rounded-xl transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20"
@@ -127,7 +269,68 @@ function PublicHome() {
           </button>
         </div>
 
-        {/* ECOSISTEMA DE INNOVACIÓN */}
+        {/* ── SECCIÓN: EBT + CICLO DE VIDA ── */}
+        <section className="mt-24">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 text-[#00BFFF] mb-3">
+              <Rocket className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono tracking-widest uppercase">EBT · Ciclo de Vida</span>
+            </div>
+            <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
+              OPTINEX S.A.S. — Empresa de Base Tecnológica
+            </h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              De la validación en laboratorio al despliegue industrial. Ronda pre-seed abierta para escalar de TRL 5 a TRL 7.
+            </p>
+          </div>
+
+          {/* Timeline vertical */}
+          <div className="max-w-2xl mx-auto">
+            {LIFECYCLE.map((stage, i) => (
+              <LifecycleStep key={stage.phase} stage={stage} isLast={i === LIFECYCLE.length - 1} />
+            ))}
+          </div>
+
+          {/* Indicadores clave (sin números sensibles) */}
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
+              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">TRL 5–6</p>
+              <p className="text-xs text-gray-400 mt-1">Etapa actual</p>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
+              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">USD 600K</p>
+              <p className="text-xs text-gray-400 mt-1">Ronda pre-seed</p>
+            </div>
+            <div className="bg-[#0a0e27] border border-white/10 rounded-xl p-5 text-center">
+              <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">2036</p>
+              <p className="text-xs text-gray-400 mt-1">Marca INPI vigente</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN: EQUIPO ── */}
+        <section className="mt-24">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 text-[#00BFFF] mb-3">
+              <Users className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono tracking-widest uppercase">Equipo Fundador</span>
+            </div>
+            <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
+              Liderazgo técnico y científico
+            </h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              Tres co-inventores con +40 años combinados en ingeniería de potencia, software industrial y química de biomasa.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TEAM.map((member) => (
+              <TeamCard key={member.name} member={member} />
+            ))}
+          </div>
+        </section>
+
+        {/* ── SECCIÓN: ECOSISTEMA DE INNOVACIÓN ── */}
         <section className="mt-24">
           <div className="text-center mb-12">
             <h2 className="text-xl md:text-3xl font-extrabold text-white mb-4">
@@ -169,13 +372,11 @@ function PublicHome() {
 
       {/* FOOTER */}
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
-        {/* Renglón 1 — solo copyright */}
         <p>
-          © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados. — <strong>Para solicitar acceso
-          autorizado al portal confidencial: </strong>
+          © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados. —{' '}
+          <strong>Para solicitar acceso autorizado al portal confidencial: </strong>
         </p>
 
-        {/* Renglón 2 — Celular • Correo • Linktree */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm pt-1">
           <a
             href={WHATSAPP_URL}
