@@ -26,11 +26,11 @@ const ECOSYSTEM = [
       { name: 'Siemens', logo: 'https://video.nexergy.ar/siemens.png' },
       { name: 'ABB', logo: 'https://video.nexergy.ar/abb.png' },
       { name: 'Schneider Electric', logo: 'https://video.nexergy.ar/schneider.png' },
-      { name: {/*'NVIDIA', logo: 'https://video.nexergy.ar/nvidia.png' */},
-      { name: {/*'Microsoft', logo: 'https://video.nexergy.ar/microsoft.png' */},
-      { name: {/*'GE Vernova', logo: 'https://video.nexergy.ar/ge-vernova.png' */},
+      // { name: 'NVIDIA', logo: 'https://video.nexergy.ar/nvidia.png' },
+      // { name: 'Microsoft', logo: 'https://video.nexergy.ar/microsoft.png' },
+      // { name: 'GE Vernova', logo: 'https://video.nexergy.ar/ge-vernova.png' },
       { name: 'Hitachi Energy', logo: 'https://video.nexergy.ar/hitachi.png' },
-      { name: {/*'All Power Labs', logo: 'https://video.nexergy.ar/all-power-labs.png' */},
+      // { name: 'All Power Labs', logo: 'https://video.nexergy.ar/all-power-labs.png' },
     ],
   },
 ];
@@ -117,10 +117,7 @@ export default function PublicHome() {
         </div>
 
         {/* CTA ASISTENTE */}
-       {/* <div className="mt-20 text-center">
-          <p className="text-gray-400 text-sm mb-5 max-w-xl mx-auto">
-            Todo empieza con el asistente web.
-          </p> */}
+        <div className="mt-20 text-center">
           <button
             onClick={openAssistant}
             className="inline-flex items-center gap-2 bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-4 rounded-xl transition-all cursor-pointer shadow-lg shadow-[#00BFFF]/20"
@@ -128,10 +125,6 @@ export default function PublicHome() {
             <MessageSquare className="w-5 h-5" />
             Empezar con el asistente
           </button>
-          <p className="mt-4 text-xs text-gray-500 flex items-center justify-center gap-1.5">
-            {/* <Play className="w-3 h-3" />
-             FOOTER También podés tocar el botón 💬 abajo a la derecha */}
-          </p>
         </div>
 
         {/* ECOSISTEMA DE INNOVACIÓN */}
@@ -139,26 +132,8 @@ export default function PublicHome() {
           <div className="text-center mb-12">
             <span className="text-xs font-bold font-mono tracking-widest text-[#00BFFF] uppercase mb-3 block">
               Ecosistema de Innovación
-            {/* </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4">
-              Conectamos tecnología, instituciones, capital y talento.
-            </h2>
-            <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-              En NEXERGY creemos que la innovación se construye a través de la colaboración y la
-              articulación entre empresas, instituciones, organismos públicos, entidades financieras
-              y referentes tecnológicos.
-            </p>
-            <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-relaxed mt-3">
-              Impulsamos relaciones estratégicas con actores del ecosistema productivo, científico,
-              tecnológico y financiero, que contribuyen al desarrollo de nuevas oportunidades de
-              negocio, la transferencia de conocimiento y la implementación de soluciones innovadoras.
-            </p>
-            <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-relaxed mt-3">
-              Nuestro ecosistema integra vínculos institucionales, profesionales y empresariales, junto
-              con referentes tecnológicos globales que inspiran nuestra visión de una infraestructura
-              energética más inteligente, eficiente y sostenible.
-            </p>
-          </div> */}
+            </span>
+          </div>
 
           <div className="space-y-10">
             {ECOSYSTEM.map((g) => (
@@ -203,7 +178,7 @@ export default function PublicHome() {
           >
             Celular +54 9 11 7814 8534
           </a>{' '}
-          — 
+          —
         </p>
         <div className="flex items-center justify-center gap-4 text-sm pt-1">
           <button
