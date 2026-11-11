@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { ShieldCheck, FileText, Mail, Phone, ArrowRight, CheckCircle2, Lock, Building2, Leaf, TrendingUp, Globe2 } from 'lucide-react';
 
 // ── Constantes ──────────────────────────────────────────
-const TURNSTILE_SITE_KEY = '0x4AAAAAAF8GDi-q_0ZpPWbn'; // Turnstile Site Key (pública, va en el frontend)
+const TURNSTILE_SITE_KEY = '0x4AAAAAAF8GDi-q_0ZpPWbn';
 
-// Worker URL — ruta configurada en nexergy.ar/api/brochure/*
-// Para testing fuera de nexergy.ar, usar: 'https://brochure-access.inglopezjj.workers.dev/api/brochure'
-const WORKER_URL = '/api/brochure';
+// Worker URL — subdominio directo de workers.dev para evitar conflicto con /api/* de tRPC
+const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/brochure';
+const WORKER_ORIGIN = 'https://brochure-access.inglopezjj.workers.dev';
 const CONTACT_EMAIL = 'contacto@nexergy.ar';
 
 // ── Datos: Teaser del brochure (sin información sensible) ─
@@ -74,17 +74,14 @@ export default function BrochureGate() {
   const [pdfUrl, setPdfUrl] = useState('');
   const [leadName, setLeadName] = useState('');
 
-  // Campos de formulario
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [smsCode, setSmsCode] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
 
-  // Ref para el contenedor de Turnstile
   const turnstileRef = useRef<HTMLDivElement>(null);
 
-  // Cargar Turnstile widget
   useEffect(() => {
     if (!(window as any).turnstile) {
       const script = document.createElement('script');
@@ -141,16 +138,17 @@ export default function BrochureGate() {
             turnstileToken,
           }),
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
         if (!data.ok) throw new Error(data.error || 'Error al procesar');
-        setPdfUrl(data.pdfUrl);
+        setPdfUrl(WORKER_ORIGIN + data.pdfUrl);
         setFormState('success');
       } catch (err: any) {
         setError(err.message || 'Error al procesar la solicitud.');
         setFormState('error');
       }
     } else {
-      // Modo SMS
       if (formState === 'idle') {
         if (!phone.trim()) {
           setError('Ingresá tu número de celular.');
@@ -168,7 +166,9 @@ export default function BrochureGate() {
               turnstileToken,
             }),
           });
-          const data = await res.json();
+          const text = await res.text();
+          let data;
+          try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
           if (!data.ok) throw new Error(data.error || 'Error al enviar SMS');
           setFormState('sms-sent');
         } catch (err: any) {
@@ -190,9 +190,11 @@ export default function BrochureGate() {
               code: smsCode.trim(),
             }),
           });
-          const data = await res.json();
+          const text = await res.text();
+          let data;
+          try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
           if (!data.ok) throw new Error(data.error || 'Código incorrecto');
-          setPdfUrl(data.pdfUrl);
+          setPdfUrl(WORKER_ORIGIN + data.pdfUrl);
           setFormState('success');
         } catch (err: any) {
           setError(err.message || 'Código incorrecto.');
@@ -202,7 +204,6 @@ export default function BrochureGate() {
     }
   };
 
-  // ── Estado: éxito ─────────────────────────────────────
   if (formState === 'success') {
     return (
       <div className="min-h-screen bg-[#070c1e] text-white font-sans flex items-center justify-center px-6">
@@ -232,24 +233,18 @@ export default function BrochureGate() {
     );
   }
 
-  // ── Página principal: teaser + formulario ────────────
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans">
-      {/* HEADER */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
         <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
           NEXERGY<span className="text-white">®</span>
         </span>
-        <a
-          href="/"
-          className="text-gray-400 hover:text-white text-xs font-bold transition-colors"
-        >
+        <a href="/" className="text-gray-400 hover:text-white text-xs font-bold transition-colors">
           ← Volver al inicio
         </a>
       </header>
 
       <main className="py-12 px-6 max-w-4xl mx-auto w-full">
-        {/* Badge de confianza */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
             <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
@@ -264,15 +259,11 @@ export default function BrochureGate() {
           </p>
         </div>
 
-        {/* Teaser: qué incluye el brochure */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           {TEASER_SECTIONS.map((section) => {
             const Icon = section.icon;
             return (
-              <div
-                key={section.title}
-                className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6"
-              >
+              <div key={section.title} className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-[#00BFFF]/10 border border-[#00BFFF]/30 flex items-center justify-center shrink-0">
                     <Icon className="w-5 h-5 text-[#00BFFF]" />
@@ -292,7 +283,6 @@ export default function BrochureGate() {
           })}
         </div>
 
-        {/* Formulario de acceso */}
         <div className="max-w-md mx-auto">
           <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8">
             <div className="flex items-center gap-2 mb-6">
@@ -300,15 +290,12 @@ export default function BrochureGate() {
               <h2 className="text-lg font-bold text-white">Validar acceso</h2>
             </div>
 
-            {/* Selector de modo */}
             <div className="flex gap-2 mb-6 p-1 bg-[#070c1e] rounded-xl">
               <button
                 type="button"
                 onClick={() => { setMode('email'); setError(''); setFormState('idle'); }}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  mode === 'email'
-                    ? 'bg-[#00BFFF] text-[#070c1e]'
-                    : 'text-gray-400 hover:text-white'
+                  mode === 'email' ? 'bg-[#00BFFF] text-[#070c1e]' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <Mail className="w-4 h-4" />
@@ -318,9 +305,7 @@ export default function BrochureGate() {
                 type="button"
                 onClick={() => { setMode('phone'); setError(''); setFormState('idle'); }}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  mode === 'phone'
-                    ? 'bg-[#00BFFF] text-[#070c1e]'
-                    : 'text-gray-400 hover:text-white'
+                  mode === 'phone' ? 'bg-[#00BFFF] text-[#070c1e]' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <Phone className="w-4 h-4" />
@@ -329,7 +314,6 @@ export default function BrochureGate() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Nombre (siempre) */}
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
                   Nombre y apellido
@@ -344,7 +328,6 @@ export default function BrochureGate() {
                 />
               </div>
 
-              {/* Modo email */}
               {mode === 'email' && (
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
@@ -364,7 +347,6 @@ export default function BrochureGate() {
                 </div>
               )}
 
-              {/* Modo SMS */}
               {mode === 'phone' && (
                 <>
                   <div>
@@ -403,17 +385,14 @@ export default function BrochureGate() {
                 </>
               )}
 
-              {/* Turnstile */}
               <div ref={turnstileRef} className="min-h-[65px]" />
 
-              {/* Error */}
               {error && (
                 <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2.5">
                   {error}
                 </p>
               )}
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={formState === 'submitting' || formState === 'verifying-sms'}
