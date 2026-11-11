@@ -15,7 +15,6 @@ interface TeamMember {
   role: string;
   initials: string;
   credentials: string;
-  focus: string;
 }
 interface LifecycleStage {
   label: string;
@@ -59,21 +58,18 @@ const TEAM: TeamMember[] = [
     role: 'CEO & Director Ejecutivo',
     initials: 'JB',
     credentials: 'Doctor en Ingeniería (UNRC) · Investigador CONICET',
-    focus: '15 años en electrónica de potencia y microredes. Co-inventor de la patente USPTO.',
   },
   {
     name: 'Mgtr. Ing. Juan José López',
     role: 'CTO & Representante Legal',
     initials: 'JL',
     credentials: 'Magíster en Ingeniería de Software (UNSL)',
-    focus: '14 años en industria (ADG, MABE). Experto en SCADA/IoT y Cloud Edge. Co-inventor.',
   },
   {
-    name: 'Dr. Eduardo Guerrero',
+    name: 'Dr. Daniel Guerreiro',
     role: 'CSO & Director Científico',
-    initials: 'EG',
+    initials: 'DG',
     credentials: 'Doctor en Química (UNSL) · Ex Gerente I+D en Colgate y Bayer',
-    focus: 'Master Black Belt. Especialista en biomasa e hidrógeno. Co-inventor.',
   },
 ];
 
@@ -129,7 +125,6 @@ const CONTACT_EMAIL = 'contacto@nexergy.ar';
 const WHATSAPP_URL = 'https://wa.me/5491178148534';
 const LINKTREE_URL = 'https://linktr.ee/nexergy.ar';
 const PORTAL_URL = 'https://privado.nexergy.ar/';
-const BROCHURE_PDF_URL = 'https://video.nexergy.ar/Brochure_Hibrido_Completo_NEXERGY.pdf';
 
 // ── Declaración global para el asistente inyectado ────
 declare global {
@@ -147,8 +142,7 @@ function TeamCard({ member }: { member: TeamMember }) {
       </div>
       <h4 className="text-base font-bold text-white mb-1">{member.name}</h4>
       <span className="text-xs font-bold text-[#00BFFF] uppercase tracking-wider mb-3">{member.role}</span>
-      <p className="text-xs text-gray-400 mb-2 leading-relaxed">{member.credentials}</p>
-      <p className="text-sm text-gray-300 leading-relaxed">{member.focus}</p>
+      <p className="text-xs text-gray-400 leading-relaxed">{member.credentials}</p>
     </div>
   );
 }
@@ -246,9 +240,7 @@ function PublicHome() {
 
         <div className="flex items-center gap-3">
           <a
-            href={BROCHURE_PDF_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/brochure"
             className="hidden sm:flex bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3 py-2 rounded-xl text-xs font-bold transition-all items-center gap-1.5 shadow-lg shadow-cyan-500/10"
             title="Ver Brochure y Tesis de Inversión"
           >
@@ -319,7 +311,7 @@ function PublicHome() {
               OPTINEX S.A.S. — Empresa de Base Tecnológica
             </h2>
             <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-              De la validación en laboratorio al despliegue industrial. Ronda pre-seed abierta para llegar a la etapa comercial.
+              De la validación en laboratorio al despliegue industrial. Ronda pre-seed abierta.
             </p>
           </div>
 
@@ -379,9 +371,7 @@ function PublicHome() {
               Con quiénes trabajamos
             </h2>
             <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-              Instituciones, entidades financieras y referentes tecnológicos que nos acompañan en el camino
-              hacia el despliegue comercial. Cada vínculo suma: validación institucional, acceso a capital,
-              infraestructura de ensayo y escalabilidad industrial.
+              Instituciones, entidades financieras y referentes tecnológicos que nos acompañan hacia el despliegue comercial.
             </p>
           </div>
 
