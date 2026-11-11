@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star } from 'lucide-react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
 
@@ -97,15 +97,19 @@ export default function Dashboard() {
     window.open(`${WORKER_URL}/export?token=${token}`, '_blank');
   };
 
+  const downloadBrochureCompleto = () => {
+    window.open(`${WORKER_URL}/brochure-completo?token=${token}`, '_blank');
+  };
+
   // ── Login ──
   if (!token) {
     return (
       <div className="min-h-screen bg-[#070c1e] text-white font-sans flex items-center justify-center px-6">
         <div className="max-w-sm w-full">
           <div className="text-center mb-8">
-            <span className="font-extrabold tracking-wider text-[#00BFFF] text-2xl font-mono">
+            <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-2xl font-mono hover:text-cyan-300 transition-colors">
               NEXERGY<span className="text-white">®</span>
-            </span>
+            </a>
             <h1 className="text-lg font-bold text-white mt-4">Dashboard de Leads</h1>
             <p className="text-gray-500 text-xs mt-1">Acceso restringido · @nexergy.ar</p>
           </div>
@@ -153,10 +157,10 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans">
       <header className="sticky top-0 z-50 w-full py-4 px-6 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
-        <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
+        <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono hover:text-cyan-300 transition-colors">
           NEXERGY<span className="text-white">®</span>
           <span className="text-gray-500 text-xs ml-2">Dashboard</span>
-        </span>
+        </a>
         <button onClick={handleLogout}
           className="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
           <LogOut className="w-4 h-4" />
@@ -239,16 +243,25 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Tabla de leads */}
-        <div className="flex justify-between items-center mb-4">
+        {/* Botón Brochure Completo + Exportar */}
+        <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
           <h2 className="text-lg font-bold text-white">Leads capturados</h2>
-          <button onClick={exportCSV}
-            className="bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
-            <Download className="w-4 h-4" />
-            Exportar CSV
-          </button>
+          <div className="flex gap-3">
+            <button onClick={downloadBrochureCompleto}
+              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+              title="Descargar Brochure Híbrido Completo">
+              <BookOpen className="w-4 h-4" />
+              Brochure Completo
+            </button>
+            <button onClick={exportCSV}
+              className="bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+              <Download className="w-4 h-4" />
+              Exportar CSV
+            </button>
+          </div>
         </div>
 
+        {/* Tabla de leads */}
         <div className="bg-[#0a0e27] border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
           {loading ? (
             <p className="text-center text-gray-500 py-12">Cargando...</p>
