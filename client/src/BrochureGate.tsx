@@ -184,9 +184,9 @@ export default function BrochureGate() {
     <div className="min-h-screen bg-[#070c1e] text-white font-sans">
       {/* HEADER */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
-        <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
-          NEXERGY<span className="text-white">®</span>
-        </span>
+       <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono hover:text-cyan-300 transition-colors">
+        NEXERGY<span className="text-white">®</span>
+        </a>
         <a href="/" className="text-gray-400 hover:text-white text-xs font-bold transition-colors">
           ← Volver al inicio
         </a>
