@@ -31,15 +31,15 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (token) loadData();
+    if (token) loadData(token);
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (authToken: string) => {
     setLoading(true);
     try {
       const [leadsRes, analyticsRes] = await Promise.all([
-        fetch(`${WORKER_URL}/leads?token=${token}`),
-        fetch(`${WORKER_URL}/analytics?token=${token}`),
+        fetch(`${WORKER_URL}/leads?token=${authToken}`),
+        fetch(`${WORKER_URL}/analytics?token=${authToken}`),
       ]);
       const leadsData = await leadsRes.json();
       const analyticsData = await analyticsRes.json();
@@ -78,7 +78,7 @@ export default function Dashboard() {
       }
       localStorage.setItem('nx_dash_token', data.token);
       setToken(data.token);
-      loadData();
+      loadData(data.token);
     } catch (err: any) {
       setLoginError(err.message || 'Error de conexión.');
     }
@@ -171,7 +171,7 @@ export default function Dashboard() {
             <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
             <div>
               <p className="text-sm font-bold text-amber-300">
-                {priorityLeads.length} lead{priorityLeads.length > 1 ? 's' : ''} prioritario{priorityLeads.length > 1 ? 's' : ''} detectado{priorityLeads.length > 1 ? 's' : ''}
+                {priorityLeads.length} lead{priorityLeads.length > 1 ? 's' : ''} prioritario{priorityLeads.length > 1 ? 's' : ''}
               </p>
               <p className="text-xs text-amber-500/70 mt-0.5">
                 {priorityLeads.map((l) => l.org).filter((v, i, a) => a.indexOf(v) === i).join(' · ')}
