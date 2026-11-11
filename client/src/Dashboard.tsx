@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, CheckCircle, XCircle } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
+const SYNC_INTERVAL = 30_000; // 30 segundos
+
+type ConnStatus = 'idle' | 'syncing' | 'online' | 'error' | 'offline';
 
 interface Lead {
   name: string;
@@ -30,31 +33,88 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsDay[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (token) loadData(token);
-  }, []);
+  // ── Estado de conexión / sincronización ──
+  const [connStatus, setConnStatus] = useState<ConnStatus>('idle');
+  const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const loadData = async (authToken: string) => {
-    setLoading(true);
+  const loadData = useCallback(async (authToken: string, isAuto = false) => {
+    if (isAuto) setConnStatus('syncing');
+    else setLoading(true);
+    setSyncError(null);
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+
       const [leadsRes, analyticsRes] = await Promise.all([
-        fetch(`${WORKER_URL}/leads?token=${authToken}`),
-        fetch(`${WORKER_URL}/analytics?token=${authToken}`),
+        fetch(`${WORKER_URL}/leads?token=${authToken}`, { signal: controller.signal }),
+        fetch(`${WORKER_URL}/analytics?token=${authToken}`, { signal: controller.signal }),
       ]);
+      clearTimeout(timeout);
+
+      if (!leadsRes.ok || !analyticsRes.ok) throw new Error('Respuesta no OK del servidor');
+
       const leadsData = await leadsRes.json();
       const analyticsData = await analyticsRes.json();
+
       if (!leadsData.ok) {
+        // token inválido / expirado
         localStorage.removeItem('nx_dash_token');
         setToken(null);
+        setConnStatus('offline');
         return;
       }
+
       setLeads(leadsData.leads || []);
       if (analyticsData.ok) setAnalytics(analyticsData.analytics?.last7days || []);
-    } catch {
-      setLoginError('Error al cargar datos.');
+
+      setConnStatus('online');
+      setLastSync(new Date());
+    } catch (err: any) {
+      const msg = err?.name === 'AbortError' ? 'Timeout de conexión' : 'Error de red';
+      setSyncError(msg);
+      setConnStatus(navigator.onLine ? 'error' : 'offline');
+      if (!isAuto) setLoginError('Error al cargar datos.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  };
+  }, []);
+
+  // Carga inicial
+  useEffect(() => {
+    if (token) loadData(token);
+  }, [token]);
+
+  // Auto-refresh
+  useEffect(() => {
+    if (!token || !autoRefresh) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+    intervalRef.current = setInterval(() => loadData(token, true), SYNC_INTERVAL);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [token, autoRefresh, loadData]);
+
+  // Detectar pérdida de conexión del navegador
+  useEffect(() => {
+    const goOffline = () => setConnStatus('offline');
+    const goOnline = () => { if (token) loadData(token, true); };
+    window.addEventListener('offline', goOffline);
+    window.addEventListener('online', goOnline);
+    return () => {
+      window.removeEventListener('offline', goOffline);
+      window.removeEventListener('online', goOnline);
+    };
+  }, [token, loadData]);
+
+  // Reloj para "hace X seg"
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +151,8 @@ export default function Dashboard() {
     setAnalytics([]);
     setEmail('');
     setPassword('');
+    setConnStatus('idle');
+    setLastSync(null);
   };
 
   const exportCSV = () => {
@@ -99,6 +161,29 @@ export default function Dashboard() {
 
   const downloadBrochureCompleto = () => {
     window.open(`${WORKER_URL}/brochure-completo?token=${token}`, '_blank');
+  };
+
+  const manualRefresh = () => {
+    if (token) loadData(token);
+  };
+
+  // ── Helpers de UI de estado ──
+  const statusConfig: Record<ConnStatus, { label: string; color: string; icon: typeof Wifi; dot: string }> = {
+    idle:    { label: 'Sin conexión',  color: 'text-gray-500',  icon: WifiOff,    dot: 'bg-gray-500' },
+    syncing: { label: 'Sincronizando',  color: 'text-cyan-400',  icon: RefreshCw,  dot: 'bg-cyan-400 animate-pulse' },
+    online:  { label: 'Conectado',      color: 'text-green-400', icon: Wifi,       dot: 'bg-green-400' },
+    error:   { label: 'Error de sync',  color: 'text-red-400',   icon: XCircle,    dot: 'bg-red-400' },
+    offline: { label: 'Sin conexión',   color: 'text-red-400',   icon: WifiOff,    dot: 'bg-red-400' },
+  };
+
+  const timeAgo = (date: Date | null) => {
+    if (!date) return 'nunca';
+    const secs = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (secs < 5) return 'ahora';
+    if (secs < 60) return `hace ${secs}s`;
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return `hace ${mins}m`;
+    return `hace ${Math.floor(mins / 60)}h`;
   };
 
   // ── Login ──
@@ -154,6 +239,9 @@ export default function Dashboard() {
   const totalUniques = analytics.reduce((sum, d) => sum + d.uniques, 0);
   const maxPageViews = Math.max(...analytics.map((d) => d.pageViews), 1);
 
+  const st = statusConfig[connStatus];
+  const StatusIcon = st.icon;
+
   return (
     <div className="min-h-screen bg-[#0d1410] text-white font-sans">
       <header className="sticky top-0 z-50 w-full py-4 px-6 flex justify-between items-center border-b border-white/5 bg-[#0a0f0c]/80 backdrop-blur-md">
@@ -161,14 +249,70 @@ export default function Dashboard() {
           NEXERGY<span className="text-white">®</span>
           <span className="text-gray-500 text-xs ml-2">Dashboard</span>
         </a>
-        <button onClick={handleLogout}
-          className="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
-          <LogOut className="w-4 h-4" />
-          Cerrar sesión
-        </button>
+        <div className="flex items-center gap-4">
+          {/* ── Indicador de conexión / sync ── */}
+          <div className="flex items-center gap-3 text-xs">
+            <div className={`flex items-center gap-1.5 ${st.color}`}>
+              <span className={`w-2 h-2 rounded-full ${st.dot}`} />
+              <StatusIcon className={`w-3.5 h-3.5 ${connStatus === 'syncing' ? 'animate-spin' : ''}`} />
+              <span className="font-bold hidden sm:inline">{st.label}</span>
+            </div>
+            <span className="text-gray-600 hidden md:inline">·</span>
+            <span className="text-gray-500 hidden md:inline" title={lastSync?.toLocaleString('es-AR') ?? ''}>
+              Sync: {timeAgo(lastSync)}
+            </span>
+            <button
+              onClick={manualRefresh}
+              disabled={connStatus === 'syncing'}
+              title="Sincronizar ahora"
+              className="text-gray-400 hover:text-[#00BFFF] disabled:opacity-40 transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 ${connStatus === 'syncing' ? 'animate-spin' : ''}`} />
+            </button>
+            <label className="flex items-center gap-1.5 cursor-pointer text-gray-500 hidden lg:flex">
+              <input
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => setAutoRefresh(e.target.checked)}
+                className="accent-[#00BFFF] w-3.5 h-3.5"
+              />
+              Auto
+            </label>
+          </div>
+          <button onClick={handleLogout}
+            className="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
+            <LogOut className="w-4 h-4" />
+            Cerrar sesión
+          </button>
+        </div>
       </header>
 
       <main className="py-8 px-6 max-w-5xl mx-auto w-full">
+        {/* Banner de error de sincronización */}
+        {syncError && connStatus === 'error' && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <XCircle className="w-5 h-5 text-red-400 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-bold text-red-300">No se pudo sincronizar con Cloudflare</p>
+              <p className="text-xs text-red-500/70 mt-0.5">{syncError} · Se reintentará automáticamente</p>
+            </div>
+            <button onClick={manualRefresh} className="text-red-300 hover:text-red-200 text-xs font-bold underline">
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        {/* Banner offline */}
+        {connStatus === 'offline' && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <WifiOff className="w-5 h-5 text-red-400 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-red-300">Sin conexión a internet</p>
+              <p className="text-xs text-red-500/70 mt-0.5">Los datos mostrados pueden estar desactualizados</p>
+            </div>
+          </div>
+        )}
+
         {/* Alerta de leads prioritarios */}
         {priorityLeads.length > 0 && (
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
