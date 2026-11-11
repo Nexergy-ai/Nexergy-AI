@@ -230,13 +230,9 @@ function PublicHome() {
     <div className="min-h-screen bg-[#070c1e] text-white font-sans flex flex-col selection:bg-[#00BFFF] selection:text-[#070c1e]">
       {/* HEADER — siempre visible (sticky) */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
-        <button
-          onClick={openAssistant}
-          className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono cursor-pointer hover:text-cyan-300 transition-colors"
-          title="Abrir asistente"
-        >
+        <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono hover:text-cyan-300 transition-colors">
           NEXERGY<span className="text-white">®</span>
-        </button>
+        </a>
 
         <div className="flex items-center gap-3">
           <a
