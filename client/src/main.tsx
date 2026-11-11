@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import BrochureGate from "./BrochureGate";
+import Dashboard from "./Dashboard";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
@@ -53,12 +54,16 @@ const trpcClient = trpc.createClient({
   ],
 });
 
-// Detectar si el usuario está en /brochure para mostrar el gate
-const isBrochurePage = window.location.pathname === "/brochure";
+// Detectar rutas especiales
+const path = window.location.pathname;
+const isBrochurePage = path === "/brochure";
+const isDashboardPage = path === "/dashboard";
 
 createRoot(document.getElementById("root")!).render(
   isBrochurePage ? (
     <BrochureGate />
+  ) : isDashboardPage ? (
+    <Dashboard />
   ) : (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
