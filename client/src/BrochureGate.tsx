@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { ShieldCheck, FileText, Mail, Phone, ArrowRight, CheckCircle2, Lock, Building2, Leaf, TrendingUp, Globe2 } from 'lucide-react';
+import { ShieldCheck, FileText, Mail, ArrowRight, CheckCircle2, Lock, Building2, Leaf, TrendingUp, Globe2 } from 'lucide-react';
 
 // ── Constantes ──────────────────────────────────────────
 const TURNSTILE_SITE_KEY = '0x4AAAAAAF8GDi-q_0ZpPWbn';
 
-// Worker URL — subdominio directo de workers.dev para evitar conflicto con /api/* de tRPC
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/brochure';
 const WORKER_ORIGIN = 'https://brochure-access.inglopezjj.workers.dev';
 const CONTACT_EMAIL = 'contacto@nexergy.ar';
@@ -64,20 +63,15 @@ function isFreeEmailDomain(email: string): boolean {
   return FREE_EMAIL_DOMAINS.includes(domain);
 }
 
-type AccessMode = 'email' | 'phone';
-type FormState = 'idle' | 'submitting' | 'sms-sent' | 'verifying-sms' | 'success' | 'error';
+type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function BrochureGate() {
-  const [mode, setMode] = useState<AccessMode>('email');
   const [formState, setFormState] = useState<FormState>('idle');
   const [error, setError] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
-  const [leadName, setLeadName] = useState('');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [smsCode, setSmsCode] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
 
   const turnstileRef = useRef<HTMLDivElement>(null);
@@ -93,7 +87,7 @@ export default function BrochureGate() {
     } else {
       renderTurnstile();
     }
-  }, [mode]);
+  }, []);
 
   const renderTurnstile = () => {
     if (!turnstileRef.current) return;
@@ -111,99 +105,44 @@ export default function BrochureGate() {
       setError('Ingresá tu nombre.');
       return;
     }
+    if (!email.trim()) {
+      setError('Ingresá tu email corporativo.');
+      return;
+    }
+    if (isFreeEmailDomain(email)) {
+      setError('Usá un email de dominio corporativo (no se aceptan gmail, hotmail, etc.).');
+      return;
+    }
     if (!turnstileToken) {
       setError('Completá la verificación de seguridad.');
       return;
     }
 
-    if (mode === 'email') {
-      if (!email.trim()) {
-        setError('Ingresá tu email corporativo.');
-        return;
-      }
-      if (isFreeEmailDomain(email)) {
-        setError('Usá un email de dominio corporativo (no se aceptan gmail, hotmail, etc.).');
-        return;
-      }
-
-      setFormState('submitting');
-      try {
-        const res = await fetch(`${WORKER_URL}/request`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mode: 'email',
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            turnstileToken,
-          }),
-        });
-        const text = await res.text();
-        let data;
-        try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
-        if (!data.ok) throw new Error(data.error || 'Error al procesar');
-        setPdfUrl(WORKER_ORIGIN + data.pdfUrl);
-        setFormState('success');
-      } catch (err: any) {
-        setError(err.message || 'Error al procesar la solicitud.');
-        setFormState('error');
-      }
-    } else {
-      if (formState === 'idle') {
-        if (!phone.trim()) {
-          setError('Ingresá tu número de celular.');
-          return;
-        }
-        setFormState('submitting');
-        try {
-          const res = await fetch(`${WORKER_URL}/request`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              mode: 'phone',
-              name: name.trim(),
-              phone: phone.trim(),
-              turnstileToken,
-            }),
-          });
-          const text = await res.text();
-          let data;
-          try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
-          if (!data.ok) throw new Error(data.error || 'Error al enviar SMS');
-          setFormState('sms-sent');
-        } catch (err: any) {
-          setError(err.message || 'Error al enviar el código.');
-          setFormState('error');
-        }
-      } else if (formState === 'sms-sent') {
-        if (!smsCode.trim()) {
-          setError('Ingresá el código que recibiste por SMS.');
-          return;
-        }
-        setFormState('verifying-sms');
-        try {
-          const res = await fetch(`${WORKER_URL}/verify-sms`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              phone: phone.trim(),
-              code: smsCode.trim(),
-            }),
-          });
-          const text = await res.text();
-          let data;
-          try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
-          if (!data.ok) throw new Error(data.error || 'Código incorrecto');
-          setPdfUrl(WORKER_ORIGIN + data.pdfUrl);
-          setFormState('success');
-        } catch (err: any) {
-          setError(err.message || 'Código incorrecto.');
-          setFormState('sms-sent');
-        }
-      }
+    setFormState('submitting');
+    try {
+      const res = await fetch(`${WORKER_URL}/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'email',
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          turnstileToken,
+        }),
+      });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error('El servidor no respondió correctamente.'); }
+      if (!data.ok) throw new Error(data.error || 'Error al procesar');
+      setPdfUrl(WORKER_ORIGIN + data.pdfUrl);
+      setFormState('success');
+    } catch (err: any) {
+      setError(err.message || 'Error al procesar la solicitud.');
+      setFormState('error');
     }
   };
 
+  // ── Estado: éxito ─────────────────────────────────────
   if (formState === 'success') {
     return (
       <div className="min-h-screen bg-[#070c1e] text-white font-sans flex items-center justify-center px-6">
@@ -213,7 +152,7 @@ export default function BrochureGate() {
           </div>
           <h2 className="text-2xl font-extrabold text-white mb-3">¡Acceso concedido!</h2>
           <p className="text-gray-400 text-sm mb-8">
-            Gracias, <strong className="text-white">{leadName || name}</strong>. Tu solicitud fue registrada.
+            Gracias, <strong className="text-white">{name}</strong>. Tu solicitud fue registrada.
             A continuación podés descargar el brochure completo.
           </p>
           <a
@@ -225,6 +164,12 @@ export default function BrochureGate() {
             <FileText className="w-5 h-5" />
             Descargar Brochure
           </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm font-bold transition-colors mt-4"
+          >
+            ← Volver al inicio
+          </a>
           <p className="text-xs text-gray-600 mt-6">
             El enlace es válido por 30 minutos. Para consultas: {CONTACT_EMAIL}
           </p>
@@ -233,8 +178,10 @@ export default function BrochureGate() {
     );
   }
 
+  // ── Página principal: teaser + formulario ────────────
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans">
+      {/* HEADER */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
         <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
           NEXERGY<span className="text-white">®</span>
@@ -245,6 +192,7 @@ export default function BrochureGate() {
       </header>
 
       <main className="py-12 px-6 max-w-4xl mx-auto w-full">
+        {/* Badge de confianza */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
             <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
@@ -259,6 +207,7 @@ export default function BrochureGate() {
           </p>
         </div>
 
+        {/* Teaser: qué incluye el brochure */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           {TEASER_SECTIONS.map((section) => {
             const Icon = section.icon;
@@ -283,34 +232,12 @@ export default function BrochureGate() {
           })}
         </div>
 
+        {/* Formulario de acceso */}
         <div className="max-w-md mx-auto">
           <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-8">
             <div className="flex items-center gap-2 mb-6">
               <Lock className="w-5 h-5 text-[#00BFFF]" />
               <h2 className="text-lg font-bold text-white">Validar acceso</h2>
-            </div>
-
-            <div className="flex gap-2 mb-6 p-1 bg-[#070c1e] rounded-xl">
-              <button
-                type="button"
-                onClick={() => { setMode('email'); setError(''); setFormState('idle'); }}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  mode === 'email' ? 'bg-[#00BFFF] text-[#070c1e]' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <Mail className="w-4 h-4" />
-                Email corporativo
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('phone'); setError(''); setFormState('idle'); }}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  mode === 'phone' ? 'bg-[#00BFFF] text-[#070c1e]' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <Phone className="w-4 h-4" />
-                SMS
-              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -322,92 +249,50 @@ export default function BrochureGate() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  disabled={formState === 'submitting' || formState === 'verifying-sms'}
+                  disabled={formState === 'submitting'}
                   className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
                   placeholder="Juan Pérez"
                 />
               </div>
 
-              {mode === 'email' && (
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                    Email corporativo
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={formState === 'submitting'}
-                    className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
-                    placeholder="nombre@empresa.com"
-                  />
-                  <p className="text-xs text-gray-600 mt-1.5">
-                    No se aceptan correos gratuitos (gmail, hotmail, etc.)
-                  </p>
-                </div>
-              )}
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
+                  Email corporativo
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={formState === 'submitting'}
+                  className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
+                  placeholder="nombre@empresa.com"
+                />
+                <p className="text-xs text-gray-600 mt-1.5">
+                  No se aceptan correos gratuitos (gmail, hotmail, etc.)
+                </p>
+              </div>
 
-              {mode === 'phone' && (
-                <>
-                  <div>
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                      Celular
-                    </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      disabled={formState === 'submitting' || formState === 'sms-sent'}
-                      className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
-                      placeholder="+54 9 11 1234 5678"
-                    />
-                  </div>
-
-                  {formState === 'sms-sent' && (
-                    <div>
-                      <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                        Código de verificación
-                      </label>
-                      <input
-                        type="text"
-                        value={smsCode}
-                        onChange={(e) => setSmsCode(e.target.value)}
-                        disabled={formState === 'verifying-sms'}
-                        maxLength={6}
-                        className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50 text-center font-mono text-lg tracking-widest"
-                        placeholder="000000"
-                      />
-                      <p className="text-xs text-gray-600 mt-1.5">
-                        Te enviamos un código de 6 dígitos por SMS.
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-
+              {/* Turnstile */}
               <div ref={turnstileRef} className="min-h-[65px]" />
 
+              {/* Error */}
               {error && (
                 <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2.5">
                   {error}
                 </p>
               )}
 
+              {/* Submit */}
               <button
                 type="submit"
-                disabled={formState === 'submitting' || formState === 'verifying-sms'}
+                disabled={formState === 'submitting'}
                 className="w-full flex items-center justify-center gap-2 bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold py-3.5 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#00BFFF]/20"
               >
-                {formState === 'submitting' || formState === 'verifying-sms' ? (
+                {formState === 'submitting' ? (
                   'Procesando...'
-                ) : formState === 'sms-sent' ? (
-                  <>
-                    Verificar código
-                    <ArrowRight className="w-4 h-4" />
-                  </>
                 ) : (
                   <>
-                    {mode === 'email' ? 'Acceder al brochure' : 'Enviar código SMS'}
+                    Acceder al brochure
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
