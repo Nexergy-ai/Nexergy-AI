@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LogOut, Download, Lock } from 'lucide-react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
 
@@ -13,31 +13,44 @@ interface Lead {
   accessed: boolean;
 }
 
+interface AnalyticsDay {
+  date: string;
+  pageViews: number;
+  requests: number;
+  uniques: number;
+}
+
 export default function Dashboard() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('nx_dash_token'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [analytics, setAnalytics] = useState<AnalyticsDay[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (token) loadLeads();
+    if (token) loadData();
   }, []);
 
-  const loadLeads = async () => {
+  const loadData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${WORKER_URL}/leads?token=${token}`);
-      const data = await res.json();
-      if (!data.ok) {
+      const [leadsRes, analyticsRes] = await Promise.all([
+        fetch(`${WORKER_URL}/leads?token=${token}`),
+        fetch(`${WORKER_URL}/analytics?token=${token}`),
+      ]);
+      const leadsData = await leadsRes.json();
+      const analyticsData = await analyticsRes.json();
+      if (!leadsData.ok) {
         localStorage.removeItem('nx_dash_token');
         setToken(null);
         return;
       }
-      setLeads(data.leads);
+      setLeads(leadsData.leads || []);
+      if (analyticsData.ok) setAnalytics(analyticsData.analytics?.last7days || []);
     } catch {
-      setLoginError('Error al cargar los leads.');
+      setLoginError('Error al cargar datos.');
     }
     setLoading(false);
   };
@@ -57,16 +70,18 @@ export default function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { throw new Error('Error de conexión.'); }
       if (!data.ok) {
         setLoginError(data.error || 'Error al ingresar.');
         return;
       }
       localStorage.setItem('nx_dash_token', data.token);
       setToken(data.token);
-      loadLeads();
-    } catch {
-      setLoginError('Error de conexión.');
+      loadData();
+    } catch (err: any) {
+      setLoginError(err.message || 'Error de conexión.');
     }
   };
 
@@ -74,6 +89,7 @@ export default function Dashboard() {
     localStorage.removeItem('nx_dash_token');
     setToken(null);
     setLeads([]);
+    setAnalytics([]);
     setEmail('');
     setPassword('');
   };
@@ -139,9 +155,12 @@ export default function Dashboard() {
   }
 
   // ── Dashboard ──
-  const total = leads.length;
-  const today = leads.filter((l) => l.timestamp?.startsWith(new Date().toISOString().slice(0, 10))).length;
+  const totalLeads = leads.length;
+  const todayLeads = leads.filter((l) => l.timestamp?.startsWith(new Date().toISOString().slice(0, 10))).length;
   const downloaded = leads.filter((l) => l.accessed).length;
+  const totalPageViews = analytics.reduce((sum, d) => sum + d.pageViews, 0);
+  const totalUniques = analytics.reduce((sum, d) => sum + d.uniques, 0);
+  const maxPageViews = Math.max(...analytics.map((d) => d.pageViews), 1);
 
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans">
@@ -160,21 +179,61 @@ export default function Dashboard() {
       </header>
 
       <main className="py-8 px-6 max-w-5xl mx-auto w-full">
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 text-center">
-            <p className="text-3xl font-extrabold text-[#00BFFF] font-mono">{total}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Total leads</p>
+        {/* Stats principales */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <Eye className="w-4 h-4 text-[#00BFFF]" />
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Visitantes (7d)</span>
+            </div>
+            <p className="text-2xl font-extrabold text-[#00BFFF] font-mono">{totalUniques.toLocaleString('es-AR')}</p>
           </div>
-          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 text-center">
-            <p className="text-3xl font-extrabold text-green-400 font-mono">{today}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Hoy</p>
+          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <MousePointerClick className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Page views (7d)</span>
+            </div>
+            <p className="text-2xl font-extrabold text-green-400 font-mono">{totalPageViews.toLocaleString('es-AR')}</p>
           </div>
-          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 text-center">
-            <p className="text-3xl font-extrabold text-purple-400 font-mono">{downloaded}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Descargaron</p>
+          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-4 h-4 text-purple-400" />
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Leads</span>
+            </div>
+            <p className="text-2xl font-extrabold text-purple-400 font-mono">{totalLeads}</p>
+          </div>
+          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="w-4 h-4 text-cyan-400" />
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Descargas</span>
+            </div>
+            <p className="text-2xl font-extrabold text-cyan-400 font-mono">{downloaded}</p>
           </div>
         </div>
 
+        {/* Gráfico de tráfico (7 días) */}
+        {analytics.length > 0 && (
+          <div className="bg-[#0a0e27] border border-white/10 rounded-2xl p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-4 h-4 text-[#00BFFF]" />
+              <h3 className="text-sm font-bold text-white">Tráfico de los últimos 7 días</h3>
+            </div>
+            <div className="flex items-end justify-between gap-2 h-32">
+              {analytics.map((d) => (
+                <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full bg-[#00BFFF]/30 hover:bg-[#00BFFF]/50 rounded-t transition-colors"
+                    style={{ height: `${(d.pageViews / maxPageViews) * 100}%`, minHeight: '4px' }}
+                    title={`${d.pageViews} page views`}
+                  />
+                  <span className="text-[10px] text-gray-600 font-mono">{d.date.slice(5)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tabla de leads */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-white">Leads capturados</h2>
           <button
