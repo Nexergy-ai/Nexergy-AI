@@ -63,11 +63,9 @@ function isFreeEmailDomain(email: string): boolean {
   return FREE_EMAIL_DOMAINS.includes(domain);
 }
 
-type PdfType = 'intermedio' | 'completo';
 type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function BrochureGate() {
-  const [pdfType, setPdfType] = useState<PdfType>('intermedio');
   const [formState, setFormState] = useState<FormState>('idle');
   const [error, setError] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
@@ -129,7 +127,7 @@ export default function BrochureGate() {
           mode: 'email',
           name: name.trim(),
           email: email.trim().toLowerCase(),
-          pdfType,
+          pdfType: 'intermedio',
           turnstileToken,
         }),
       });
@@ -165,7 +163,7 @@ export default function BrochureGate() {
             className="inline-flex items-center gap-2 bg-[#00BFFF] hover:bg-cyan-400 text-[#070c1e] font-bold px-8 py-4 rounded-xl transition-all shadow-lg shadow-[#00BFFF]/20"
           >
             <FileText className="w-5 h-5" />
-            Descargar {pdfType === 'intermedio' ? 'Brochure Intermedio' : 'Brochure Completo'}
+            Descargar Brochure
           </a>
           <a
             href="/"
@@ -243,39 +241,6 @@ export default function BrochureGate() {
               <h2 className="text-lg font-bold text-white">Validar acceso</h2>
             </div>
 
-            {/* Selector de brochure */}
-            <div className="mb-6">
-              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
-                ¿Qué documento querés descargar?
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPdfType('intermedio')}
-                  className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl text-xs font-bold transition-all border ${
-                    pdfType === 'intermedio'
-                      ? 'bg-[#00BFFF]/10 border-[#00BFFF]/50 text-[#00BFFF]'
-                      : 'bg-[#070c1e] border-white/10 text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <FileText className="w-5 h-5" />
-                  Brochure Intermedio
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPdfType('completo')}
-                  className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl text-xs font-bold transition-all border ${
-                    pdfType === 'completo'
-                      ? 'bg-[#00BFFF]/10 border-[#00BFFF]/50 text-[#00BFFF]'
-                      : 'bg-[#070c1e] border-white/10 text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <FileText className="w-5 h-5" />
-                  Brochure Completo
-                </button>
-              </div>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
@@ -285,8 +250,7 @@ export default function BrochureGate() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  disabled={formState === 'submitting'}
-                  className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
+                  className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none"
                   placeholder="Juan Pérez"
                 />
               </div>
@@ -299,8 +263,7 @@ export default function BrochureGate() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  disabled={formState === 'submitting'}
-                  className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none transition-colors disabled:opacity-50"
+                  className="w-full bg-[#070c1e] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none"
                   placeholder="nombre@empresa.com"
                 />
                 <p className="text-xs text-gray-600 mt-1.5">
