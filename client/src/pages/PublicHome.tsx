@@ -57,11 +57,11 @@ const TEAM: TeamMember[] = [
     name: 'Dr. Ing. Jonathan Bosso',
     role: 'CEO & Director Ejecutivo',
     initials: 'JB',
-    credentials: 'Doctor en Ingeniería (UNRC) · Investigador CONICET',
+    credentials: 'Doctor en Ingeniería (UNRC)',
   },
   {
     name: 'Mgtr. Ing. Juan José López',
-    role: 'CTO & Representante Legal',
+    role: 'CTO & Director Técnico',
     initials: 'JL',
     credentials: 'Magíster en Ingeniería de Software (UNSL)',
   },
@@ -69,7 +69,7 @@ const TEAM: TeamMember[] = [
     name: 'Dr. Daniel Guerreiro',
     role: 'CSO & Director Científico',
     initials: 'DG',
-    credentials: 'Doctor en Química (UNSL) · Ex Gerente I+D en Colgate y Bayer',
+    credentials: 'Doctor en Química (UNSL)',
   },
 ];
 
@@ -100,12 +100,12 @@ const LIFECYCLE: LifecycleStage[] = [
   {
     label: 'Validación en laboratorio',
     status: 'done',
-    description: 'Núcleo tecnológico desarrollado, arquitectura de software definida y calibración de datos de biomasa.',
+    description: 'Núcleo tecnológico desarrollado, arquitectura de software definida y calibración de datos.',
   },
   {
     label: 'Pruebas en entorno real',
     status: 'current',
-    description: 'Prototipo funcional en ensayos con equipos industriales. Postulación al Programa Innova CFI en curso.',
+    description: 'Prototipo funcional en ensayos con equipos industriales. Postulación al Programa CFI Innova en curso.',
   },
   {
     label: 'Despliegue en pilotos industriales',
@@ -181,24 +181,28 @@ const STATUS_STYLES: Record<LifecycleStage['status'], { dot: string; text: strin
 
 function LifecycleStep({ stage, isLast }: { stage: LifecycleStage; isLast: boolean }) {
   const s = STATUS_STYLES[stage.status];
+  const isCurrent = stage.status === 'current';
+
   return (
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
         <div className={`w-4 h-4 rounded-full border-2 ${s.border} ${s.dot} shrink-0 mt-1`} />
         {!isLast && <div className="w-px flex-1 bg-white/10 mt-2" />}
       </div>
-      <div className={`pb-8 ${isLast ? 'pb-0' : ''}`}>
-        <div className="flex items-center gap-3 mb-1">
-          <span className={`text-base font-bold ${stage.status === 'current' ? 'text-white' : 'text-gray-400'}`}>
-            {stage.label}
-          </span>
-          {stage.status === 'current' && (
-            <span className="text-xs bg-[#00BFFF]/10 text-[#00BFFF] px-2 py-0.5 rounded-full font-mono">
-              etapa actual
+      <div className={`pb-8 flex-1 ${isLast ? 'pb-0' : ''}`}>
+        <div className={`rounded-2xl p-5 -ml-1 transition-all ${isCurrent ? 'stage-current border border-[#00BFFF]/40' : ''}`}>
+          <div className="flex items-center gap-3 mb-1">
+            <span className={`text-base font-bold ${isCurrent ? 'text-white' : 'text-gray-400'}`}>
+              {stage.label}
             </span>
-          )}
+            {isCurrent && (
+              <span className="text-xs bg-[#00BFFF]/10 text-[#00BFFF] px-2 py-0.5 rounded-full font-mono animate-pulse">
+                etapa actual
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-400 leading-relaxed">{stage.description}</p>
         </div>
-        <p className="text-sm text-gray-400 leading-relaxed">{stage.description}</p>
       </div>
     </div>
   );
@@ -228,6 +232,28 @@ function PublicHome() {
 
   return (
     <div className="min-h-screen bg-[#070c1e] text-white font-sans flex flex-col selection:bg-[#00BFFF] selection:text-[#070c1e]">
+      {/* ── Animaciones para etapa actual ── */}
+      <style>{`
+        @keyframes stageGradient {
+          0% { background-position: 0% 50%; opacity: 0.6; }
+          50% { background-position: 100% 50%; opacity: 1; }
+          100% { background-position: 0% 50%; opacity: 0.6; }
+        }
+        @keyframes stageGlow {
+          0%, 100% { box-shadow: 0 0 20px -5px rgba(0, 191, 255, 0.15), inset 0 0 20px -10px rgba(0, 191, 255, 0.1); }
+          50% { box-shadow: 0 0 50px -5px rgba(0, 191, 255, 0.35), inset 0 0 40px -10px rgba(0, 191, 255, 0.2); }
+        }
+        @keyframes stageBorder {
+          0%, 100% { border-color: rgba(0, 191, 255, 0.3); }
+          50% { border-color: rgba(0, 191, 255, 0.6); }
+        }
+        .stage-current {
+          background: linear-gradient(135deg, rgba(0, 191, 255, 0.08), rgba(0, 191, 255, 0.03), rgba(123, 97, 255, 0.06), rgba(0, 191, 255, 0.03));
+          background-size: 300% 300%;
+          animation: stageGradient 5s ease infinite, stageGlow 4s ease infinite, stageBorder 3s ease infinite;
+        }
+      `}</style>
+
       {/* HEADER — siempre visible (sticky) */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
         <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono hover:text-cyan-300 transition-colors">
@@ -257,7 +283,6 @@ function PublicHome() {
       {/* HERO + VIDEO */}
       <main className="py-12 px-6 max-w-4xl mx-auto w-full">
         <div className="text-center mb-8">
-          {/* Badge de Patente Internacional */}
           <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
             <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
             <span>USPTO Provisional PPA N.º 64/181,819 • INPI Reg. Nº 3.941.093</span>
@@ -311,7 +336,6 @@ function PublicHome() {
             </p>
           </div>
 
-          {/* Timeline vertical */}
           <div className="max-w-2xl mx-auto">
             {LIFECYCLE.map((stage, i) => (
               <LifecycleStep key={stage.label} stage={stage} isLast={i === LIFECYCLE.length - 1} />
@@ -330,7 +354,7 @@ function PublicHome() {
               Liderazgo técnico y científico
             </h2>
             <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-              Tres co-inventores con +40 años combinados en ingeniería de potencia, software industrial y química de biomasa.
+              Tres co-inventores con +40 años combinados en electrónica de potencia, software y química industrial .
             </p>
           </div>
 
@@ -407,7 +431,7 @@ function PublicHome() {
       <footer className="py-8 px-6 border-t border-white/5 bg-[#050814] text-center text-sm text-gray-500 space-y-2">
         <p>
           © 2026 <strong>OPTINEX S.A.S.</strong> — Todos los derechos reservados. —{' '}
-          <strong>Para solicitar acceso autorizado al portal confidencial: </strong>
+          <strong>Para solicitar acceso al portal confidencial: </strong>
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm pt-1">
