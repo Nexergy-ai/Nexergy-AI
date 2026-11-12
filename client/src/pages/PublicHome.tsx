@@ -286,15 +286,15 @@ function PublicHome() {
           <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
             <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
             <span>USPTO Provisional PPA N.º 64/181,819 • INPI Reg. Nº 3.941.093</span>
-<div className="mb-6">
-  <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
-    Convierta energía y residuos en rentabilidad.
-  </h1>
+              <div className="mb-6">
+                <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+                  Convierta energía y residuos en rentabilidad.
+                </h1>
 
-  <p className="text-base md:text-xl text-white/80 leading-relaxed max-w-3xl">
-    Gemelos digitales e inteligencia operativa para optimizar recursos y mejorar decisiones.
-  </p>
-</div>
+              <p className="text-base md:text-xl text-white/80 leading-relaxed max-w-3xl">
+                  Gemelos digitales e inteligencia operativa para optimizar recursos y mejorar decisiones.
+              </p>
+              </div>
 
         {/* VIDEO R2 — autoplay, muted, loop */}
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
