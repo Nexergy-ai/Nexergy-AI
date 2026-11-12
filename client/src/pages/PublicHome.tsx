@@ -286,15 +286,16 @@ function PublicHome() {
           <div className="inline-flex items-center gap-2 bg-[#00BFFF]/10 border border-[#00BFFF]/30 px-4 py-1.5 rounded-full text-xs font-mono text-[#00BFFF] mb-6 shadow-md">
             <ShieldCheck className="w-4 h-4 text-[#00BFFF]" />
             <span>USPTO Provisional PPA N.º 64/181,819 • INPI Reg. Nº 3.941.093</span>
-              <div className="mb-6">
-                <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
-                  Convierta energía y residuos en rentabilidad.
-                </h1>
-
-              <p className="text-base md:text-xl text-white/80 leading-relaxed max-w-3xl">
-                  Gemelos digitales e inteligencia operativa para optimizar recursos y mejorar decisiones.
-              </p>
-              </div>
+          </div>
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+              Convierta energía y residuos en rentabilidad.
+            </h1>
+            <p className="text-base md:text-xl text-white/80 leading-relaxed max-w-3xl mx-auto">
+              Gemelos digitales e inteligencia operativa para optimizar recursos y mejorar decisiones.
+            </p>
+          </div>
+        </div>
 
         {/* VIDEO R2 — autoplay, muted, loop */}
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
@@ -407,7 +408,7 @@ function PublicHome() {
                 <div className="flex flex-wrap justify-center gap-3">
                   {g.items.map((it) => (
                     <div
-                      key={it.name}
+                      key={`${g.group}-${it.name}`}
                       className="flex items-center justify-center bg-[#0a0e27] border border-white/10 rounded-xl px-5 py-4 min-w-[140px] hover:border-[#00BFFF]/40 transition-colors"
                     >
                       {it.logo ? (
