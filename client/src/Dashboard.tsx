@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Save, Tag } from 'lucide-react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Save, Tag, Pencil, Check, X } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
 const SYNC_INTERVAL = 30_000;
@@ -44,6 +44,8 @@ export default function Dashboard() {
   const [newDomain, setNewDomain] = useState('');
   const [newLabel, setNewLabel] = useState('');
   const [domainSaveStatus, setDomainSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [editingDomain, setEditingDomain] = useState<string | null>(null);
+  const [editLabel, setEditLabel] = useState('');
 
   const loadData = useCallback(async (authToken: string, isAuto = false) => {
     if (isAuto) setConnStatus('syncing');
@@ -164,6 +166,24 @@ export default function Dashboard() {
       delete next[domain];
       return next;
     });
+  };
+
+  const startEdit = (domain: string, currentLabel: string) => {
+    setEditingDomain(domain);
+    setEditLabel(currentLabel);
+  };
+
+  const cancelEdit = () => {
+    setEditingDomain(null);
+    setEditLabel('');
+  };
+
+  const confirmEdit = (domain: string) => {
+    const l = editLabel.trim();
+    if (!l) return;
+    setPriorityDomains(prev => ({ ...prev, [domain]: l }));
+    setEditingDomain(null);
+    setEditLabel('');
   };
 
   const saveDomains = async () => {
@@ -407,15 +427,50 @@ export default function Dashboard() {
             ) : (
               Object.entries(priorityDomains).sort(([a],[b]) => a.localeCompare(b)).map(([domain, label]) => (
                 <div key={domain} className="flex items-center justify-between bg-[#0d1410] border border-white/5 rounded-xl px-4 py-2.5 group hover:border-white/10 transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span className="text-amber-400/80 text-xs font-mono shrink-0">{domain}</span>
                     <span className="text-gray-600 text-xs">→</span>
-                    <span className="text-white text-sm truncate">{label}</span>
+                    {editingDomain === domain ? (
+                      <input
+                        type="text"
+                        value={editLabel}
+                        onChange={(e) => setEditLabel(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') confirmEdit(domain);
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                        autoFocus
+                        className="bg-[#0d1410] border border-[#00BFFF]/40 rounded-lg px-2 py-1 text-sm text-white focus:border-[#00BFFF] focus:outline-none flex-1 max-w-xs"
+                      />
+                    ) : (
+                      <span className="text-white text-sm truncate">{label}</span>
+                    )}
                   </div>
-                  <button onClick={() => removeDomain(domain)}
-                    className="text-gray-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0 ml-2">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1 shrink-0 ml-2">
+                    {editingDomain === domain ? (
+                      <>
+                        <button onClick={() => confirmEdit(domain)} title="Confirmar"
+                          className="text-green-400 hover:text-green-300 transition-colors p-1">
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button onClick={cancelEdit} title="Cancelar"
+                          className="text-gray-500 hover:text-gray-300 transition-colors p-1">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => startEdit(domain, label)} title="Editar"
+                          className="text-gray-500 hover:text-[#00BFFF] transition-colors opacity-0 group-hover:opacity-100 p-1">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => removeDomain(domain)} title="Eliminar"
+                          className="text-gray-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 p-1">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))
             )}
