@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Save, Tag, Pencil, Check, X } from 'lucide-react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Tag, Pencil, Check, X } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
 const SYNC_INTERVAL = 30_000;
@@ -150,7 +150,6 @@ export default function Dashboard() {
   const downloadBrochureCompleto = () => window.open(`${WORKER_URL}/brochure-completo?token=${token}`, '_blank');
   const manualRefresh = () => { if (token) loadData(token); };
 
-  // ── Auto-save: guarda en KV cada vez que cambia la lista ──
   const saveDomains = useCallback(async (domainsToSave: Record<string, string>) => {
     setDomainSaveStatus('saving');
     try {
@@ -269,7 +268,6 @@ export default function Dashboard() {
   }
 
   const totalLeads = leads.length;
-  const todayLeads = leads.filter((l) => l.timestamp?.startsWith(new Date().toISOString().slice(0, 10))).length;
   const downloaded = leads.filter((l) => l.accessed).length;
   const priorityLeads = leads.filter((l) => l.org);
   const totalPageViews = analytics.reduce((sum, d) => sum + d.pageViews, 0);
@@ -405,6 +403,113 @@ export default function Dashboard() {
           {/* Agregar nuevo dominio */}
           <div className="flex gap-2 mb-4">
             <input type="text" value={newDomain} onChange={(e) => setNewDomain(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addDomain())}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addDomain(); } }}
               placeholder="dominio.com.ar"
-              className="flex-1 bg-[#0d1410] border border-white/10 rounded-xl px-4 py-2.5
+              className="flex-1 bg-[#0d1410] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none font-mono" />
+            <input type="text" value={newLabel} onChange={(e) => setNewLabel(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addDomain(); } }}
+              placeholder="Etiqueta (ej: Banco Galicia)"
+              className="flex-1 bg-[#0d1410] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:border-[#00BFFF]/50 focus:outline-none" />
+            <button onClick={addDomain} disabled={!newDomain.trim() || !newLabel.trim()}
+              className="bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 px-4 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-40 flex items-center gap-1.5">
+              <Plus className="w-4 h-4" /> Agregar
+            </button>
+          </div>
+
+          {/* Lista de dominios */}
+          <div className="space-y-1.5 max-h-64 overflow-y-auto">
+            {Object.keys(priorityDomains).length === 0 ? (
+              <p className="text-center text-gray-600 text-sm py-4">No hay dominios prioritarios configurados.</p>
+            ) : (
+              Object.entries(priorityDomains).sort(([a],[b]) => a.localeCompare(b)).map(([domain, label]) => (
+                <div key={domain} className="flex items-center justify-between bg-[#0d1410] border border-white/5 rounded-xl px-4 py-2.5 group hover:border-white/10 transition-colors">
+                  {editingDomain === domain ? (
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-amber-400/80 text-xs font-mono shrink-0">{domain}</span>
+                      <span className="text-gray-600 text-xs">→</span>
+                      <input type="text" value={editLabel} onChange={(e) => setEditLabel(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') confirmEdit(domain); if (e.key === 'Escape') cancelEdit(); }}
+                          autoFocus className="flex-1 bg-[#0d1410] border border-[#00BFFF]/30 rounded-lg px-2 py-1 text-sm text-white focus:outline-none focus:border-[#00BFFF]/50" />
+                      <button onClick={() => confirmEdit(domain)} className="text-green-400 hover:text-green-300 transition-colors shrink-0">
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button onClick={cancelEdit} className="text-gray-500 hover:text-red-400 transition-colors shrink-0">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-amber-400/80 text-xs font-mono shrink-0">{domain}</span>
+                        <span className="text-gray-600 text-xs">→</span>
+                        <span className="text-white text-sm truncate">{label}</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0 ml-2">
+                        <button onClick={() => startEdit(domain, label)} className="text-gray-600 hover:text-[#00BFFF] transition-colors opacity-0 group-hover:opacity-100">
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => removeDomain(domain)} className="text-gray-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+          <p className="text-xs text-gray-600 mt-3">
+            Los cambios se guardan automáticamente al agregar, editar o eliminar. Los dominios se detectan cuando un lead se registra con un email de ese dominio.
+          </p>
+        </div>
+
+        {/* Tabla de leads */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold text-white">Leads capturados</h2>
+          <button onClick={exportCSV}
+            className="bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+            <Download className="w-4 h-4" /> Exportar CSV
+          </button>
+        </div>
+
+        <div className="bg-[#131c17] border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
+          {loading ? (
+            <p className="text-center text-gray-500 py-12">Cargando...</p>
+          ) : leads.length === 0 ? (
+            <p className="text-center text-gray-500 py-12">No hay leads todavía.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-gray-500">
+                  <th className="text-left px-4 py-3">Nombre</th>
+                  <th className="text-left px-4 py-3">Email</th>
+                  <th className="text-left px-4 py-3">Organización</th>
+                  <th className="text-left px-4 py-3">Brochure</th>
+                  <th className="text-left px-4 py-3">IP</th>
+                  <th className="text-left px-4 py-3">Fecha</th>
+                  <th className="text-center px-4 py-3">Descargó</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((l, i) => (
+                  <tr key={i} className={`border-b border-white/5 hover:bg-white/5 ${l.org ? 'bg-amber-500/5' : ''}`}>
+                    <td className="px-4 py-3 text-white font-medium">
+                      {l.name || '-'}
+                      {l.org && <span className="ml-2 text-xs bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-full font-mono">{l.org}</span>}
+                    </td>
+                    <td className="px-4 py-3 text-gray-400">{l.email || l.phone || '-'}</td>
+                    <td className="px-4 py-3 text-gray-400">{l.org || '-'}</td>
+                    <td className="px-4 py-3 text-gray-400">{l.pdfType === 'intermedio' ? 'Intermedio' : l.pdfType === 'completo' ? 'Completo' : '-'}</td>
+                    <td className="px-4 py-3 text-gray-500 font-mono text-xs">{l.ip || '-'}</td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">{l.timestamp ? new Date(l.timestamp).toLocaleString('es-AR') : '-'}</td>
+                    <td className="px-4 py-3 text-center">{l.accessed ? <span className="text-green-400">✓</span> : <span className="text-gray-700">—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
