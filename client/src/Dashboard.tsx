@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Tag, Pencil, Check, X } from 'lucide-react';
+import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Tag, Pencil, Check, X, Globe, Smartphone, Monitor, Tablet, Clock, MapPin } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
 const SYNC_INTERVAL = 30_000;
@@ -24,6 +24,31 @@ interface AnalyticsDay {
   uniques: number;
 }
 
+interface CountryData { country: string; visits: number; }
+interface PathData { path: string; visits: number; }
+interface DeviceData { type: string; visits: number; }
+interface Visitor { ip: string; country: string; path: string; ua: string; timestamp: string; }
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  AR: '🇦🇷', NL: '🇳🇱', JP: '🇯🇵', US: '🇺🇸', FR: '🇫🇷', TW: '🇹🇼', SG: '🇸🇬',
+  PL: '🇵🇱', CH: '🇨🇭', DE: '🇩🇪', GB: '🇬🇧', BE: '🇧🇪', CA: '🇨🇦', KR: '🇰🇷',
+  CN: '🇨🇳', BR: '🇧🇷', ES: '🇪🇸', IT: '🇮🇹', MX: '🇲🇽', CL: '🇨🇱', CO: '🇨🇴',
+  PE: '🇵🇪', UY: '🇺🇾', AU: '🇦🇺', IN: '🇮🇳', ZA: '🇿🇦', SE: '🇸🇪', NO: '🇳🇴',
+  FI: '🇫🇮', DK: '🇩🇰', AT: '🇦🇹', IE: '🇮🇪', PT: '🇵🇹', CZ: '🇨🇿', HU: '🇭🇺',
+  RO: '🇷🇴', TR: '🇹🇷', AE: '🇦🇪', SA: '🇸🇦', IL: '🇮🇱', TH: '🇹🇭', ID: '🇮🇩',
+  MY: '🇲🇾', PH: '🇵🇭', VN: '🇻🇳', RU: '🇷🇺', UA: '🇺🇦', NZ: '🇳🇿',
+};
+
+const COUNTRY_NAMES: Record<string, string> = {
+  AR: 'Argentina', NL: 'Países Bajos', JP: 'Japón', US: 'Estados Unidos',
+  FR: 'Francia', TW: 'Taiwán', SG: 'Singapur', PL: 'Polonia', CH: 'Suiza',
+  DE: 'Alemania', GB: 'Reino Unido', BE: 'Bélgica', CA: 'Canadá', KR: 'Corea',
+  CN: 'China', BR: 'Brasil', ES: 'España', IT: 'Italia', MX: 'México',
+  CL: 'Chile', CO: 'Colombia', PE: 'Perú', UY: 'Uruguay', AU: 'Australia',
+  IN: 'India', ZA: 'Sudáfrica', SE: 'Suecia', NO: 'Noruega', FI: 'Finlandia',
+  DK: 'Dinamarca', AT: 'Austria', IE: 'Irlanda', PT: 'Portugal',
+};
+
 export default function Dashboard() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('nx_dash_token'));
   const [email, setEmail] = useState('');
@@ -31,6 +56,10 @@ export default function Dashboard() {
   const [loginError, setLoginError] = useState('');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsDay[]>([]);
+  const [topCountries, setTopCountries] = useState<CountryData[]>([]);
+  const [topPaths, setTopPaths] = useState<PathData[]>([]);
+  const [devices, setDevices] = useState<DeviceData[]>([]);
+  const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [connStatus, setConnStatus] = useState<ConnStatus>('idle');
@@ -52,10 +81,11 @@ export default function Dashboard() {
     setSyncError(null);
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
-      const [leadsRes, analyticsRes] = await Promise.all([
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      const [leadsRes, analyticsRes, visitorsRes] = await Promise.all([
         fetch(`${WORKER_URL}/leads?token=${authToken}`, { signal: controller.signal }),
         fetch(`${WORKER_URL}/analytics?token=${authToken}`, { signal: controller.signal }),
+        fetch(`${WORKER_URL}/visitors?token=${authToken}`, { signal: controller.signal }).catch(() => null),
       ]);
       clearTimeout(timeout);
       if (!leadsRes.ok || !analyticsRes.ok) throw new Error('Respuesta no OK');
@@ -68,7 +98,16 @@ export default function Dashboard() {
         return;
       }
       setLeads(leadsData.leads || []);
-      if (analyticsData.ok) setAnalytics(analyticsData.analytics?.last7days || []);
+      if (analyticsData.ok) {
+        setAnalytics(analyticsData.analytics?.last7days || []);
+        setTopCountries(analyticsData.analytics?.topCountries || []);
+        setTopPaths(analyticsData.analytics?.topPaths || []);
+        setDevices(analyticsData.analytics?.devices || []);
+      }
+      if (visitorsRes && visitorsRes.ok) {
+        const visData = await visitorsRes.json();
+        if (visData.ok) setVisitors(visData.visitors || []);
+      }
       setConnStatus('online');
       setLastSync(new Date());
     } catch (err: any) {
@@ -144,6 +183,7 @@ export default function Dashboard() {
     localStorage.removeItem('nx_dash_token');
     setToken(null); setLeads([]); setAnalytics([]); setEmail(''); setPassword('');
     setConnStatus('idle'); setLastSync(null); setPriorityDomains({});
+    setTopCountries([]); setTopPaths([]); setDevices([]); setVisitors([]);
   };
 
   const exportCSV = () => window.open(`${WORKER_URL}/export?token=${token}`, '_blank');
@@ -159,17 +199,9 @@ export default function Dashboard() {
         body: JSON.stringify({ token, domains: domainsToSave }),
       });
       const data = await res.json();
-      if (data.ok) {
-        setDomainSaveStatus('saved');
-        setTimeout(() => setDomainSaveStatus('idle'), 1500);
-      } else {
-        setDomainSaveStatus('error');
-        setTimeout(() => setDomainSaveStatus('idle'), 2000);
-      }
-    } catch {
-      setDomainSaveStatus('error');
-      setTimeout(() => setDomainSaveStatus('idle'), 2000);
-    }
+      if (data.ok) { setDomainSaveStatus('saved'); setTimeout(() => setDomainSaveStatus('idle'), 1500); }
+      else { setDomainSaveStatus('error'); setTimeout(() => setDomainSaveStatus('idle'), 2000); }
+    } catch { setDomainSaveStatus('error'); setTimeout(() => setDomainSaveStatus('idle'), 2000); }
   }, [token]);
 
   const addDomain = () => {
@@ -177,8 +209,7 @@ export default function Dashboard() {
     const l = newLabel.trim();
     if (!d || !l) return;
     const updated = { ...priorityDomains, [d]: l };
-    setPriorityDomains(updated);
-    setNewDomain(''); setNewLabel('');
+    setPriorityDomains(updated); setNewDomain(''); setNewLabel('');
     saveDomains(updated);
   };
 
@@ -190,22 +221,16 @@ export default function Dashboard() {
   };
 
   const startEdit = (domain: string, currentLabel: string) => {
-    setEditingDomain(domain);
-    setEditLabel(currentLabel);
+    setEditingDomain(domain); setEditLabel(currentLabel);
   };
 
-  const cancelEdit = () => {
-    setEditingDomain(null);
-    setEditLabel('');
-  };
+  const cancelEdit = () => { setEditingDomain(null); setEditLabel(''); };
 
   const confirmEdit = (domain: string) => {
     const l = editLabel.trim();
     if (!l) return;
     const updated = { ...priorityDomains, [domain]: l };
-    setPriorityDomains(updated);
-    setEditingDomain(null);
-    setEditLabel('');
+    setPriorityDomains(updated); setEditingDomain(null); setEditLabel('');
     saveDomains(updated);
   };
 
@@ -225,6 +250,18 @@ export default function Dashboard() {
     const mins = Math.floor(secs / 60);
     if (mins < 60) return `hace ${mins}m`;
     return `hace ${Math.floor(mins / 60)}h`;
+  };
+
+  const deviceIcon = (type: string) => {
+    if (type === 'mobile') return <Smartphone className="w-4 h-4 text-purple-400" />;
+    if (type === 'tablet') return <Tablet className="w-4 h-4 text-orange-400" />;
+    return <Monitor className="w-4 h-4 text-[#00BFFF]" />;
+  };
+
+  const deviceLabel = (type: string) => {
+    if (type === 'mobile') return 'Móvil';
+    if (type === 'tablet') return 'Tablet';
+    return 'Desktop';
   };
 
   if (!token) {
@@ -273,6 +310,8 @@ export default function Dashboard() {
   const totalPageViews = analytics.reduce((sum, d) => sum + d.pageViews, 0);
   const totalUniques = analytics.reduce((sum, d) => sum + d.uniques, 0);
   const maxPageViews = Math.max(...analytics.map((d) => d.pageViews), 1);
+  const maxCountryVisits = Math.max(...topCountries.map((c) => c.visits), 1);
+  const totalDeviceVisits = devices.reduce((sum, d) => sum + d.visits, 0);
   const st = statusConfig[connStatus];
   const StatusIcon = st.icon;
 
@@ -385,7 +424,82 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Gestión de dominios prioritarios ── */}
+        {/* ── Top Países + Dispositivos ── */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          {topCountries.length > 0 && (
+            <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4"><Globe className="w-4 h-4 text-[#00BFFF]" /><h3 className="text-sm font-bold text-white">Países de origen</h3></div>
+              <div className="space-y-2">
+                {topCountries.slice(0, 10).map((c, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="text-lg shrink-0">{COUNTRY_FLAGS[c.country] || '🏳️'}</span>
+                    <span className="text-sm text-white shrink-0 w-28 truncate">{COUNTRY_NAMES[c.country] || c.country}</span>
+                    <div className="flex-1 bg-[#0d1410] rounded-full h-5 overflow-hidden">
+                      <div className="bg-[#00BFFF]/60 h-full rounded-full flex items-center justify-end pr-2" style={{ width: `${(c.visits / maxCountryVisits) * 100}%` }}>
+                        <span className="text-[10px] text-white font-mono">{c.visits.toLocaleString('es-AR')}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {devices.length > 0 && (
+            <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4"><Monitor className="w-4 h-4 text-purple-400" /><h3 className="text-sm font-bold text-white">Dispositivos</h3></div>
+              <div className="space-y-3">
+                {devices.map((d, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    {deviceIcon(d.type)}
+                    <span className="text-sm text-white shrink-0 w-20">{deviceLabel(d.type)}</span>
+                    <div className="flex-1 bg-[#0d1410] rounded-full h-5 overflow-hidden">
+                      <div className="bg-purple-400/60 h-full rounded-full flex items-center justify-end pr-2" style={{ width: `${totalDeviceVisits > 0 ? (d.visits / totalDeviceVisits) * 100 : 0}%` }}>
+                        <span className="text-[10px] text-white font-mono">{d.visits.toLocaleString('es-AR')}</span>
+                      </div>
+                    </div>
+                    <span className="text-xs text-gray-500 w-10 text-right">{totalDeviceVisits > 0 ? Math.round((d.visits / totalDeviceVisits) * 100) : 0}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Páginas populares ── */}
+        {topPaths.length > 0 && (
+          <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4"><FileText className="w-4 h-4 text-green-400" /><h3 className="text-sm font-bold text-white">Páginas más visitadas</h3></div>
+            <div className="space-y-1.5">
+              {topPaths.slice(0, 8).map((p, i) => (
+                <div key={i} className="flex items-center justify-between bg-[#0d1410] rounded-xl px-4 py-2">
+                  <span className="text-sm text-gray-300 font-mono truncate">{p.path}</span>
+                  <span className="text-xs text-green-400 font-mono shrink-0 ml-2">{p.visits.toLocaleString('es-AR')}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Log de visitas recientes ── */}
+        {visitors.length > 0 && (
+          <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4"><Clock className="w-4 h-4 text-cyan-400" /><h3 className="text-sm font-bold text-white">Visitas recientes al brochure</h3></div>
+            <div className="space-y-1.5 max-h-64 overflow-y-auto">
+              {visitors.slice(0, 20).map((v, i) => (
+                <div key={i} className="flex items-center gap-3 bg-[#0d1410] rounded-xl px-4 py-2 text-xs">
+                  <span className="text-lg shrink-0">{COUNTRY_FLAGS[v.country] || '🏳️'}</span>
+                  <span className="text-gray-400 shrink-0 w-24">{COUNTRY_NAMES[v.country] || v.country}</span>
+                  <MapPin className="w-3 h-3 text-gray-600 shrink-0" />
+                  <span className="text-gray-500 font-mono truncate flex-1">{v.ip}</span>
+                  <span className="text-gray-600 shrink-0">{v.timestamp ? new Date(v.timestamp).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Dominios prioritarios ── */}
         <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -400,7 +514,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Agregar nuevo dominio */}
           <div className="flex gap-2 mb-4">
             <input type="text" value={newDomain} onChange={(e) => setNewDomain(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addDomain(); } }}
@@ -416,7 +529,6 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Lista de dominios */}
           <div className="space-y-1.5 max-h-64 overflow-y-auto">
             {Object.keys(priorityDomains).length === 0 ? (
               <p className="text-center text-gray-600 text-sm py-4">No hay dominios prioritarios configurados.</p>
@@ -430,12 +542,8 @@ export default function Dashboard() {
                       <input type="text" value={editLabel} onChange={(e) => setEditLabel(e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter') confirmEdit(domain); if (e.key === 'Escape') cancelEdit(); }}
                           autoFocus className="flex-1 bg-[#0d1410] border border-[#00BFFF]/30 rounded-lg px-2 py-1 text-sm text-white focus:outline-none focus:border-[#00BFFF]/50" />
-                      <button onClick={() => confirmEdit(domain)} className="text-green-400 hover:text-green-300 transition-colors shrink-0">
-                        <Check className="w-4 h-4" />
-                      </button>
-                      <button onClick={cancelEdit} className="text-gray-500 hover:text-red-400 transition-colors shrink-0">
-                        <X className="w-4 h-4" />
-                      </button>
+                      <button onClick={() => confirmEdit(domain)} className="text-green-400 hover:text-green-300 transition-colors shrink-0"><Check className="w-4 h-4" /></button>
+                      <button onClick={cancelEdit} className="text-gray-500 hover:text-red-400 transition-colors shrink-0"><X className="w-4 h-4" /></button>
                     </div>
                   ) : (
                     <>
@@ -445,12 +553,8 @@ export default function Dashboard() {
                         <span className="text-white text-sm truncate">{label}</span>
                       </div>
                       <div className="flex items-center gap-1 shrink-0 ml-2">
-                        <button onClick={() => startEdit(domain, label)} className="text-gray-600 hover:text-[#00BFFF] transition-colors opacity-0 group-hover:opacity-100">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => removeDomain(domain)} className="text-gray-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <button onClick={() => startEdit(domain, label)} className="text-gray-600 hover:text-[#00BFFF] transition-colors opacity-0 group-hover:opacity-100"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => removeDomain(domain)} className="text-gray-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </>
                   )}
@@ -458,9 +562,7 @@ export default function Dashboard() {
               ))
             )}
           </div>
-          <p className="text-xs text-gray-600 mt-3">
-            Los cambios se guardan automáticamente al agregar, editar o eliminar. Los dominios se detectan cuando un lead se registra con un email de ese dominio.
-          </p>
+          <p className="text-xs text-gray-600 mt-3">Los cambios se guardan automáticamente al agregar, editar o eliminar. Los dominios se detectan cuando un lead se registra con un email de ese dominio.</p>
         </div>
 
         {/* Tabla de leads */}
