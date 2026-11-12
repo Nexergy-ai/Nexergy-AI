@@ -39,7 +39,6 @@ export default function Dashboard() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Priority domains state ──
   const [priorityDomains, setPriorityDomains] = useState<Record<string, string>>({});
   const [newDomain, setNewDomain] = useState('');
   const [newLabel, setNewLabel] = useState('');
@@ -151,21 +150,44 @@ export default function Dashboard() {
   const downloadBrochureCompleto = () => window.open(`${WORKER_URL}/brochure-completo?token=${token}`, '_blank');
   const manualRefresh = () => { if (token) loadData(token); };
 
-  // ── Priority domain handlers ──
+  // ── Auto-save: guarda en KV cada vez que cambia la lista ──
+  const saveDomains = useCallback(async (domainsToSave: Record<string, string>) => {
+    setDomainSaveStatus('saving');
+    try {
+      const res = await fetch(`${WORKER_URL}/priority-domains`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, domains: domainsToSave }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setDomainSaveStatus('saved');
+        setTimeout(() => setDomainSaveStatus('idle'), 1500);
+      } else {
+        setDomainSaveStatus('error');
+        setTimeout(() => setDomainSaveStatus('idle'), 2000);
+      }
+    } catch {
+      setDomainSaveStatus('error');
+      setTimeout(() => setDomainSaveStatus('idle'), 2000);
+    }
+  }, [token]);
+
   const addDomain = () => {
     const d = newDomain.toLowerCase().trim();
     const l = newLabel.trim();
     if (!d || !l) return;
-    setPriorityDomains(prev => ({ ...prev, [d]: l }));
+    const updated = { ...priorityDomains, [d]: l };
+    setPriorityDomains(updated);
     setNewDomain(''); setNewLabel('');
+    saveDomains(updated);
   };
 
   const removeDomain = (domain: string) => {
-    setPriorityDomains(prev => {
-      const next = { ...prev };
-      delete next[domain];
-      return next;
-    });
+    const updated = { ...priorityDomains };
+    delete updated[domain];
+    setPriorityDomains(updated);
+    saveDomains(updated);
   };
 
   const startEdit = (domain: string, currentLabel: string) => {
@@ -181,30 +203,11 @@ export default function Dashboard() {
   const confirmEdit = (domain: string) => {
     const l = editLabel.trim();
     if (!l) return;
-    setPriorityDomains(prev => ({ ...prev, [domain]: l }));
+    const updated = { ...priorityDomains, [domain]: l };
+    setPriorityDomains(updated);
     setEditingDomain(null);
     setEditLabel('');
-  };
-
-  const saveDomains = async () => {
-    setDomainSaveStatus('saving');
-    try {
-      const res = await fetch(`${WORKER_URL}/priority-domains`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, domains: priorityDomains }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setPriorityDomains(data.domains);
-        setDomainSaveStatus('saved');
-        setTimeout(() => setDomainSaveStatus('idle'), 2000);
-      } else {
-        setDomainSaveStatus('error');
-      }
-    } catch {
-      setDomainSaveStatus('error');
-    }
+    saveDomains(updated);
   };
 
   const statusConfig: Record<ConnStatus, { label: string; color: string; icon: typeof Wifi; dot: string }> = {
@@ -372,10 +375,11 @@ export default function Dashboard() {
         {analytics.length > 0 && (
           <div className="bg-[#131c17] border border-white/10 rounded-2xl p-6 mb-8">
             <div className="flex items-center gap-2 mb-4"><TrendingUp className="w-4 h-4 text-[#00BFFF]" /><h3 className="text-sm font-bold text-white">Tráfico de los últimos 7 días</h3></div>
-            <div className="flex items-end justify-between gap-2 h-32">
+            <div className="flex items-end justify-between gap-2 h-40">
               {analytics.map((d) => (
-                <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-[#00BFFF]/30 hover:bg-[#00BFFF]/50 rounded-t transition-colors" style={{ height: `${(d.pageViews / maxPageViews) * 100}%`, minHeight: '4px' }} title={`${d.pageViews} page views`} />
+                <div key={d.date} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <span className="text-[10px] text-[#00BFFF] font-mono font-bold">{d.pageViews}</span>
+                  <div className="w-full bg-[#00BFFF] hover:bg-cyan-400 rounded-t transition-colors" style={{ height: `${(d.pageViews / maxPageViews) * 100}%`, minHeight: '6px' }} title={`${d.pageViews} page views`} />
                   <span className="text-[10px] text-gray-600 font-mono">{d.date.slice(5)}</span>
                 </div>
               ))}
@@ -391,17 +395,11 @@ export default function Dashboard() {
               <h3 className="text-sm font-bold text-white">Dominios prioritarios</h3>
               <span className="text-xs text-gray-500">({Object.keys(priorityDomains).length})</span>
             </div>
-            <button onClick={saveDomains} disabled={domainSaveStatus === 'saving'}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                domainSaveStatus === 'saved' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                domainSaveStatus === 'error' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                'bg-[#00BFFF]/10 hover:bg-[#00BFFF]/20 text-[#00BFFF] border border-[#00BFFF]/30'
-              }`}>
-              {domainSaveStatus === 'saving' ? <RefreshCw className="w-4 h-4 animate-spin" /> :
-               domainSaveStatus === 'saved' ? <span>✓ Guardado</span> :
-               domainSaveStatus === 'error' ? <span>Error</span> :
-               <><Save className="w-4 h-4" /> Guardar cambios</>}
-            </button>
+            <div className="flex items-center gap-2">
+              {domainSaveStatus === 'saving' && <span className="text-xs text-cyan-400 flex items-center gap-1"><RefreshCw className="w-3 h-3 animate-spin" /> Guardando...</span>}
+              {domainSaveStatus === 'saved' && <span className="text-xs text-green-400 flex items-center gap-1"><Check className="w-3 h-3" /> Guardado</span>}
+              {domainSaveStatus === 'error' && <span className="text-xs text-red-400">Error al guardar</span>}
+            </div>
           </div>
 
           {/* Agregar nuevo dominio */}
@@ -476,7 +474,7 @@ export default function Dashboard() {
             )}
           </div>
           <p className="text-xs text-gray-600 mt-3">
-            Los cambios se aplican al guardar. Los dominios nuevos se detectan automáticamente cuando un lead se registra con un email de ese dominio.
+            Los cambios se guardan automáticamente. Los dominios nuevos se detectan cuando un lead se registra con un email de ese dominio.
           </p>
         </div>
 
