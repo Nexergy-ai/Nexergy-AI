@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { LogOut, Download, Lock, Eye, MousePointerClick, Users, FileText, TrendingUp, AlertCircle, Star, BookOpen, RefreshCw, Wifi, WifiOff, XCircle, Plus, Trash2, Tag, Pencil, Check, X, Globe, Smartphone, Monitor, Tablet, Clock, MapPin } from 'lucide-react';
 
 const WORKER_URL = 'https://brochure-access.inglopezjj.workers.dev/api/dashboard';
-const SYNC_INTERVAL = 30_000;
 
 type ConnStatus = 'idle' | 'syncing' | 'online' | 'error' | 'offline';
 
@@ -65,7 +64,6 @@ export default function Dashboard() {
   const [connStatus, setConnStatus] = useState<ConnStatus>('idle');
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
-  const [autoRefresh, setAutoRefresh] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [priorityDomains, setPriorityDomains] = useState<Record<string, string>>({});
@@ -135,13 +133,11 @@ export default function Dashboard() {
   }, [token]);
 
   useEffect(() => {
-    if (!token || !autoRefresh) {
+    if (!token) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
-    intervalRef.current = setInterval(() => loadData(token, true), SYNC_INTERVAL);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [token, autoRefresh, loadData]);
+  }, [token, loadData]);
 
   useEffect(() => {
     const goOffline = () => setConnStatus('offline');
@@ -334,10 +330,6 @@ export default function Dashboard() {
             <button onClick={manualRefresh} disabled={connStatus === 'syncing'} title="Sincronizar ahora" className="text-gray-400 hover:text-[#00BFFF] disabled:opacity-40 transition-colors">
               <RefreshCw className={`w-4 h-4 ${connStatus === 'syncing' ? 'animate-spin' : ''}`} />
             </button>
-            <label className="flex items-center gap-1.5 cursor-pointer text-gray-500 hidden lg:flex">
-              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} className="accent-[#00BFFF] w-3.5 h-3.5" />
-              Auto
-            </label>
           </div>
           <button onClick={handleLogout} className="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
             <LogOut className="w-4 h-4" /> Cerrar sesión
