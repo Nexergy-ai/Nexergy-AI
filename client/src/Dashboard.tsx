@@ -314,11 +314,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#0d1410] text-white font-sans">
       <header className="sticky top-0 z-50 w-full py-4 px-6 flex justify-between items-center border-b border-white/5 bg-[#0a0f0c]/80 backdrop-blur-md">
-        <a href="/" className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono hover:text-cyan-300 transition-colors">
-          NEXERGY<span className="text-white">®</span>
-          <span className="text-gray-500 text-xs ml-2">Dashboard</span>
-        </a>
-        <div className="flex items-center gap-4">
+        {/* Izquierda: indicadores de sync */}
+        <div className="flex items-center gap-4 flex-1">
           <div className="flex items-center gap-3 text-xs">
             <div className={`flex items-center gap-1.5 ${st.color}`}>
               <span className={`w-2 h-2 rounded-full ${st.dot}`} />
@@ -331,6 +328,19 @@ export default function Dashboard() {
               <RefreshCw className={`w-4 h-4 ${connStatus === 'syncing' ? 'animate-spin' : ''}`} />
             </button>
           </div>
+        </div>
+
+        {/* Centro: logo + NEXERGY® */}
+        <a href="/" className="flex items-center gap-2.5 hover:text-cyan-300 transition-colors shrink-0">
+          <img src="https://nexergy.ar/logo.png" alt="NEXERGY" className="h-9 w-auto" />
+          <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
+            NEXERGY<span className="text-white">®</span>
+          </span>
+          <span className="text-gray-500 text-xs ml-1 hidden sm:inline">Dashboard</span>
+        </a>
+
+        {/* Derecha: cerrar sesión */}
+        <div className="flex-1 flex justify-end">
           <button onClick={handleLogout} className="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
             <LogOut className="w-4 h-4" /> Cerrar sesión
           </button>
