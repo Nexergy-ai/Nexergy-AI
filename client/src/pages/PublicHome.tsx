@@ -257,7 +257,7 @@ function PublicHome() {
       {/* HEADER — siempre visible (sticky) */}
       <header className="sticky top-0 z-50 w-full py-4 px-6 md:px-8 flex justify-between items-center border-b border-white/5 bg-[#050814]/80 backdrop-blur-md">
         <a href="/" className="flex items-center gap-2.5 hover:text-cyan-300 transition-colors">
-          <img src="/logo-black.png" alt="NEXERGY" className="h-9 w-auto" style={{ filter: 'invert(1)' }} />
+          <img src="/logo-black.png" alt="NEXERGY" className="h-9 w-auto" style={{ filter: 'invert(1)', mixBlendMode: 'screen' }} />
           <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
             NEXERGY<span className="text-white">®</span>
           </span>
