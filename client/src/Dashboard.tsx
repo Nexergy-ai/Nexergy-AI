@@ -332,7 +332,7 @@ export default function Dashboard() {
 
         {/* Centro: logo + NEXERGY® */}
         <a href="/" className="flex items-center gap-2.5 hover:text-cyan-300 transition-colors shrink-0">
-          <img src="https://nexergy.ar/logo.png" alt="NEXERGY" className="h-9 w-auto" />
+          <img src="https://nexergy.ar/logo-black.png" alt="NEXERGY" className="h-9 w-auto" />
           <span className="font-extrabold tracking-wider text-[#00BFFF] text-xl font-mono">
             NEXERGY<span className="text-white">®</span>
           </span>
